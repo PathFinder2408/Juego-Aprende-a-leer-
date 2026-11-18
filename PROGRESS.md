@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 5 planificada en rama `feat/fase-5-accesibilidad` (pendiente de confirmación)
+- **Fase actual:** Fase 5 completada (fusionada a `main`, esperando confirmación para Fase 6: Persistencia)
 - **Última actualización:** 2026-11-18
 
 ---
@@ -57,7 +57,7 @@
 | F5-01 | Configuración y tipos de accesibilidad (`accessibility.ts`: movimiento reducido, flotación lenta, alto contraste, voz/SFX) | L | Gemini 4 Hydrogen (Medium) | hecha | Tipos estrictos y evento `accessibility:update` en `gameBus` | `accessibility.ts`, `types/game.ts` |
 | F5-02 | Conectar ajustes de audio y accesibilidad en `sfx.ts`, `speech.ts`, `AntigravityScene` y `WorldScene` | M | Gemini 4 Hydrogen (Medium) | hecha | Respeta silencio, flotación lenta (0.55x) y reduce tweens | `speech.ts`, `sfx.ts`, `AntigravityScene` |
 | F5-03 | Modal de Ajustes accesible en React (`SettingsModal.tsx` + estilos alto contraste y `reduced-motion` en `App`/`styles.css`) | M | Gemini 4 Hydrogen (Medium) | hecha | Toggles grandes y táctiles aplican cambios en vivo en UI y Phaser | `SettingsModal`, `App`, `styles.css` |
-| F5-04 | Verificación integral Fase 5 (`npm test`, `npm run build`, navegador y merge a `main` + push) | L | - | pendiente | Tests, build y consola en 0 errores | Cierre Fase 5 |
+| F5-04 | Verificación integral Fase 5 (`npm test`, `npm run build`, navegador y merge a `main` + push) | L | Gemini 4 Hydrogen (Medium) | hecha | Tests, build y consola en 0 errores | 9/9 tests, build OK, 0 errores en navegador |
 
 ## Fase 6: Persistencia y backend opcional
 _(Pendiente de recibir prompt de Fase 6)_
@@ -65,11 +65,11 @@ _(Pendiente de recibir prompt de Fase 6)_
 ---
 
 ## Siguiente paso
-Ejecutar `F5-04`: Verificación integral Fase 5 (`npm test`, `npm run build`, prueba en navegador y merge a `main` + `push`), esfuerzo LIGERO.
+Confirmar para planificar e iniciar **Fase 6: Persistencia (`localStorage` versionado con migraciones y backend opcional)** en rama `feat/fase-6-persistencia` (se recomienda abrir sesión nueva).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
 - Riesgos de Fase 1 documentados en `docs/GDD.md`.
 
 ## Registro de sesiones
-- **2026-11-18:** Fase 2, 3 y 4 completas (`F2-01` a `F4-04` cerradas; álbum interactivo con huecos flotantes verificado con 9/9 tests y 0 errores).
+- **2026-11-18:** Fases 2, 3, 4 y 5 completas (`F2-01` a `F5-04` cerradas; accesibilidad, audio, alto contraste y `reduced-motion` verificados con 9/9 tests y 0 errores).
