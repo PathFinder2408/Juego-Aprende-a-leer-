@@ -469,6 +469,51 @@ body,
   width: 100%;
 }
 
+.tcg-desc-box {
+  border: 2px dashed #334155;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.tcg-desc-box--done {
+  border-style: solid;
+  border-color: #4ade80;
+}
+
+.word-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.word-chip {
+  border: 2px solid #38bdf8;
+  background: #0f172a;
+  color: #fefce8;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: grab;
+  min-height: 36px;
+}
+
+.word-chip:hover {
+  background: #0284c7;
+}
+
+.tcg-feedback {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fde047;
+}
+
 /* Barra inferior estilo móvil */
 .bottom-dock {
   display: grid;

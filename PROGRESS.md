@@ -48,7 +48,7 @@
 |---|---|---|---|---|---|---|
 | F4-01 | Opciones de palabras flotantes para huecos en `cards.json` y tipos en `types/game.ts` | L | Gemini 4 Hydrogen (Medium) | hecha | Cada carta define `wordChoices` en JSON sin hardcode en lógica | `cards.json`, `types/game.ts`, regla GitHub en `AGENTS.md` |
 | F4-02 | Lógica pura del álbum (`albumLogic.ts`: validar palabra al hueco, cartas completadas y bonus) | M | Gemini 4 Hydrogen (Medium) | hecha | Lógica pura desacoplada de React | `src/features/album/albumLogic.ts` |
-| F4-03 | Tests unitarios (`albumLogic.test.ts`) + UI interactiva de huecos flotantes (arrastrar/tocar) en `CardGallery` y `App` | M | - | pendiente | `npm test` pasa; completar hueco lee la frase en `es-CL` y da bonus | Tactil + mouse |
+| F4-03 | Tests unitarios (`albumLogic.test.ts`) + UI interactiva de huecos flotantes (arrastrar/tocar) en `CardGallery` y `App` | M | Gemini 4 Hydrogen (Medium) | hecha | `npm test` pasa; completar hueco lee la frase en `es-CL` y da bonus | `albumLogic.test.ts`, `CardGallery`, `App`, `styles.css` |
 | F4-04 | Verificación integral Fase 4 (`npm test`, `npm run build` y prueba en navegador de álbum interactivo) | L | - | pendiente | Tests, build y consola en 0 errores | Cierre Fase 4 |
 
 ## Fase 5: Pulido, audio y accesibilidad
@@ -60,7 +60,7 @@ _(Pendiente de recibir prompt de Fase 6)_
 ---
 
 ## Siguiente paso
-Ejecutar `F4-03`: Tests unitarios (`albumLogic.test.ts`) + UI interactiva de huecos flotantes en `CardGallery` y `App`, esfuerzo MEDIO.
+Ejecutar `F4-04`: Verificación integral Fase 4 (`npm test`, `npm run build`, prueba en navegador y merge a `main`), esfuerzo LIGERO.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
