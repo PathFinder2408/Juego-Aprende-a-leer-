@@ -55,4 +55,22 @@ describe('AdaptiveEngine', () => {
     expect(engine.shouldSuggestPause(15 * 60_000, false)).toBe(true);
     expect(engine.shouldSuggestPause(16 * 60_000, true)).toBe(false);
   });
+
+  it('restaura estado acotado y permite reiniciar a nivel 1', () => {
+    const engine = new AdaptiveEngine(CONFIG, 1);
+    const restored = engine.restoreState({ level: 4, correctStreak: 2, wrongStreak: 9 });
+    expect(restored.level).toBe(4);
+    expect(restored.correctStreak).toBe(2);
+    expect(restored.wrongStreak).toBe(0);
+
+    const clamped = engine.restoreState({ level: 99, correctStreak: -3, wrongStreak: 10 });
+    expect(clamped.level).toBe(5);
+    expect(clamped.correctStreak).toBe(0);
+    expect(clamped.wrongStreak).toBe(CONFIG.streakToLevelDown);
+
+    const reset = engine.reset();
+    expect(reset.level).toBe(1);
+    expect(reset.correctStreak).toBe(0);
+    expect(reset.wrongStreak).toBe(0);
+  });
 });

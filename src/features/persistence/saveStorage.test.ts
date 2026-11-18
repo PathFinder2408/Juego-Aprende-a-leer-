@@ -1,0 +1,150 @@
+import { describe, expect, it } from 'vitest';
+import { DEFAULT_ACCESSIBILITY_SETTINGS } from '../../config/accessibility';
+import {
+  CURRENT_SAVE_VERSION,
+  SAVE_STORAGE_KEY,
+  createDefaultSaveState,
+  loadSaveState,
+  migrateSave,
+  resetProgressState,
+  runMigrations,
+  saveGameState,
+  type SaveMigration,
+  type StorageLike,
+} from './saveStorage';
+
+function createMemoryStorage(initial: Record<string, string> = {}): StorageLike {
+  const store = new Map<string, string>(Object.entries(initial));
+  return {
+    getItem: (key) => store.get(key) ?? null,
+    setItem: (key, value) => {
+      store.set(key, value);
+    },
+    removeItem: (key) => {
+      store.delete(key);
+    },
+  };
+}
+
+describe('saveStorage', () => {
+  it('devuelve estado por defecto si el storage está vacío o no existe', () => {
+    const empty = loadSaveState(createMemoryStorage());
+    expect(empty.version).toBe(CURRENT_SAVE_VERSION);
+    expect(empty.capturedWordIds).toEqual([]);
+    expect(empty.completedCardIds).toEqual([]);
+    expect(empty.progression).toEqual({ level: 1, correctStreak: 0, wrongStreak: 0 });
+    expect(empty.accessibility).toEqual(DEFAULT_ACCESSIBILITY_SETTINGS);
+
+    const noStorage = loadSaveState(null);
+    expect(noStorage.version).toBe(CURRENT_SAVE_VERSION);
+  });
+
+  it('guarda y carga progreso y accesibilidad correctamente', () => {
+    const storage = createMemoryStorage();
+    const state = {
+      ...createDefaultSaveState('2026-11-18T14:00:00.000Z'),
+      capturedWordIds: ['sol', 'luna'],
+      completedCardIds: ['card-solin'],
+      progression: { level: 3, correctStreak: 2, wrongStreak: 0 },
+      accessibility: {
+        ...DEFAULT_ACCESSIBILITY_SETTINGS,
+        slowFloating: true,
+        highContrast: true,
+      },
+    };
+
+    expect(saveGameState(state, storage)).toBe(true);
+    const loaded = loadSaveState(storage);
+
+    expect(loaded.capturedWordIds).toEqual(['sol', 'luna']);
+    expect(loaded.completedCardIds).toEqual(['card-solin']);
+    expect(loaded.progression).toEqual({ level: 3, correctStreak: 2, wrongStreak: 0 });
+    expect(loaded.accessibility.slowFloating).toBe(true);
+    expect(loaded.accessibility.highContrast).toBe(true);
+    expect(loaded.accessibility.voiceEnabled).toBe(true);
+  });
+
+  it('migra datos heredados v0 sin version y soporta cadena multi-versión', () => {
+    const legacy = {
+      capturedWords: ['sol', 'invalida', 'sol'],
+      completedCardIds: ['card-solin', 'card-falsa'],
+      level: 4,
+      correctStreak: 2,
+      settings: {
+        voiceEnabled: false,
+        reducedMotion: true,
+      },
+    };
+
+    const migrated = migrateSave(legacy);
+    expect(migrated.version).toBe(1);
+    expect(migrated.capturedWordIds).toEqual(['sol']);
+    expect(migrated.completedCardIds).toEqual(['card-solin']);
+    expect(migrated.progression).toEqual({ level: 4, correctStreak: 2, wrongStreak: 0 });
+    expect(migrated.accessibility.voiceEnabled).toBe(false);
+    expect(migrated.accessibility.reducedMotion).toBe(true);
+    expect(migrated.accessibility.sfxEnabled).toBe(true);
+
+    const customMigrations: Record<number, SaveMigration> = {
+      0: (data) => ({ ...data, version: 1, step1: true }),
+      1: (data) => ({ ...data, version: 2, step2: true }),
+    };
+    const chained = runMigrations({ legacy: true }, 2, customMigrations);
+    expect(chained).toEqual({ legacy: true, version: 2, step1: true, step2: true });
+  });
+
+  it('maneja JSON corrupto, versión futura y fallos de storage sin lanzar errores', () => {
+    const corruptStorage = createMemoryStorage({ [SAVE_STORAGE_KEY]: '{json-roto' });
+    expect(loadSaveState(corruptStorage).capturedWordIds).toEqual([]);
+
+    const futureStorage = createMemoryStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({ version: 99, capturedWordIds: ['sol'] }),
+    });
+    expect(loadSaveState(futureStorage).capturedWordIds).toEqual([]);
+
+    const throwingStorage: StorageLike = {
+      getItem: () => {
+        throw new Error('SecurityError');
+      },
+      setItem: () => {
+        throw new Error('QuotaExceededError');
+      },
+      removeItem: () => {
+        throw new Error('SecurityError');
+      },
+    };
+
+    expect(loadSaveState(throwingStorage).version).toBe(CURRENT_SAVE_VERSION);
+    expect(saveGameState(createDefaultSaveState(), throwingStorage)).toBe(false);
+  });
+
+  it('reinicia progreso conservando los ajustes de accesibilidad', () => {
+    const storage = createMemoryStorage();
+    const customAccessibility = {
+      ...DEFAULT_ACCESSIBILITY_SETTINGS,
+      sfxEnabled: false,
+      highContrast: true,
+    };
+
+    saveGameState(
+      {
+        ...createDefaultSaveState(),
+        capturedWordIds: ['sol', 'sapo'],
+        completedCardIds: ['card-solin'],
+        progression: { level: 4, correctStreak: 1, wrongStreak: 0 },
+        accessibility: customAccessibility,
+      },
+      storage
+    );
+
+    const reset = resetProgressState(customAccessibility, storage);
+    expect(reset.capturedWordIds).toEqual([]);
+    expect(reset.completedCardIds).toEqual([]);
+    expect(reset.progression).toEqual({ level: 1, correctStreak: 0, wrongStreak: 0 });
+    expect(reset.accessibility).toEqual(customAccessibility);
+
+    const reloaded = loadSaveState(storage);
+    expect(reloaded.capturedWordIds).toEqual([]);
+    expect(reloaded.accessibility).toEqual(customAccessibility);
+  });
+});
