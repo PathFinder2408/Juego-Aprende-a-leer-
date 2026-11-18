@@ -56,7 +56,7 @@
 |---|---|---|---|---|---|---|
 | F5-01 | Configuración y tipos de accesibilidad (`accessibility.ts`: movimiento reducido, flotación lenta, alto contraste, voz/SFX) | L | Gemini 4 Hydrogen (Medium) | hecha | Tipos estrictos y evento `accessibility:update` en `gameBus` | `accessibility.ts`, `types/game.ts` |
 | F5-02 | Conectar ajustes de audio y accesibilidad en `sfx.ts`, `speech.ts`, `AntigravityScene` y `WorldScene` | M | Gemini 4 Hydrogen (Medium) | hecha | Respeta silencio, flotación lenta (0.55x) y reduce tweens | `speech.ts`, `sfx.ts`, `AntigravityScene` |
-| F5-03 | Modal de Ajustes accesible en React (`SettingsModal.tsx` + estilos alto contraste y `reduced-motion` en `App`/`styles.css`) | M | - | pendiente | Toggles grandes y táctiles aplican cambios en vivo en UI y Phaser | Tactil + teclado |
+| F5-03 | Modal de Ajustes accesible en React (`SettingsModal.tsx` + estilos alto contraste y `reduced-motion` en `App`/`styles.css`) | M | Gemini 4 Hydrogen (Medium) | hecha | Toggles grandes y táctiles aplican cambios en vivo en UI y Phaser | `SettingsModal`, `App`, `styles.css` |
 | F5-04 | Verificación integral Fase 5 (`npm test`, `npm run build`, navegador y merge a `main` + push) | L | - | pendiente | Tests, build y consola en 0 errores | Cierre Fase 5 |
 
 ## Fase 6: Persistencia y backend opcional
@@ -65,7 +65,7 @@ _(Pendiente de recibir prompt de Fase 6)_
 ---
 
 ## Siguiente paso
-Ejecutar `F5-03`: Modal de Ajustes accesible en React (`SettingsModal.tsx` + alto contraste y `reduced-motion`), esfuerzo MEDIO.
+Ejecutar `F5-04`: Verificación integral Fase 5 (`npm test`, `npm run build`, prueba en navegador y merge a `main` + `push`), esfuerzo LIGERO.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
