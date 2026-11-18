@@ -92,6 +92,23 @@ export interface AccessibilitySettings {
   highContrast: boolean;
 }
 
+export interface PersistedProgressionState {
+  level: number;
+  correctStreak: number;
+  wrongStreak: number;
+}
+
+export interface SaveStateV1 {
+  version: 1;
+  capturedWordIds: string[];
+  completedCardIds: string[];
+  progression: PersistedProgressionState;
+  accessibility: AccessibilitySettings;
+  updatedAt: string;
+}
+
+export type SaveState = SaveStateV1;
+
 export interface PuzzleStatePayload {
   word: string;
   tokens: string[];

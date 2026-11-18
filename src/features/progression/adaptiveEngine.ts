@@ -2,6 +2,7 @@ import difficultyData from '../../data/difficulty.json';
 import type {
   DifficultyConfig,
   DifficultyLevelConfig,
+  PersistedProgressionState,
   ProgressionSnapshot,
 } from '../../types/game';
 
@@ -25,9 +26,42 @@ export class AdaptiveEngine {
     }
     this.config = config;
     this.levels = [...config.levels].sort((a, b) => a.level - b.level);
+    this.levelIndex = this.resolveLevelIndex(initialLevel);
+  }
 
-    const foundIdx = this.levels.findIndex((item) => item.level >= initialLevel);
-    this.levelIndex = foundIdx === -1 ? this.levels.length - 1 : foundIdx;
+  private resolveLevelIndex(level: number): number {
+    if (!Number.isFinite(level)) return 0;
+    const foundIdx = this.levels.findIndex((item) => item.level >= level);
+    return foundIdx === -1 ? this.levels.length - 1 : foundIdx;
+  }
+
+  restoreState(state: Partial<PersistedProgressionState>): ProgressionSnapshot {
+    this.levelIndex =
+      typeof state.level === 'number' ? this.resolveLevelIndex(state.level) : 0;
+
+    const rawCorrect =
+      typeof state.correctStreak === 'number' && Number.isFinite(state.correctStreak)
+        ? Math.floor(state.correctStreak)
+        : 0;
+    const rawWrong =
+      typeof state.wrongStreak === 'number' && Number.isFinite(state.wrongStreak)
+        ? Math.floor(state.wrongStreak)
+        : 0;
+
+    const clampedCorrect = Math.max(0, Math.min(rawCorrect, this.config.streakToLevelUp));
+    const clampedWrong = Math.max(0, Math.min(rawWrong, this.config.streakToLevelDown));
+
+    this.correctStreak = clampedCorrect;
+    this.wrongStreak = clampedCorrect > 0 ? 0 : clampedWrong;
+
+    return this.getSnapshot();
+  }
+
+  reset(): ProgressionSnapshot {
+    this.levelIndex = 0;
+    this.correctStreak = 0;
+    this.wrongStreak = 0;
+    return this.getSnapshot();
   }
 
   getCurrentConfig(): DifficultyLevelConfig {
