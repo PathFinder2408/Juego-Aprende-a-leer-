@@ -55,6 +55,7 @@ export interface CardEntry {
   movePower: number;
   descriptionTemplate: string;
   missingWord: string;
+  wordChoices: string[];
 }
 
 export type ActiveScreen = 'home' | 'world' | 'antigravity' | 'cards';

@@ -7,6 +7,7 @@ import { PhysicsDebugPanel } from './components/PhysicsDebugPanel';
 import { DEFAULT_PHYSICS_PARAMS } from './config/physics';
 import cardsData from './data/cards.json';
 import { gameBus } from './events/bus';
+import { ALBUM_COMPLETION_BONUS_STARS } from './features/album/albumLogic';
 import { adaptiveEngine } from './features/progression/adaptiveEngine';
 import type {
   ActiveScreen,
@@ -25,6 +26,7 @@ export function App() {
   const [puzzleState, setPuzzleState] = useState<PuzzleStatePayload | null>(null);
   const [captured, setCaptured] = useState<CapturePayload | null>(null);
   const [capturedWordIds, setCapturedWordIds] = useState<string[]>([]);
+  const [completedCardIds, setCompletedCardIds] = useState<string[]>([]);
   const [progression, setProgression] = useState<ProgressionSnapshot>(() => adaptiveEngine.getSnapshot());
   const [pauseReminder, setPauseReminder] = useState(false);
 
@@ -106,7 +108,9 @@ export function App() {
         </div>
 
         <div className="currency-bar">
-          <span className="currency-pill">★ {capturedWordIds.length * 10}</span>
+          <span className="currency-pill">
+            ★ {capturedWordIds.length * 10 + completedCardIds.length * ALBUM_COMPLETION_BONUS_STARS}
+          </span>
           {screen === 'antigravity' && (
             <>
               <button type="button" className="btn btn-secondary" onClick={handleRestartPuzzle}>
@@ -181,6 +185,10 @@ export function App() {
         {screen === 'cards' && (
           <CardGallery
             capturedWordIds={capturedWordIds}
+            completedCardIds={completedCardIds}
+            onCompleteBlank={(cardId) =>
+              setCompletedCardIds((prev) => (prev.includes(cardId) ? prev : [...prev, cardId]))
+            }
             onPracticeCard={(wordId) => openAntigravity(wordId)}
           />
         )}

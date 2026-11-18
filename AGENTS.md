@@ -23,7 +23,7 @@ Clasifica cada tarea antes de ejecutar y recomienda nivel (el usuario cambia man
 1. Anuncia en 1 línea: ID de tarea, esfuerzo y modelo recomendado. Si el modelo actual no coincide, pregunta antes de continuar.
 2. Implementa lo mínimo para cumplir el criterio de aceptación (sin extras).
 3. Verifica el criterio de aceptación y reporta resultado real (pasó / falló / no verificado).
-4. Actualiza `PROGRESS.md` (estado, fecha, notas) y haz commit convencional (`feat:`, `fix:`, `chore:`, `docs:`).
+4. Actualiza `PROGRESS.md` (estado, fecha, notas) y haz commit convencional (`feat:`, `fix:`, `chore:`, `docs:`) en la rama de la fase; sube a GitHub (`push`) en hitos clave y fusiona a `main` al cerrar fase.
 5. Detente y espera confirmación antes de pasar a la siguiente tarea.
 
 ## D. Calidad

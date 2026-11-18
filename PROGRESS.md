@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 4 planificada (pendiente de confirmación)
+- **Fase actual:** Fase 4 completada (fusionada a `main`, esperando confirmación para Fase 5: Pulido, audio y accesibilidad)
 - **Última actualización:** 2026-11-18
 
 ---
@@ -46,10 +46,10 @@
 ## Fase 4: Álbum y meta-juego
 | ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
 |---|---|---|---|---|---|---|
-| F4-01 | Opciones de palabras flotantes para huecos en `cards.json` y tipos en `types/game.ts` | L | - | pendiente | Cada carta define `wordChoices` en JSON sin hardcode en lógica | Extiende `cards.json` |
-| F4-02 | Lógica pura del álbum (`albumLogic.ts`: validar palabra al hueco, cartas completadas y bonus) | M | - | pendiente | Lógica pura desacoplada de React | Módulo `album` |
-| F4-03 | Tests unitarios (`albumLogic.test.ts`) + UI interactiva de huecos flotantes (arrastrar/tocar) en `CardGallery` y `App` | M | - | pendiente | `npm test` pasa; completar hueco lee la frase en `es-CL` y da bonus | Tactil + mouse |
-| F4-04 | Verificación integral Fase 4 (`npm test`, `npm run build` y prueba en navegador de álbum interactivo) | L | - | pendiente | Tests, build y consola en 0 errores | Cierre Fase 4 |
+| F4-01 | Opciones de palabras flotantes para huecos en `cards.json` y tipos en `types/game.ts` | L | Gemini 4 Hydrogen (Medium) | hecha | Cada carta define `wordChoices` en JSON sin hardcode en lógica | `cards.json`, `types/game.ts`, regla GitHub en `AGENTS.md` |
+| F4-02 | Lógica pura del álbum (`albumLogic.ts`: validar palabra al hueco, cartas completadas y bonus) | M | Gemini 4 Hydrogen (Medium) | hecha | Lógica pura desacoplada de React | `src/features/album/albumLogic.ts` |
+| F4-03 | Tests unitarios (`albumLogic.test.ts`) + UI interactiva de huecos flotantes (arrastrar/tocar) en `CardGallery` y `App` | M | Gemini 4 Hydrogen (Medium) | hecha | `npm test` pasa; completar hueco lee la frase en `es-CL` y da bonus | `albumLogic.test.ts`, `CardGallery`, `App`, `styles.css` |
+| F4-04 | Verificación integral Fase 4 (`npm test`, `npm run build` y prueba en navegador de álbum interactivo) | L | Gemini 4 Hydrogen (Medium) | hecha | Tests, build y consola en 0 errores | 9/9 tests, build OK, 0 errores en navegador |
 
 ## Fase 5: Pulido, audio y accesibilidad
 _(Pendiente de recibir prompt de Fase 5)_
@@ -60,11 +60,11 @@ _(Pendiente de recibir prompt de Fase 6)_
 ---
 
 ## Siguiente paso
-Confirmar el desglose de **Fase 4** para iniciar **`F4-01`** (extensión de `cards.json` y tipos, esfuerzo LIGERO).
+Confirmar para planificar e iniciar **Fase 5: Pulido, audio y accesibilidad** en rama `feat/fase-5-accesibilidad` (se recomienda abrir sesión nueva para mantener el contexto liviano).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
 - Riesgos de Fase 1 documentados en `docs/GDD.md`.
 
 ## Registro de sesiones
-- **2026-11-18:** Fase 2 y Fase 3 completas (`F2-01` a `F3-05` cerradas; progresión adaptativa ±3, señuelos, `BootScene`, 7/7 tests y 0 errores en navegador).
+- **2026-11-18:** Fase 2, 3 y 4 completas (`F2-01` a `F4-04` cerradas; álbum interactivo con huecos flotantes verificado con 9/9 tests y 0 errores).
