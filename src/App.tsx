@@ -12,6 +12,12 @@ import { DEFAULT_PHYSICS_PARAMS } from './config/physics';
 import cardsData from './data/cards.json';
 import { gameBus } from './events/bus';
 import { ALBUM_COMPLETION_BONUS_STARS } from './features/album/albumLogic';
+import {
+  CURRENT_SAVE_VERSION,
+  loadSaveState,
+  resetProgressState,
+  saveGameState,
+} from './features/persistence/saveStorage';
 import { adaptiveEngine } from './features/progression/adaptiveEngine';
 import type {
   AccessibilitySettings,
@@ -24,19 +30,26 @@ import type {
 } from './types/game';
 
 export function App() {
+  const [initialSave] = useState(() => {
+    const loaded = loadSaveState();
+    adaptiveEngine.restoreState(loaded.progression);
+    return loaded;
+  });
+
   const [screen, setScreen] = useState<ActiveScreen>('home');
   const [activeWordId, setActiveWordId] = useState<string>('sol');
   const [params, setParams] = useState<PhysicsParams>(() => ({ ...DEFAULT_PHYSICS_PARAMS }));
   const [showDebug, setShowDebug] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleStatePayload | null>(null);
   const [captured, setCaptured] = useState<CapturePayload | null>(null);
-  const [capturedWordIds, setCapturedWordIds] = useState<string[]>([]);
-  const [completedCardIds, setCompletedCardIds] = useState<string[]>([]);
+  const [capturedWordIds, setCapturedWordIds] = useState<string[]>(() => initialSave.capturedWordIds);
+  const [completedCardIds, setCompletedCardIds] = useState<string[]>(() => initialSave.completedCardIds);
   const [progression, setProgression] = useState<ProgressionSnapshot>(() => adaptiveEngine.getSnapshot());
   const [pauseReminder, setPauseReminder] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [accessibility, setAccessibility] = useState<AccessibilitySettings>(() => ({
     ...DEFAULT_ACCESSIBILITY_SETTINGS,
+    ...initialSave.accessibility,
   }));
 
   const totalCards = (cardsData as CardEntry[]).length;
@@ -107,6 +120,36 @@ export function App() {
     setAccessibility((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  useEffect(() => {
+    saveGameState({
+      version: CURRENT_SAVE_VERSION,
+      capturedWordIds,
+      completedCardIds,
+      progression: {
+        level: progression.level,
+        correctStreak: progression.correctStreak,
+        wrongStreak: progression.wrongStreak,
+      },
+      accessibility,
+      updatedAt: new Date().toISOString(),
+    });
+  }, [capturedWordIds, completedCardIds, progression, accessibility]);
+
+  const handleResetProgress = () => {
+    const nextSave = resetProgressState(accessibility);
+    const nextProgression = adaptiveEngine.reset();
+    setCapturedWordIds(nextSave.capturedWordIds);
+    setCompletedCardIds(nextSave.completedCardIds);
+    setProgression(nextProgression);
+    setCaptured(null);
+    setPuzzleState(null);
+    setPauseReminder(false);
+    gameBus.emit('progression:update', nextProgression);
+    if (screen === 'antigravity') {
+      gameBus.emit('puzzle:reset');
+    }
+  };
+
   const progressTokens = puzzleState
     ? puzzleState.tokens.map((token, idx) => (idx < puzzleState.collectedIndex ? token : '_')).join(' ')
     : '...';
@@ -173,6 +216,7 @@ export function App() {
         <SettingsModal
           settings={accessibility}
           onToggle={handleToggleAccessibility}
+          onResetProgress={handleResetProgress}
           onClose={() => setShowSettings(false)}
         />
       )}

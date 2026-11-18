@@ -66,13 +66,13 @@
 |---|---|---|---|---|---|---|
 | F6-01 | Esquema versionado (`SaveStateV1`), motor de migraciones (`v0 -> v1`), adaptador `localStorage` seguro y `restoreState`/`reset` en `AdaptiveEngine` | P | Gemini 4 Hydrogen (XHigh) | hecha | Tipos estrictos en `types/game.ts`, migración pura secuencial, saneamiento ante JSON corrupto/IDs inválidos/cuota y restauración/reinicio en `AdaptiveEngine` | `types/game.ts`, `saveStorage.ts`, `adaptiveEngine.ts`, `DECISIONS.md`; `typecheck` y 9/9 tests OK |
 | F6-02 | Tests unitarios de persistencia, migraciones (`v0 -> v1` y multi-versión) y restauración/reinicio de `AdaptiveEngine` | M | Gemini 4 Hydrogen (Medium) | hecha | `npm test` valida carga por defecto, migraciones, saneamiento de IDs y manejo seguro de storage bloqueado/corrupto | `saveStorage.test.ts`, `adaptiveEngine.test.ts`; 15/15 tests OK |
-| F6-03 | Integración en `App.tsx`, sincronización inicial a escenas y "Reiniciar progreso" con confirmación en 2 pasos en `SettingsModal.tsx` | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Al recargar se restauran capturas, álbum, nivel/rachas y accesibilidad; reinicio táctil borra progreso (conserva accesibilidad) y reinicia cúpula | Sin `window.confirm` bloqueante |
+| F6-03 | Integración en `App.tsx`, sincronización inicial a escenas y "Reiniciar progreso" con confirmación en 2 pasos en `SettingsModal.tsx` | M | Gemini 4 Hydrogen (Medium) | hecha | Al recargar se restauran capturas, álbum, nivel/rachas y accesibilidad; reinicio táctil borra progreso (conserva accesibilidad) y reinicia cúpula | `App.tsx`, `SettingsModal.tsx`, `styles.css`, `AntigravityScene.ts`; `typecheck`, 15/15 tests y `build` OK |
 | F6-04 | Verificación integral Fase 6 (`npm test`, `npm run build`, prueba de recarga y reinicio en navegador) + merge a `main` y `push` | L | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Tests, build y consola en 0 errores; persistencia y reinicio validados en navegador; cierre en `main` | Actualiza `PROGRESS.md` |
 
 ---
 
 ## Siguiente paso
-Confirmar ejecución de **F6-03** (esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**) en rama `feat/fase-6-persistencia`.
+Confirmar ejecución de **F6-04** (esfuerzo **L**, modelo recomendado **Gemini 4 Hydrogen (Medium)**) en rama `feat/fase-6-persistencia` para verificación integral en navegador y cierre en `main`.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).

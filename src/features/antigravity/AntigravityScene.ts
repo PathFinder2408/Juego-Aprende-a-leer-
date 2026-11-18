@@ -6,6 +6,7 @@ import { DEFAULT_PHYSICS_PARAMS } from '../../config/physics';
 import wordsData from '../../data/words.json';
 import { gameBus } from '../../events/bus';
 import type { AccessibilitySettings, PhysicsParams, WordEntry } from '../../types/game';
+import { loadSaveState } from '../persistence/saveStorage';
 import { adaptiveEngine } from '../progression/adaptiveEngine';
 import { LetterBody } from './LetterBody';
 import { PlayerBumper } from './PlayerBumper';
@@ -51,6 +52,7 @@ export class AntigravityScene extends Phaser.Scene {
       throw new Error('No hay palabras configuradas en src/data/words.json');
     }
     this.cleanupBusEvents();
+    this.accessibility = loadSaveState().accessibility;
     this.activeEntry = selectedEntry;
     this.tracker = new PuzzleTracker(this.activeEntry);
     this.letters = [];
