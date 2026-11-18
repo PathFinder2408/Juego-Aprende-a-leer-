@@ -1,4 +1,9 @@
 let audioCtx: AudioContext | null = null;
+let sfxEnabled = true;
+
+export function setSfxEnabled(enabled: boolean): void {
+  sfxEnabled = enabled;
+}
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;
@@ -14,6 +19,7 @@ function getAudioContext(): AudioContext | null {
 }
 
 function playTone(freqStart: number, freqEnd: number, durationSec: number, type: OscillatorType, gainPeak: number): void {
+  if (!sfxEnabled) return;
   try {
     const ctx = getAudioContext();
     if (!ctx) return;

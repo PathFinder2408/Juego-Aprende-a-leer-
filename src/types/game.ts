@@ -84,6 +84,14 @@ export interface ProgressionSnapshot {
   wrongStreak: number;
 }
 
+export interface AccessibilitySettings {
+  voiceEnabled: boolean;
+  sfxEnabled: boolean;
+  slowFloating: boolean;
+  reducedMotion: boolean;
+  highContrast: boolean;
+}
+
 export interface PuzzleStatePayload {
   word: string;
   tokens: string[];
@@ -113,5 +121,6 @@ export interface GameEventMap {
   'encounter:start': { wordId: string };
   'screen:change': ActiveScreen;
   'progression:update': ProgressionSnapshot;
+  'accessibility:update': AccessibilitySettings;
   capture: CapturePayload;
 }

@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 import { playCaptureFanfare, playCorrectChime, playSoftBounce } from '../../audio/sfx';
 import { speakText } from '../../audio/speech';
+import { DEFAULT_ACCESSIBILITY_SETTINGS, SLOW_FLOATING_MULTIPLIER } from '../../config/accessibility';
 import { DEFAULT_PHYSICS_PARAMS } from '../../config/physics';
 import wordsData from '../../data/words.json';
 import { gameBus } from '../../events/bus';
-import type { PhysicsParams, WordEntry } from '../../types/game';
+import type { AccessibilitySettings, PhysicsParams, WordEntry } from '../../types/game';
 import { adaptiveEngine } from '../progression/adaptiveEngine';
 import { LetterBody } from './LetterBody';
 import { PlayerBumper } from './PlayerBumper';
@@ -20,6 +21,7 @@ const SLOT_Y = 58;
 
 export class AntigravityScene extends Phaser.Scene {
   private physicsParams: PhysicsParams = { ...DEFAULT_PHYSICS_PARAMS };
+  private accessibility: AccessibilitySettings = { ...DEFAULT_ACCESSIBILITY_SETTINGS };
   private letters: LetterBody[] = [];
   private player: PlayerBumper | null = null;
   private tracker!: PuzzleTracker;
@@ -79,10 +81,14 @@ export class AntigravityScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number): void {
-    const speedMult = adaptiveEngine.getCurrentConfig().speedMultiplier;
+    const slowMult = this.accessibility.slowFloating ? SLOW_FLOATING_MULTIPLIER : 1;
+    const speedMult = adaptiveEngine.getCurrentConfig().speedMultiplier * slowMult;
     const effectiveParams: PhysicsParams = {
       ...this.physicsParams,
       maxSpeed: this.physicsParams.maxSpeed * speedMult,
+      uprightStiffness: this.accessibility.reducedMotion
+        ? Math.max(this.physicsParams.uprightStiffness, 0.12)
+        : this.physicsParams.uprightStiffness,
     };
     for (const letter of this.letters) {
       letter.update(effectiveParams);
@@ -316,6 +322,10 @@ export class AntigravityScene extends Phaser.Scene {
         }
         this.player?.applyPhysicsParams(this.physicsParams);
       }),
+      gameBus.on('accessibility:update', (settings) => {
+        if (!this.sys || !this.sys.isActive()) return;
+        this.accessibility = { ...settings };
+      }),
       gameBus.on('puzzle:reset', () => {
         if (!this.sys || !this.sys.isActive()) return;
         this.scene.restart({ wordId: this.activeEntry.id });
@@ -408,7 +418,8 @@ export class AntigravityScene extends Phaser.Scene {
       speakText(this.activeEntry.word, { rate: 0.85 });
     });
 
-    // Destellos de celebración simples
+    // Destellos de celebración simples (respetando movimiento reducido)
+    if (this.accessibility.reducedMotion) return;
     for (let i = 0; i < 14; i += 1) {
       const angle = (i / 14) * Math.PI * 2;
       const spark = this.add.circle(this.creatureBubble.x, this.creatureBubble.y, 6, 0xfacc15).setDepth(15);
