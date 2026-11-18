@@ -351,6 +351,82 @@ body,
   text-align: left;
 }
 
+.settings-modal {
+  max-width: 420px;
+}
+
+.settings-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toggle-row {
+  width: 100%;
+  border: 2px solid #334155;
+  background: #1e293b;
+  color: #f8fafc;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+  min-height: 54px;
+}
+
+.toggle-row--on {
+  border-color: #38bdf8;
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-text small {
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.toggle-pill {
+  background: #334155;
+  color: #e2e8f0;
+  font-weight: 800;
+  font-size: 0.82rem;
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.toggle-row--on .toggle-pill {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.hud-shell--high-contrast {
+  background: #000000;
+}
+
+.hud-shell--high-contrast .top-hud,
+.hud-shell--high-contrast .bottom-dock,
+.hud-shell--high-contrast .tcg-card,
+.hud-shell--high-contrast .stat-pill,
+.hud-shell--high-contrast .btn-secondary {
+  border-color: #ffffff;
+  background: #000000;
+}
+
+.hud-shell--reduced-motion *,
+.hud-shell--reduced-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
 /* Cartas coleccionables */
 .cards-grid {
   display: grid;
