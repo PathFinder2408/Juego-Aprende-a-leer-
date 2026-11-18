@@ -11,7 +11,8 @@
     "moveName": "Rayo Tibio",
     "movePower": 30,
     "descriptionTemplate": "Brilla como el ___ en la mañana.",
-    "missingWord": "SOL"
+    "missingWord": "SOL",
+    "wordChoices": ["SOL", "PAN", "MAR"]
   },
   {
     "id": "card-mumu",
@@ -25,7 +26,8 @@
     "moveName": "Siesta Suave",
     "movePower": 45,
     "descriptionTemplate": "Flota feliz mirando la ___.",
-    "missingWord": "LUNA"
+    "missingWord": "LUNA",
+    "wordChoices": ["MESA", "LUNA", "CASA"]
   },
   {
     "id": "card-sapin",
@@ -39,6 +41,7 @@
     "moveName": "Salto Chapoteo",
     "movePower": 55,
     "descriptionTemplate": "Este ___ salta con botas amarillas.",
-    "missingWord": "SAPO"
+    "missingWord": "SAPO",
+    "wordChoices": ["PATO", "SAPO", "GATO"]
   }
 ]
