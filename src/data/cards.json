@@ -1,0 +1,44 @@
+[
+  {
+    "id": "card-solin",
+    "wordId": "sol",
+    "creatureName": "Solín",
+    "element": "Sol",
+    "rarity": "Común",
+    "stars": 1,
+    "art": "/assets/creature-solin.png",
+    "accentColor": "#facc15",
+    "moveName": "Rayo Tibio",
+    "movePower": 30,
+    "descriptionTemplate": "Brilla como el ___ en la mañana.",
+    "missingWord": "SOL"
+  },
+  {
+    "id": "card-mumu",
+    "wordId": "luna",
+    "creatureName": "Mumu",
+    "element": "Nube",
+    "rarity": "Rara",
+    "stars": 2,
+    "art": "/assets/creature-mumu.png",
+    "accentColor": "#a5b4fc",
+    "moveName": "Siesta Suave",
+    "movePower": 45,
+    "descriptionTemplate": "Flota feliz mirando la ___.",
+    "missingWord": "LUNA"
+  },
+  {
+    "id": "card-sapin",
+    "wordId": "sapo",
+    "creatureName": "Sapín",
+    "element": "Agua",
+    "rarity": "Brillante",
+    "stars": 3,
+    "art": "/assets/creature-sapin.png",
+    "accentColor": "#4ade80",
+    "moveName": "Salto Chapoteo",
+    "movePower": 55,
+    "descriptionTemplate": "Este ___ salta con botas amarillas.",
+    "missingWord": "SAPO"
+  }
+]

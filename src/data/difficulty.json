@@ -1,0 +1,42 @@
+{
+  "streakToLevelUp": 3,
+  "streakToLevelDown": 3,
+  "pauseReminderMinutes": 15,
+  "levels": [
+    {
+      "level": 1,
+      "label": "Vocales y palabras cortas",
+      "decoyCount": 0,
+      "speedMultiplier": 0.75,
+      "decoyPool": ["A", "E", "I", "U", "M", "P"]
+    },
+    {
+      "level": 2,
+      "label": "Sílabas directas C+V",
+      "decoyCount": 1,
+      "speedMultiplier": 0.9,
+      "decoyPool": ["MA", "PE", "TI", "SO", "LA", "NU", "PA"]
+    },
+    {
+      "level": 3,
+      "label": "Bisílabas y trisílabas",
+      "decoyCount": 2,
+      "speedMultiplier": 1.0,
+      "decoyPool": ["MO", "LA", "PU", "SI", "TE", "CA", "RO"]
+    },
+    {
+      "level": 4,
+      "label": "Dígrafos y mixtas",
+      "decoyCount": 3,
+      "speedMultiplier": 1.15,
+      "decoyPool": ["CHA", "LLU", "RRO", "QUE", "GUI", "PAS", "SOL"]
+    },
+    {
+      "level": 5,
+      "label": "Sílabas trabadas",
+      "decoyCount": 3,
+      "speedMultiplier": 1.3,
+      "decoyPool": ["B", "P", "L", "F", "M", "A", "I"]
+    }
+  ]
+}

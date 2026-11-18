@@ -1,0 +1,27 @@
+{
+  "id": "isla-sol",
+  "name": "Isla Sol",
+  "subtitle": "Misión 1-1: Explora la playa y atrapa criaturas",
+  "width": 1400,
+  "height": 960,
+  "spawn": { "x": 360, "y": 540 },
+  "wildSpawns": [
+    { "id": "wild-sol", "wordId": "sol", "x": 680, "y": 420 },
+    { "id": "wild-luna", "wordId": "luna", "x": 1030, "y": 320 },
+    { "id": "wild-sapo", "wordId": "sapo", "x": 980, "y": 670 }
+  ],
+  "props": [
+    { "id": "palm-1", "kind": "palm", "x": 210, "y": 280 },
+    { "id": "palm-2", "kind": "palm", "x": 540, "y": 230 },
+    { "id": "palm-3", "kind": "palm", "x": 1160, "y": 240 },
+    { "id": "palm-4", "kind": "palm", "x": 1190, "y": 650 },
+    { "id": "palm-5", "kind": "palm", "x": 270, "y": 720 },
+    { "id": "grass-1", "kind": "grass", "x": 680, "y": 430 },
+    { "id": "grass-2", "kind": "grass", "x": 1030, "y": 330 },
+    { "id": "grass-3", "kind": "grass", "x": 980, "y": 680 },
+    { "id": "ball-1", "kind": "ball", "x": 490, "y": 560 },
+    { "id": "ball-2", "kind": "ball", "x": 790, "y": 600 },
+    { "id": "coco-1", "kind": "coconut", "x": 570, "y": 310 },
+    { "id": "coco-2", "kind": "coconut", "x": 850, "y": 380 }
+  ]
+}

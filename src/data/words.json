@@ -1,0 +1,53 @@
+[
+  {
+    "id": "sol",
+    "word": "SOL",
+    "tokens": ["S", "O", "L"],
+    "level": 1,
+    "creatureName": "Solín",
+    "creatureColor": "#facc15",
+    "sprite": "/assets/creature-solin.png"
+  },
+  {
+    "id": "luna",
+    "word": "LUNA",
+    "tokens": ["LU", "NA"],
+    "level": 2,
+    "creatureName": "Mumu",
+    "creatureColor": "#a5b4fc",
+    "sprite": "/assets/creature-mumu.png"
+  },
+  {
+    "id": "sapo",
+    "word": "SAPO",
+    "tokens": ["SA", "PO"],
+    "level": 2,
+    "creatureName": "Sapín",
+    "creatureColor": "#4ade80",
+    "sprite": "/assets/creature-sapin.png"
+  },
+  {
+    "id": "pelo",
+    "word": "PELO",
+    "tokens": ["PE", "LO"],
+    "level": 3,
+    "creatureName": "Pelufo",
+    "creatureColor": "#f472b6"
+  },
+  {
+    "id": "chispa",
+    "word": "CHISPA",
+    "tokens": ["CHIS", "PA"],
+    "level": 4,
+    "creatureName": "Chispón",
+    "creatureColor": "#fb923c"
+  },
+  {
+    "id": "tren",
+    "word": "TREN",
+    "tokens": ["T", "R", "E", "N"],
+    "level": 5,
+    "creatureName": "Brumín",
+    "creatureColor": "#38bdf8"
+  }
+]
