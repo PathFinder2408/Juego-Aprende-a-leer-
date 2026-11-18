@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 6 en planificación (`feat/fase-6-persistencia` — persistencia `localStorage` versionada con migraciones + reinicio)
+- **Fase actual:** Fase 6 completada (fusionada a `main` — MVP Fases 1 a 6 completo)
 - **Última actualización:** 2026-11-18
 
 ---
@@ -67,12 +67,12 @@
 | F6-01 | Esquema versionado (`SaveStateV1`), motor de migraciones (`v0 -> v1`), adaptador `localStorage` seguro y `restoreState`/`reset` en `AdaptiveEngine` | P | Gemini 4 Hydrogen (XHigh) | hecha | Tipos estrictos en `types/game.ts`, migración pura secuencial, saneamiento ante JSON corrupto/IDs inválidos/cuota y restauración/reinicio en `AdaptiveEngine` | `types/game.ts`, `saveStorage.ts`, `adaptiveEngine.ts`, `DECISIONS.md`; `typecheck` y 9/9 tests OK |
 | F6-02 | Tests unitarios de persistencia, migraciones (`v0 -> v1` y multi-versión) y restauración/reinicio de `AdaptiveEngine` | M | Gemini 4 Hydrogen (Medium) | hecha | `npm test` valida carga por defecto, migraciones, saneamiento de IDs y manejo seguro de storage bloqueado/corrupto | `saveStorage.test.ts`, `adaptiveEngine.test.ts`; 15/15 tests OK |
 | F6-03 | Integración en `App.tsx`, sincronización inicial a escenas y "Reiniciar progreso" con confirmación en 2 pasos en `SettingsModal.tsx` | M | Gemini 4 Hydrogen (Medium) | hecha | Al recargar se restauran capturas, álbum, nivel/rachas y accesibilidad; reinicio táctil borra progreso (conserva accesibilidad) y reinicia cúpula | `App.tsx`, `SettingsModal.tsx`, `styles.css`, `AntigravityScene.ts`; `typecheck`, 15/15 tests y `build` OK |
-| F6-04 | Verificación integral Fase 6 (`npm test`, `npm run build`, prueba de recarga y reinicio en navegador) + merge a `main` y `push` | L | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Tests, build y consola en 0 errores; persistencia y reinicio validados en navegador; cierre en `main` | Actualiza `PROGRESS.md` |
+| F6-04 | Verificación integral Fase 6 (`npm test`, `npm run build`, prueba de recarga y reinicio en navegador) + merge a `main` y `push` | L | Gemini 4 Hydrogen (Medium) | hecha | Tests, build y consola en 0 errores; persistencia y reinicio validados en navegador; cierre en `main` | 15/15 tests, `build` OK, recarga/reinicio/Cúpula con 0 errores en navegador |
 
 ---
 
 ## Siguiente paso
-Confirmar ejecución de **F6-04** (esfuerzo **L**, modelo recomendado **Gemini 4 Hydrogen (Medium)**) en rama `feat/fase-6-persistencia` para verificación integral en navegador y cierre en `main`.
+Fase 6 cerrada en `main`. El MVP completo (Fases 1 a 6) está listo y verificado; puedes definir nuevas mejoras o contenido en JSON si deseas continuar.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -80,4 +80,4 @@ Confirmar ejecución de **F6-04** (esfuerzo **L**, modelo recomendado **Gemini 4
 
 ## Registro de sesiones
 - **2026-11-18:** Fases 2, 3, 4 y 5 completas (`F2-01` a `F5-04` cerradas; accesibilidad, audio, alto contraste y `reduced-motion` verificados con 9/9 tests y 0 errores).
-- **2026-11-18:** Rama `feat/fase-6-persistencia` creada y Fase 6 planificada (`F6-01` a `F6-04`).
+- **2026-11-18:** Rama `feat/fase-6-persistencia` creada y Fase 6 completa (`F6-01` a `F6-04` cerradas; `localStorage` versionado con migraciones, reinicio en 2 pasos, 15/15 tests, build y navegador con 0 errores).
