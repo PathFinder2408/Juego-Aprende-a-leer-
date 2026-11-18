@@ -1,4 +1,12 @@
 const PREFERRED_LANG = 'es-CL';
+let voiceEnabled = true;
+
+export function setVoiceEnabled(enabled: boolean): void {
+  voiceEnabled = enabled;
+  if (!enabled) {
+    stopSpeech();
+  }
+}
 
 function pickSpanishVoice(synth: SpeechSynthesis): SpeechSynthesisVoice | null {
   const voices = synth.getVoices();
@@ -14,6 +22,7 @@ function pickSpanishVoice(synth: SpeechSynthesis): SpeechSynthesisVoice | null {
  * Falla en silencio si el navegador no soporta Web Speech API.
  */
 export function speakText(rawText: string, options?: { rate?: number; pitch?: number }): void {
+  if (!voiceEnabled) return;
   const text = rawText.trim().toLowerCase();
   if (!text) return;
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
