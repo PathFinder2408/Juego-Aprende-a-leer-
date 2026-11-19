@@ -12,6 +12,8 @@ const PORTRAIT_IMAGES: Record<string, string> = {
   solin: '/assets/creature-solin.png',
   sapin: '/assets/creature-sapin.png',
   mumu: '/assets/creature-mumu.png',
+  cangrejo: '/assets/boss-cangrejo.png',
+  don_silencio: '/assets/boss-silencio.png',
 };
 
 const PORTRAIT_BADGES: Record<string, { emoji: string; accent: string }> = {
