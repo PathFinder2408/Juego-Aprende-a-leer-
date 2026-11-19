@@ -37,6 +37,12 @@ class BootScene extends Phaser.Scene {
     if (!this.textures.exists('palm-tree')) {
       this.load.image('palm-tree', '/assets/palm-tree.png');
     }
+    if (!this.textures.exists('boss-cangrejo')) {
+      this.load.image('boss-cangrejo', '/assets/boss-cangrejo.png');
+    }
+    if (!this.textures.exists('boss-silencio')) {
+      this.load.image('boss-silencio', '/assets/boss-silencio.png');
+    }
     for (const entry of wordsData as WordEntry[]) {
       if (entry.sprite) {
         const key = `creature-${entry.id}`;

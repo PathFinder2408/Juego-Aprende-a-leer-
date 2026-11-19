@@ -9,7 +9,7 @@ import { PhysicsDebugPanel } from './components/PhysicsDebugPanel';
 import { SettingsModal } from './components/SettingsModal';
 import { StoryModal } from './components/StoryModal';
 import { TouchControls } from './components/TouchControls';
-import { setSfxEnabled } from './audio/sfx';
+import { setMusicEnabled, setSfxEnabled, startAmbientMusic, stopAmbientMusic } from './audio/sfx';
 import { setVoiceEnabled } from './audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from './config/accessibility';
 import { DEFAULT_PHYSICS_PARAMS } from './config/physics';
@@ -241,7 +241,16 @@ export function App() {
   useEffect(() => {
     setVoiceEnabled(accessibility.voiceEnabled);
     setSfxEnabled(accessibility.sfxEnabled);
+    const musicOn = accessibility.musicEnabled ?? true;
+    setMusicEnabled(musicOn);
+    if (musicOn) {
+      const theme = screen === 'maze' ? 'maze' : screen === 'antigravity' ? 'dome' : 'lobby';
+      startAmbientMusic(theme);
+    }
     gameBus.emit('accessibility:update', accessibility);
+    return () => {
+      stopAmbientMusic();
+    };
   }, [accessibility, screen, activeWordId]);
 
   const handleToggleAccessibility = (key: keyof AccessibilitySettings) => {

@@ -130,7 +130,8 @@
     "chapterId": "ch3",
     "category": "digrafos",
     "creatureName": "Chispón",
-    "creatureColor": "#fb923c"
+    "creatureColor": "#fb923c",
+    "sprite": "/assets/creature-chispita.png"
   },
   {
     "id": "lluvia",
@@ -300,6 +301,7 @@
     "chapterId": "ch6",
     "category": "lectura_fluida",
     "creatureName": "Laurelio",
-    "creatureColor": "#facc15"
+    "creatureColor": "#facc15",
+    "sprite": "/assets/creature-estelin.png"
   }
 ]

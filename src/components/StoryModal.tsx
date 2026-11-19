@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { speakText, stopSpeech } from '../audio/speech';
+import { speakStoryPassage, stopSpeech } from '../audio/speech';
 import type { StorySequence } from '../types/game';
 
 interface StoryModalProps {
@@ -12,6 +12,8 @@ const PORTRAIT_IMAGES: Record<string, string> = {
   solin: '/assets/creature-solin.png',
   sapin: '/assets/creature-sapin.png',
   mumu: '/assets/creature-mumu.png',
+  cangrejo: '/assets/boss-cangrejo.png',
+  don_silencio: '/assets/boss-silencio.png',
 };
 
 const PORTRAIT_BADGES: Record<string, { emoji: string; accent: string }> = {
@@ -35,7 +37,7 @@ export function StoryModal({ sequence, onComplete }: StoryModalProps) {
 
   useEffect(() => {
     if (!currentLine) return;
-    speakText(currentLine.text, { rate: currentLine.speechRate ?? 0.9 });
+    speakStoryPassage(currentLine.text, { rate: currentLine.speechRate ?? 0.9 });
     return () => {
       stopSpeech();
     };
@@ -129,7 +131,7 @@ export function StoryModal({ sequence, onComplete }: StoryModalProps) {
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={() => speakText(currentLine.text, { rate: currentLine.speechRate ?? 0.9 })}
+            onClick={() => speakStoryPassage(currentLine.text, { rate: currentLine.speechRate ?? 0.9 })}
           >
             🔊 Escuchar
           </button>

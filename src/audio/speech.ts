@@ -17,14 +17,13 @@ function pickSpanishVoice(synth: SpeechSynthesis): SpeechSynthesisVoice | null {
   );
 }
 
-/**
- * Pronuncia una letra, sílaba o palabra en español (es-CL).
- * Falla en silencio si el navegador no soporta Web Speech API.
- */
-export function speakText(rawText: string, options?: { rate?: number; pitch?: number }): void {
+function speakInternal(
+  text: string,
+  options?: { rate?: number; pitch?: number; onEnd?: () => void }
+): void {
   if (!voiceEnabled) return;
-  const text = rawText.trim().toLowerCase();
-  if (!text) return;
+  const clean = text.trim();
+  if (!clean) return;
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
   if (typeof SpeechSynthesisUtterance === 'undefined') return;
 
@@ -32,7 +31,7 @@ export function speakText(rawText: string, options?: { rate?: number; pitch?: nu
     const synth = window.speechSynthesis;
     synth.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(clean);
     utterance.lang = PREFERRED_LANG;
     utterance.rate = options?.rate ?? 0.9;
     utterance.pitch = options?.pitch ?? 1.05;
@@ -41,11 +40,35 @@ export function speakText(rawText: string, options?: { rate?: number; pitch?: nu
     if (voice) {
       utterance.voice = voice;
     }
+    if (options?.onEnd) {
+      utterance.onend = options.onEnd;
+    }
 
     synth.speak(utterance);
   } catch {
     // Fallback silencioso: el juego nunca debe romperse si falla el audio/TTS.
   }
+}
+
+/**
+ * Pronuncia una letra, sílaba o palabra corta en español (es-CL).
+ */
+export function speakText(rawText: string, options?: { rate?: number; pitch?: number }): void {
+  speakInternal(rawText.trim().toLowerCase(), options);
+}
+
+/**
+ * Lee un relato u oración completa conservando puntuación para pausas naturales.
+ */
+export function speakStoryPassage(
+  rawText: string,
+  options?: { rate?: number; pitch?: number; onEnd?: () => void }
+): void {
+  speakInternal(rawText, {
+    rate: options?.rate ?? 0.92,
+    pitch: options?.pitch ?? 1.02,
+    onEnd: options?.onEnd,
+  });
 }
 
 export function stopSpeech(): void {

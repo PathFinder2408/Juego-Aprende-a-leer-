@@ -137,7 +137,7 @@ function drawRoundedRect(
 export class MazeRenderer {
   private readonly scene: Phaser.Scene;
   private readonly biome: BiomeId;
-  private readonly highContrast: boolean;
+  private highContrast: boolean;
   private readonly blockSprites = new Map<string, Phaser.GameObjects.Image>();
   private readonly collectibleNodes = new Map<string, Phaser.GameObjects.Container>();
   private readonly bubbleNodes = new Map<string, Phaser.GameObjects.Container>();
@@ -654,14 +654,16 @@ export class MazeRenderer {
     if (!this.bossNode) {
       const shadow = this.scene.add.ellipse(0, 20, 44, 16, 0x0f172a, 0.42);
       const body = this.scene.add
-        .circle(0, -4, 24, 0xdc2626, 0.96)
+        .circle(0, -4, 24, 0xdc2626, this.scene.textures.exists(boss.id) ? 0.25 : 0.96)
         .setStrokeStyle(3.5, 0xfacc15);
-      const crown = this.scene.add
-        .text(0, -6, '👑', {
-          fontFamily: 'Lexend, system-ui, sans-serif',
-          fontSize: '20px',
-        })
-        .setOrigin(0.5);
+      const emblem: Phaser.GameObjects.GameObject = this.scene.textures.exists(boss.id)
+        ? this.scene.add.image(0, -5, boss.id).setScale(0.185)
+        : this.scene.add
+            .text(0, -6, '👑', {
+              fontFamily: 'Lexend, system-ui, sans-serif',
+              fontSize: '20px',
+            })
+            .setOrigin(0.5);
       const hpTag = this.scene.add
         .text(0, -34, '', {
           fontFamily: 'Lexend, system-ui, sans-serif',
@@ -686,7 +688,7 @@ export class MazeRenderer {
       const container = this.scene.add.container(cx, cy, [
         shadow,
         body,
-        crown,
+        emblem,
         hpTag,
         statusTag,
       ]);
@@ -710,6 +712,26 @@ export class MazeRenderer {
     } else {
       this.bossNode.body.setFillStyle(0xdc2626, 0.96);
       this.bossNode.statusTag.setText(boss.name);
+    }
+  }
+
+  setHighContrast(highContrast: boolean, snapshot: MazeEngineSnapshot): void {
+    if (this.highContrast === highContrast) return;
+    this.highContrast = highContrast;
+    this.ensureTextures();
+
+    for (const [key, sprite] of this.blockSprites.entries()) {
+      const [cStr, rStr] = key.split(',');
+      const col = Number(cStr);
+      const row = Number(rStr);
+      const tile = snapshot.tiles[row]?.[col];
+      if (tile === 'wall') {
+        sprite.setTexture(this.texKey('wall'));
+      } else if (tile === 'soft_block') {
+        sprite.setTexture(this.texKey('soft'));
+      } else if (tile === 'hard_block') {
+        sprite.setTexture(this.texKey('hard'));
+      }
     }
   }
 }
