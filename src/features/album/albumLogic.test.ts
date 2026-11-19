@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import cardsData from '../../data/cards.json';
 import type { CardEntry } from '../../types/game';
 import {
   ALBUM_COMPLETION_BONUS_POWER,
   formatCardDescription,
   getCardEffectivePower,
+  getEquippedCardPower,
   validateCardBlank,
 } from './albumLogic';
 
@@ -41,5 +43,18 @@ describe('albumLogic', () => {
 
     expect(formatCardDescription(SAMPLE_CARD, false)).toBe('Brilla como el _____ en la mañana.');
     expect(formatCardDescription(SAMPLE_CARD, true)).toBe('Brilla como el SOL en la mañana.');
+  });
+
+  it('cubre cartas equipables con poderes para los 6 capítulos', () => {
+    const cards = cardsData as CardEntry[];
+    const chapters = new Set(cards.map((c) => c.chapterId));
+    expect(chapters.size).toBe(6);
+
+    expect(getEquippedCardPower('card-solin')).toBe('audio_hint');
+    expect(getEquippedCardPower('card-sapin')).toBe('extra_bubble');
+    expect(getEquippedCardPower('card-mumu')).toBe('syllable_magnet');
+    expect(getEquippedCardPower('card-chispa')).toBe('long_wave');
+    expect(getEquippedCardPower('card-brujula')).toBe('solar_shield_start');
+    expect(getEquippedCardPower(null)).toBeNull();
   });
 });

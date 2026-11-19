@@ -182,6 +182,10 @@ export interface CapturePayload {
   wordId: string;
   word: string;
   creatureName: string;
+  mode?: DomeChallengeMode;
+  accuracyPercent?: number;
+  durationMs?: number;
+  tokenCount?: number;
 }
 
 export interface GameEventMap {

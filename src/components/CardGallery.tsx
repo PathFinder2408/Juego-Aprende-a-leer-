@@ -12,15 +12,19 @@ import type { CardEntry } from '../types/game';
 interface CardGalleryProps {
   capturedWordIds: string[];
   completedCardIds: string[];
+  equippedCardId: string | null;
   onCompleteBlank: (cardId: string) => void;
   onPracticeCard: (wordId: string) => void;
+  onEquipCard: (cardId: string | null) => void;
 }
 
 export function CardGallery({
   capturedWordIds,
   completedCardIds,
+  equippedCardId,
   onCompleteBlank,
   onPracticeCard,
+  onEquipCard,
 }: CardGalleryProps) {
   const cards = cardsData as CardEntry[];
   const [feedbackByCard, setFeedbackByCard] = useState<Record<string, string>>({});
@@ -53,13 +57,16 @@ export function CardGallery({
       {cards.map((card) => {
         const unlocked = capturedWordIds.includes(card.wordId);
         const blankDone = completedCardIds.includes(card.id);
+        const isEquipped = equippedCardId === card.id;
         const effectivePower = getCardEffectivePower(card, blankDone);
         const feedback = feedbackByCard[card.id];
 
         return (
           <article
             key={card.id}
-            className={`tcg-card ${unlocked ? 'tcg-card--unlocked' : 'tcg-card--locked'}`}
+            className={`tcg-card ${unlocked ? 'tcg-card--unlocked' : 'tcg-card--locked'} ${
+              isEquipped ? 'tcg-card--equipped' : ''
+            }`}
             style={{ '--card-accent': card.accentColor } as React.CSSProperties}
           >
             <div className="tcg-card-header">
@@ -82,6 +89,7 @@ export function CardGallery({
                 {card.moveName} · <strong>{effectivePower}</strong>
                 {blankDone && ' ⚡'}
               </p>
+              {card.powerHint && <p className="tcg-power-hint">✨ {card.powerHint}</p>}
 
               {unlocked ? (
                 <div
@@ -122,13 +130,24 @@ export function CardGallery({
               )}
             </div>
 
-            <button
-              type="button"
-              className="btn btn-secondary tcg-btn"
-              onClick={() => onPracticeCard(card.wordId)}
-            >
-              {unlocked ? `Practicar "${card.missingWord}"` : 'Ir a capturar'}
-            </button>
+            <div className="tcg-actions">
+              {unlocked && card.powerKind && (
+                <button
+                  type="button"
+                  className={`btn ${isEquipped ? 'btn-primary' : 'btn-secondary'} tcg-btn`}
+                  onClick={() => onEquipCard(isEquipped ? null : card.id)}
+                >
+                  {isEquipped ? '✓ Equipada' : 'Equipar poder'}
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn btn-secondary tcg-btn"
+                onClick={() => onPracticeCard(card.wordId)}
+              >
+                {unlocked ? `Practicar "${card.missingWord}"` : 'Ir a capturar'}
+              </button>
+            </div>
           </article>
         );
       })}

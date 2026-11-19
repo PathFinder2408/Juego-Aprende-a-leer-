@@ -756,51 +756,77 @@ export class MazeEngine {
     this.checkPortalAtTile(this.player.tile.col, this.player.tile.row, events);
   }
 
+  /**
+   * Recolecta orbes o sellos dentro de un radio (habilidad Imán de Sílabas).
+   */
+  collectNearbyCollectibles(radiusTiles: number, eventsOut?: MazeEvent[]): number {
+    let collected = 0;
+    for (let i = this.collectibles.length - 1; i >= 0; i -= 1) {
+      const item = this.collectibles[i];
+      if (!item || item.kind === 'power_up') continue;
+      const dist = Math.hypot(item.col - this.player.x, item.row - this.player.y);
+      if (dist <= radiusTiles) {
+        this.collectibles.splice(i, 1);
+        this.applyCollectedItem(item, item.col, item.row, eventsOut ?? []);
+        collected += 1;
+      }
+    }
+    return collected;
+  }
+
   private collectAtPlayerTile(col: number, row: number, events: MazeEvent[]): void {
     for (let i = this.collectibles.length - 1; i >= 0; i -= 1) {
       const item = this.collectibles[i];
       if (!item || item.col !== col || item.row !== row) continue;
 
       this.collectibles.splice(i, 1);
+      this.applyCollectedItem(item, col, row, events);
+    }
+  }
 
-      if (item.kind === 'star_orb') {
-        this.collectedOrbs += 1;
-        this.player.score += SCORE_STAR_ORB;
-        events.push({
-          type: 'orb_collected',
-          point: { col, row },
-          scoreGained: SCORE_STAR_ORB,
-        });
-      } else if (item.kind === 'syllable_seal') {
-        const token = item.token ?? '';
-        this.collectedTokens.push(token);
-        this.player.score += SCORE_SYLLABLE_SEAL;
-        events.push({
-          type: 'seal_collected',
-          point: { col, row },
-          token,
-          collectedSeals: this.collectedTokens.length,
-          totalSeals: this.totalSeals,
-          scoreGained: SCORE_SYLLABLE_SEAL,
-        });
+  private applyCollectedItem(
+    item: MazeCollectible,
+    col: number,
+    row: number,
+    events: MazeEvent[]
+  ): void {
+    if (item.kind === 'star_orb') {
+      this.collectedOrbs += 1;
+      this.player.score += SCORE_STAR_ORB;
+      events.push({
+        type: 'orb_collected',
+        point: { col, row },
+        scoreGained: SCORE_STAR_ORB,
+      });
+    } else if (item.kind === 'syllable_seal') {
+      const token = item.token ?? '';
+      this.collectedTokens.push(token);
+      this.player.score += SCORE_SYLLABLE_SEAL;
+      events.push({
+        type: 'seal_collected',
+        point: { col, row },
+        token,
+        collectedSeals: this.collectedTokens.length,
+        totalSeals: this.totalSeals,
+        scoreGained: SCORE_SYLLABLE_SEAL,
+      });
 
-        if (!this.portalOpen && this.collectedTokens.length >= this.totalSeals) {
-          this.portalOpen = true;
-          events.push({
-            type: 'portal_opened',
-            point: this.portalPoint ? { ...this.portalPoint } : null,
-          });
-        }
-      } else if (item.kind === 'power_up' && item.powerUpKind) {
-        this.player.score += SCORE_POWER_UP;
-        this.applyPowerUp(item.powerUpKind);
+      if (!this.portalOpen && this.collectedTokens.length >= this.totalSeals) {
+        this.portalOpen = true;
         events.push({
-          type: 'powerup_collected',
-          point: { col, row },
-          kind: item.powerUpKind,
-          scoreGained: SCORE_POWER_UP,
+          type: 'portal_opened',
+          point: this.portalPoint ? { ...this.portalPoint } : null,
         });
       }
+    } else if (item.kind === 'power_up' && item.powerUpKind) {
+      this.player.score += SCORE_POWER_UP;
+      this.applyPowerUp(item.powerUpKind);
+      events.push({
+        type: 'powerup_collected',
+        point: { col, row },
+        kind: item.powerUpKind,
+        scoreGained: SCORE_POWER_UP,
+      });
     }
   }
 

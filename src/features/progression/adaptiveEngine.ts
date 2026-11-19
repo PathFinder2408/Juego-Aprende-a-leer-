@@ -2,9 +2,14 @@ import difficultyData from '../../data/difficulty.json';
 import type {
   DifficultyConfig,
   DifficultyLevelConfig,
+  DomeChallengeMode,
   PersistedProgressionState,
   ProgressionSnapshot,
 } from '../../types/game';
+import {
+  computeModeAdaptiveTuning,
+  type ModeAdaptiveTuning,
+} from '../campaign/fluencyEngine';
 
 export type LevelDirection = 'up' | 'down' | 'none';
 
@@ -141,6 +146,38 @@ export class AdaptiveEngine {
     }
 
     return pool.slice(0, cfg.decoyCount);
+  }
+
+  /**
+   * Ajusta velocidad y tope de señuelos según el modo de reto (sílabas, frases o comprensión).
+   */
+  getModeTuning(mode: DomeChallengeMode, recentAccuracyPercent = 100): ModeAdaptiveTuning {
+    const cfg = this.getCurrentConfig();
+    return computeModeAdaptiveTuning(
+      mode,
+      cfg.speedMultiplier,
+      cfg.decoyCount,
+      recentAccuracyPercent
+    );
+  }
+
+  /**
+   * Selecciona señuelos para un reto combinando pool explícito (oraciones/comprensión) o niveles base.
+   */
+  selectChallengeDecoys(
+    mode: DomeChallengeMode,
+    targetTokens: string[],
+    explicitDecoys: string[] = [],
+    rng: () => number = Math.random
+  ): string[] {
+    const tuning = this.getModeTuning(mode);
+    if (explicitDecoys.length > 0) {
+      const forbidden = new Set(targetTokens.map((t) => t.trim().toUpperCase()));
+      return explicitDecoys
+        .filter((token) => !forbidden.has(token.trim().toUpperCase()))
+        .slice(0, tuning.maxDecoys);
+    }
+    return this.selectDecoys(targetTokens, rng);
   }
 
   shouldSuggestPause(elapsedMs: number, alreadyReminded = false): boolean {

@@ -22,6 +22,7 @@ import {
   getStageById,
   recordStageCompletion,
 } from './features/campaign/campaignLogic';
+import { recordChallengeCompletion } from './features/campaign/fluencyEngine';
 import {
   CURRENT_SAVE_VERSION,
   loadSaveState,
@@ -36,6 +37,7 @@ import type {
   CampaignProgressState,
   CapturePayload,
   CardEntry,
+  DomeChallengeMode,
   FluencyMetrics,
   PhysicsParams,
   ProgressionSnapshot,
@@ -53,6 +55,8 @@ export function App() {
 
   const [screen, setScreen] = useState<ActiveScreen>('home');
   const [activeWordId, setActiveWordId] = useState<string>('sol');
+  const [activeSentenceId, setActiveSentenceId] = useState<string | undefined>(undefined);
+  const [activeDomeMode, setActiveDomeMode] = useState<DomeChallengeMode>('word');
   const [activeMapId, setActiveMapId] = useState<string>(
     () => getStageById(initialSave.campaign.currentStageId)?.mapId ?? 'map-ch1-1'
   );
@@ -62,6 +66,9 @@ export function App() {
   );
   const [activeStageWordIds, setActiveStageWordIds] = useState<string[]>(
     () => getStageById(initialSave.campaign.currentStageId)?.wordIds ?? ['sol']
+  );
+  const [activeStageSentenceIds, setActiveStageSentenceIds] = useState<string[]>(
+    () => getStageById(initialSave.campaign.currentStageId)?.sentenceIds ?? []
   );
   const [activeBossId, setActiveBossId] = useState<string | undefined>(
     () => getStageById(initialSave.campaign.currentStageId)?.bossId
@@ -115,11 +122,21 @@ export function App() {
       setCapturedFromCampaign(false);
       setCaptured(null);
       setActiveWordId(wordId);
+      setActiveSentenceId(undefined);
+      setActiveDomeMode('word');
       setScreen('antigravity');
     });
     const unsubCapture = gameBus.on('capture', (payload) => {
       setCaptured(payload);
       setCapturedWordIds((prev) => (prev.includes(payload.wordId) ? prev : [...prev, payload.wordId]));
+      setFluency((prev) =>
+        recordChallengeCompletion(prev, {
+          mode: payload.mode ?? 'word',
+          accuracyPercent: payload.accuracyPercent ?? 100,
+          durationMs: payload.durationMs ?? 8000,
+          tokenCount: payload.tokenCount ?? 2,
+        }).metrics
+      );
 
       const activeRun = activeCampaignRunRef.current;
       if (activeRun) {
@@ -148,6 +165,8 @@ export function App() {
       }
       setCaptured(null);
       setActiveWordId(payload.wordIds[0] ?? 'sol');
+      setActiveSentenceId(payload.sentenceIds[0]);
+      setActiveDomeMode(payload.mode);
       setScreen('antigravity');
     });
     return () => {
@@ -182,6 +201,8 @@ export function App() {
     setCapturedFromCampaign(false);
     setCaptured(null);
     setActiveWordId(wordId);
+    setActiveSentenceId(undefined);
+    setActiveDomeMode('word');
     setScreen('antigravity');
   };
 
@@ -194,6 +215,9 @@ export function App() {
     setActiveMapId(stage.mapId);
     setActiveStageTitle(stage.title);
     setActiveStageWordIds(stage.wordIds);
+    setActiveStageSentenceIds(stage.sentenceIds);
+    setActiveSentenceId(stage.sentenceIds[0]);
+    setActiveDomeMode(stage.recommendedDomeMode);
     setActiveBossId(stage.bossId);
     setActiveWordId(stage.wordIds[0] ?? 'sol');
     setCampaign((prev) => ({
@@ -253,6 +277,9 @@ export function App() {
       setActiveMapId(firstStage.mapId);
       setActiveStageTitle(firstStage.title);
       setActiveStageWordIds(firstStage.wordIds);
+      setActiveStageSentenceIds(firstStage.sentenceIds);
+      setActiveSentenceId(firstStage.sentenceIds[0]);
+      setActiveDomeMode(firstStage.recommendedDomeMode);
       setActiveBossId(firstStage.bossId);
       setActiveWordId(firstStage.wordIds[0] ?? 'sol');
     }
@@ -434,11 +461,15 @@ export function App() {
               <PhaserCanvas
                 screen={screen}
                 activeWordId={activeWordId}
+                activeSentenceId={activeSentenceId}
+                activeDomeMode={activeDomeMode}
                 activeMapId={activeMapId}
                 activeStageId={activeStageId}
                 activeStageTitle={activeStageTitle}
                 activeStageWordIds={activeStageWordIds}
+                activeStageSentenceIds={activeStageSentenceIds}
                 activeBossId={activeBossId}
+                equippedCardId={campaign.equippedCardId}
               />
               {screen === 'maze' && <TouchControls />}
             </div>
@@ -456,10 +487,17 @@ export function App() {
           <CardGallery
             capturedWordIds={capturedWordIds}
             completedCardIds={completedCardIds}
+            equippedCardId={campaign.equippedCardId}
             onCompleteBlank={(cardId) =>
               setCompletedCardIds((prev) => (prev.includes(cardId) ? prev : [...prev, cardId]))
             }
             onPracticeCard={(wordId) => openAntigravity(wordId)}
+            onEquipCard={(cardId) =>
+              setCampaign((prev) => ({
+                ...prev,
+                equippedCardId: cardId,
+              }))
+            }
           />
         )}
       </main>

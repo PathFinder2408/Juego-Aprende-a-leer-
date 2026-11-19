@@ -1,7 +1,17 @@
-import type { CardEntry } from '../../types/game';
+import cardsData from '../../data/cards.json';
+import type { CardEntry, CardPowerKind } from '../../types/game';
 
 export const ALBUM_COMPLETION_BONUS_POWER = 15;
 export const ALBUM_COMPLETION_BONUS_STARS = 5;
+
+export function getCardById(cardId: string | null | undefined): CardEntry | undefined {
+  if (!cardId) return undefined;
+  return (cardsData as CardEntry[]).find((c) => c.id === cardId);
+}
+
+export function getEquippedCardPower(cardId: string | null | undefined): CardPowerKind | null {
+  return getCardById(cardId)?.powerKind ?? null;
+}
 
 export interface BlankEvaluation {
   correct: boolean;
