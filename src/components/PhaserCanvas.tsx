@@ -22,6 +22,7 @@ interface PhaserCanvasProps {
   activeStageWordIds?: string[];
   activeStageSentenceIds?: string[];
   activeBossId?: string;
+  equippedCardId?: string | null;
 }
 
 class BootScene extends Phaser.Scene {
@@ -62,12 +63,14 @@ class BootScene extends Phaser.Scene {
         sentenceIds: this.game.registry.get('targetStageSentenceIds') as string[] | undefined,
         mode: this.game.registry.get('targetDomeMode') as DomeChallengeMode | undefined,
         bossId: this.game.registry.get('targetBossId') as string | undefined,
+        equippedCardId: this.game.registry.get('targetEquippedCardId') as string | null | undefined,
       });
     } else {
       this.scene.start('AntigravityScene', {
         wordId: targetWordId,
         sentenceId: this.game.registry.get('targetSentenceId') as string | undefined,
         mode: this.game.registry.get('targetDomeMode') as DomeChallengeMode | undefined,
+        equippedCardId: this.game.registry.get('targetEquippedCardId') as string | null | undefined,
       });
     }
   }
@@ -84,6 +87,7 @@ export function PhaserCanvas({
   activeStageWordIds = DEFAULT_STAGE_WORD_IDS,
   activeStageSentenceIds = DEFAULT_STAGE_SENTENCE_IDS,
   activeBossId,
+  equippedCardId = null,
 }: PhaserCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -127,6 +131,8 @@ export function PhaserCanvas({
     game.registry.set('targetStageWordIds', activeStageWordIds);
     game.registry.set('targetStageSentenceIds', activeStageSentenceIds);
     game.registry.set('targetBossId', activeBossId);
+    game.registry.set('targetEquippedCardId', equippedCardId);
+    game.registry.set('targetEquippedCardId', equippedCardId);
     gameRef.current = game;
 
     return () => {
@@ -149,6 +155,7 @@ export function PhaserCanvas({
     game.registry.set('targetStageWordIds', activeStageWordIds);
     game.registry.set('targetStageSentenceIds', activeStageSentenceIds);
     game.registry.set('targetBossId', activeBossId);
+    game.registry.set('targetEquippedCardId', equippedCardId);
 
     if (game.registry.get('bootDone') !== true || !game.scene) return;
 
@@ -179,6 +186,7 @@ export function PhaserCanvas({
           sentenceIds: activeStageSentenceIds,
           mode: activeDomeMode,
           bossId: activeBossId,
+          equippedCardId,
         });
       }
     } else {
@@ -188,6 +196,7 @@ export function PhaserCanvas({
         wordId: activeWordId,
         sentenceId: activeSentenceId,
         mode: activeDomeMode,
+        equippedCardId,
       });
     }
   }, [
@@ -201,6 +210,7 @@ export function PhaserCanvas({
     activeStageWordIds,
     activeStageSentenceIds,
     activeBossId,
+    equippedCardId,
   ]);
 
   return <div ref={containerRef} className="phaser-mount" />;

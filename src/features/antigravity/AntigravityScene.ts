@@ -13,6 +13,7 @@ import type {
   SentenceEntry,
   WordEntry,
 } from '../../types/game';
+import { getEquippedCardPower } from '../album/albumLogic';
 import { loadSaveState } from '../persistence/saveStorage';
 import { adaptiveEngine } from '../progression/adaptiveEngine';
 import { LetterBody } from './LetterBody';
@@ -50,15 +51,22 @@ export class AntigravityScene extends Phaser.Scene {
   private requestedWordId: string | null = null;
   private requestedSentenceId: string | null = null;
   private requestedMode: DomeChallengeMode | null = null;
+  private equippedCardId: string | null = null;
 
   constructor() {
     super({ key: 'AntigravityScene' });
   }
 
-  init(data?: { wordId?: string; sentenceId?: string; mode?: DomeChallengeMode }): void {
+  init(data?: {
+    wordId?: string;
+    sentenceId?: string;
+    mode?: DomeChallengeMode;
+    equippedCardId?: string | null;
+  }): void {
     this.requestedWordId = data?.wordId ?? null;
     this.requestedSentenceId = data?.sentenceId ?? null;
     this.requestedMode = data?.mode ?? null;
+    this.equippedCardId = data?.equippedCardId ?? null;
   }
 
   create(): void {
@@ -109,6 +117,18 @@ export class AntigravityScene extends Phaser.Scene {
       });
     }
 
+    if (getEquippedCardPower(this.equippedCardId) === 'audio_hint') {
+      const firstToken = this.activeChallenge.tokens[0];
+      if (firstToken) {
+        for (const item of this.letters) {
+          item.setHintActive(item.token === firstToken);
+        }
+        this.time.delayedCall(750, () => {
+          speakText(`Pista: ${firstToken}`, { rate: 0.9 });
+        });
+      }
+    }
+
     this.registerInput();
     this.registerCollisions();
     this.registerBusEvents();
@@ -141,6 +161,23 @@ export class AntigravityScene extends Phaser.Scene {
     for (const letter of this.letters) {
       letter.update(effectiveParams);
     }
+
+    if (getEquippedCardPower(this.equippedCardId) === 'syllable_magnet' && this.player) {
+      const expected = this.activeChallenge.tokens[this.tracker.getState().collectedIndex];
+      const targetOrb = expected
+        ? this.letters.find((l) => !l.isCollected() && l.token === expected)
+        : undefined;
+      if (targetOrb && targetOrb.sprite.body) {
+        const playerPos = this.player.getPosition();
+        const dx = playerPos.x - targetOrb.sprite.x;
+        const dy = playerPos.y - targetOrb.sprite.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 36 && dist < 240) {
+          targetOrb.sprite.applyForce(new Phaser.Math.Vector2((dx / dist) * 0.00045, (dy / dist) * 0.00045));
+        }
+      }
+    }
+
     this.player?.update(this, delta, this.physicsParams);
   }
 

@@ -469,6 +469,7 @@ export function App() {
                 activeStageWordIds={activeStageWordIds}
                 activeStageSentenceIds={activeStageSentenceIds}
                 activeBossId={activeBossId}
+                equippedCardId={campaign.equippedCardId}
               />
               {screen === 'maze' && <TouchControls />}
             </div>
@@ -486,10 +487,17 @@ export function App() {
           <CardGallery
             capturedWordIds={capturedWordIds}
             completedCardIds={completedCardIds}
+            equippedCardId={campaign.equippedCardId}
             onCompleteBlank={(cardId) =>
               setCompletedCardIds((prev) => (prev.includes(cardId) ? prev : [...prev, cardId]))
             }
             onPracticeCard={(wordId) => openAntigravity(wordId)}
+            onEquipCard={(cardId) =>
+              setCampaign((prev) => ({
+                ...prev,
+                equippedCardId: cardId,
+              }))
+            }
           />
         )}
       </main>

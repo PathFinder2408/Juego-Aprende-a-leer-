@@ -125,6 +125,10 @@ export class PlayerBumper {
       : null;
   }
 
+  getPosition(): { x: number; y: number } {
+    return { x: this.torso.x, y: this.torso.y };
+  }
+
   setPointerTarget(x: number, y: number): void {
     this.pointerTarget = { x, y };
   }

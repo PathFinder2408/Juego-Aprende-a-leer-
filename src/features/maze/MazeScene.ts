@@ -9,6 +9,7 @@ import type {
   ArcadeHudSnapshot,
   DomeChallengeMode,
 } from '../../types/game';
+import { getEquippedCardPower } from '../album/albumLogic';
 import { universalInput } from '../input/InputController';
 import { loadSaveState } from '../persistence/saveStorage';
 import {
@@ -50,6 +51,7 @@ export interface MazeSceneInitData {
   sentenceIds?: string[];
   mode?: DomeChallengeMode;
   bossId?: string;
+  equippedCardId?: string | null;
 }
 
 export class MazeScene extends Phaser.Scene {
@@ -70,6 +72,7 @@ export class MazeScene extends Phaser.Scene {
   private sentenceIds: string[] = [];
   private mode: DomeChallengeMode = 'word';
   private bossId: string | undefined = undefined;
+  private equippedCardId: string | null = null;
 
   private paused = false;
   private portalTriggered = false;
@@ -87,6 +90,7 @@ export class MazeScene extends Phaser.Scene {
     this.sentenceIds = data?.sentenceIds ? [...data.sentenceIds] : [];
     this.mode = data?.mode ?? 'word';
     this.bossId = data?.bossId;
+    this.equippedCardId = data?.equippedCardId ?? null;
   }
 
   create(): void {
@@ -108,10 +112,18 @@ export class MazeScene extends Phaser.Scene {
       throw new Error(`No existe mapa de laberinto configurado (${this.mapId})`);
     }
 
+    const cardPower = getEquippedCardPower(this.equippedCardId);
     const baseSpeed = this.getTargetPlayerSpeed();
-    this.engine = new MazeEngine(mapConfig, { playerSpeedTilesPerSec: baseSpeed });
+    this.engine = new MazeEngine(mapConfig, {
+      playerSpeedTilesPerSec: baseSpeed,
+      initialMaxBubbles: cardPower === 'extra_bubble' ? 2 : 1,
+      initialWaveRange: cardPower === 'long_wave' ? 2 : 1,
+    });
     this.enemies = createEnemyStates(mapConfig.enemies);
     this.survival = createSurvivalState();
+    if (cardPower === 'solar_shield_start') {
+      this.survival = { ...this.survival, hasSolarShield: true };
+    }
 
     const bossConfig = this.bossId ? getBossById(this.bossId) : undefined;
     if (bossConfig) {
@@ -162,6 +174,22 @@ export class MazeScene extends Phaser.Scene {
     });
 
     this.handleEngineEvents(result.events);
+
+    const cardPower = getEquippedCardPower(this.equippedCardId);
+    if (cardPower === 'syllable_magnet') {
+      const magnetEvents: MazeEvent[] = [];
+      this.engine.collectNearbyCollectibles(input.powerPressed ? 2.6 : 1.5, magnetEvents);
+      if (magnetEvents.length > 0) {
+        this.handleEngineEvents(magnetEvents);
+      }
+    } else if (input.powerPressed && cardPower === 'audio_hint') {
+      const nextSeal = this.engine
+        .getCollectibles()
+        .find((c) => c.kind === 'syllable_seal' && c.token);
+      if (nextSeal?.token) {
+        speakText(`Busca la sílaba ${nextSeal.token}`, { rate: 0.9 });
+      }
+    }
 
     const enemyCtx = createEnemyGridContext(
       result.snapshot,
@@ -409,7 +437,7 @@ export class MazeScene extends Phaser.Scene {
       score: snapshot.score,
       frightenedRemainingMs: this.survival.frightenedRemainingMs,
       paused: this.paused,
-      equippedCardId: null,
+      equippedCardId: this.equippedCardId,
     };
 
     gameBus.emit('maze:hud', hud);

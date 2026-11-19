@@ -1301,3 +1301,20 @@ body,
   border-color: #facc15;
   color: #ffffff;
 }
+
+.tcg-card--equipped {
+  box-shadow: 0 0 0 3px #facc15, 0 12px 26px rgba(250, 204, 21, 0.25);
+}
+
+.tcg-power-hint {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  color: #bae6fd;
+  line-height: 1.35;
+}
+
+.tcg-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

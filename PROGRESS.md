@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 11 en curso (rama `feat/fase-11-cupula-cartas` — F11-02 completada)
+- **Fase actual:** Fase 11 en curso (rama `feat/fase-11-cupula-cartas` — F11-03 completada)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -111,7 +111,7 @@
 |---|---|---|---|---|---|---|
 | F11-01 | Evolución de `puzzleLogic.ts` y `AntigravityScene.ts`: modo `sentence` (ordenar frases), modo `comprehension` (pregunta/respuesta) y burbujas con escudo | P | Gemini 4 Hydrogen (XHigh) | hecha | Tests unitarios validan frases y comprensión; cúpula lee en `es-CL` la frase final | `puzzleLogic.ts`, `puzzleLogic.test.ts`, `LetterBody.ts`, `AntigravityScene.ts`, `PhaserCanvas.tsx`, `App.tsx`; 49/49 tests y build OK |
 | F11-02 | Motor de fluidez y adaptación ampliada (`fluencyEngine.ts` + `adaptiveEngine.ts` + tests): ajuste por racha y velocidad de lectura sin castigo | M | Gemini 4 Hydrogen (Medium) | hecha | Progresión adapta señuelos/velocidad entre sílabas, frases y relatos | `fluencyEngine.ts`, `fluencyEngine.test.ts`, `adaptiveEngine.ts`, `AntigravityScene.ts`, `App.tsx`; 51/51 tests y build OK |
-| F11-03 | Álbum y Cartas Equipables (`cards.json` para Capítulos 1–6 + selección de carta activa en `CardGallery.tsx` con efecto en laberinto/cúpula) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Cartas otorgan habilidades reales (*Imán*, *Pista Sonora*, *+Burbuja*) | Máx. 1–2 equipadas |
+| F11-03 | Álbum y Cartas Equipables (`cards.json` para Capítulos 1–6 + selección de carta activa en `CardGallery.tsx` con efecto en laberinto/cúpula) | M | Gemini 4 Hydrogen (Medium) | hecha | Cartas otorgan habilidades reales (*Imán*, *Pista Sonora*, *+Burbuja*) | `cards.json`, `albumLogic.ts`, `albumLogic.test.ts`, `CardGallery.tsx`, `MazeScene.ts`, `AntigravityScene.ts`, `App.tsx`; 52/52 tests y build OK |
 | F11-04 | Verificación integral Fase 11 (`npm test`, `npm run build`, prueba de frases/comprensión/cartas en navegador) + merge a `main` | L | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Tests, build y consola en 0 errores | Cierre de Fase 11 |
 
 ### Fase 12: Pulido Profesional, Audio/Arte, Balanceo y Lanzamiento v2.0
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Iniciar **F11-03** en rama `feat/fase-11-cupula-cartas` (`cards.json` para Capítulos 1–6 + selección de carta equipada en `CardGallery.tsx` con habilidades reales en laberinto/cúpula, esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**).
+Iniciar **F11-04** en rama `feat/fase-11-cupula-cartas` (verificación integral Fase 11: `npm test`, `npm run build`, prueba de frases/comprensión/cartas en navegador y merge a `main`, esfuerzo **L**, modelo recomendado **Gemini 4 Hydrogen (Medium)**).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -150,3 +150,4 @@ Iniciar **F11-03** en rama `feat/fase-11-cupula-cartas` (`cards.json` para Capí
 - **2026-11-19 (Fase 10):** Completada `F10-04` (30 mapas JSON en `src/data/maps/`, `campaignContent.test.ts`, E2E de campaña/historia/laberinto con 0 errores; 47/47 tests y `build` OK) y cerrada Fase 10 en `main`.
 - **2026-11-19 (Fase 11):** Creada rama `feat/fase-11-cupula-cartas` y completada `F11-01` (`puzzleLogic.ts`, `LetterBody.ts` cápsula + escudo, `AntigravityScene.ts` modos `sentence` y `comprehension` con voz `es-CL`; 49/49 tests y `build` OK).
 - **2026-11-19 (Fase 11):** Completada `F11-02` (`fluencyEngine.ts`, `adaptiveEngine.ts` con ajuste suave por modo/precisión y registro de fluidez en `SaveStateV2`; 51/51 tests y `build` OK).
+- **2026-11-19 (Fase 11):** Completada `F11-03` (7 cartas equipables en `cards.json` para Capítulos 1–6, botón equipar en `CardGallery.tsx` y poderes reales en `MazeScene`/`AntigravityScene`; 52/52 tests y `build` OK).
