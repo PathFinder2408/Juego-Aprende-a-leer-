@@ -370,6 +370,7 @@ export class MazeEngine {
   private readonly portalPoint: GridPoint | null;
   private readonly warpAPoint: GridPoint | null;
   private readonly warpBPoint: GridPoint | null;
+  private readonly spawnPoint: GridPoint;
   private readonly totalOrbs: number;
   private readonly totalSeals: number;
 
@@ -402,6 +403,7 @@ export class MazeEngine {
     this.portalPoint = parsed.portalPoint;
     this.warpAPoint = parsed.warpAPoint;
     this.warpBPoint = parsed.warpBPoint;
+    this.spawnPoint = { ...parsed.playerSpawn };
     this.totalOrbs = parsed.totalOrbs;
     this.totalSeals = parsed.totalSeals;
 
@@ -548,6 +550,25 @@ export class MazeEngine {
    */
   setPlayerSpeed(speedTilesPerSec: number): void {
     this.player.speedTilesPerSec = Math.max(0.5, speedTilesPerSec);
+  }
+
+  /**
+   * Reubica al explorador en el checkpoint de la etapa conservando sellos, orbes y puntaje.
+   */
+  respawnPlayerAtCheckpoint(): void {
+    this.player.x = this.spawnPoint.col;
+    this.player.y = this.spawnPoint.row;
+    this.player.tile = { ...this.spawnPoint };
+    this.warpCooldownTile = null;
+  }
+
+  /**
+   * Suma puntos extra al marcador (p. ej. al aturdir o capturar enemigos).
+   */
+  addBonusScore(points: number): void {
+    if (Number.isFinite(points) && points > 0) {
+      this.player.score += Math.round(points);
+    }
   }
 
   /**

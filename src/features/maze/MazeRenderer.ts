@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import type { BiomeId, GridPoint, MazeTileKind, PowerUpKind } from '../../types/campaign';
+import type { BiomeId, EnemyKind, GridPoint, MazeTileKind, PowerUpKind } from '../../types/campaign';
+import type { EnemyRuntimeState } from './enemyAI';
 import type {
   ActiveBubble,
   ActiveWave,
@@ -105,6 +106,14 @@ const POWERUP_BADGE_MAP: Record<PowerUpKind, { label: string; color: string }> =
   golden_orb: { label: '★', color: '#eab308' },
 };
 
+const ENEMY_STYLE_MAP: Record<EnemyKind, { bodyColor: number; emoji: string }> = {
+  sleepy_shadow: { bodyColor: 0x6366f1, emoji: '😴' },
+  mischief_crab: { bodyColor: 0xf97316, emoji: '🦀' },
+  mute_echo: { bodyColor: 0xa855f7, emoji: '👻' },
+  ash_spark: { bodyColor: 0xef4444, emoji: '🔥' },
+  ink_sentry: { bodyColor: 0x1e293b, emoji: '🐙' },
+};
+
 function tileKey(col: number, row: number): string {
   return `${col},${row}`;
 }
@@ -132,6 +141,14 @@ export class MazeRenderer {
   private readonly collectibleNodes = new Map<string, Phaser.GameObjects.Container>();
   private readonly bubbleNodes = new Map<string, Phaser.GameObjects.Container>();
   private readonly waveNodes = new Map<string, Phaser.GameObjects.Container>();
+  private readonly enemyNodes = new Map<
+    string,
+    {
+      container: Phaser.GameObjects.Container;
+      body: Phaser.GameObjects.Arc;
+      statusTag: Phaser.GameObjects.Text;
+    }
+  >();
   private portalVisual: {
     ring: Phaser.GameObjects.Arc;
     core: Phaser.GameObjects.Arc;
@@ -521,6 +538,81 @@ export class MazeRenderer {
 
       const alpha = Math.max(0.2, Math.min(1, wave.remainingMs / 450));
       node.setAlpha(alpha);
+    }
+  }
+
+  /**
+   * Sincroniza la representación 2.5D y estado visual (normal/stunned/frightened) de enemigos.
+   */
+  syncEnemies(
+    enemies: EnemyRuntimeState[],
+    timeMs: number,
+    reducedMotion: boolean
+  ): void {
+    const activeIds = new Set(enemies.map((e) => e.id));
+
+    for (const [id, entry] of this.enemyNodes.entries()) {
+      if (!activeIds.has(id)) {
+        entry.container.destroy();
+        this.enemyNodes.delete(id);
+      }
+    }
+
+    for (const enemy of enemies) {
+      const cx = (enemy.x + 0.5) * MAZE_TILE_SIZE;
+      const cy = (enemy.y + 0.5) * MAZE_TILE_SIZE;
+      let entry = this.enemyNodes.get(enemy.id);
+
+      if (!entry) {
+        const style = ENEMY_STYLE_MAP[enemy.kind];
+        const shadow = this.scene.add.ellipse(0, 15, 30, 12, 0x0f172a, 0.34);
+        const body = this.scene.add
+          .circle(0, -2, 18, style.bodyColor, 0.96)
+          .setStrokeStyle(2.5, 0x0f172a);
+        const icon = this.scene.add
+          .text(0, -2, style.emoji, {
+            fontFamily: 'Lexend, system-ui, sans-serif',
+            fontSize: '18px',
+          })
+          .setOrigin(0.5);
+        const statusTag = this.scene.add
+          .text(0, -26, '', {
+            fontFamily: 'Lexend, system-ui, sans-serif',
+            fontSize: '14px',
+            fontStyle: 'bold',
+            color: '#fef08a',
+            stroke: '#0f172a',
+            strokeThickness: 3,
+          })
+          .setOrigin(0.5);
+
+        const container = this.scene.add.container(cx, cy, [shadow, body, icon, statusTag]);
+        entry = { container, body, statusTag };
+        this.enemyNodes.set(enemy.id, entry);
+      }
+
+      const style = ENEMY_STYLE_MAP[enemy.kind];
+      const bob =
+        reducedMotion || enemy.state === 'stunned'
+          ? 0
+          : Math.sin(timeMs * 0.008 + enemy.x) * 2.5;
+
+      entry.container.setPosition(cx, cy + bob);
+      entry.container.setDepth(cy + 4);
+
+      if (enemy.state === 'stunned') {
+        entry.body.setFillStyle(0x94a3b8, 0.85);
+        entry.container.setAlpha(0.75);
+        entry.statusTag.setText('💫');
+      } else if (enemy.state === 'frightened') {
+        entry.body.setFillStyle(0x38bdf8, 0.95);
+        entry.container.setAlpha(1);
+        entry.statusTag.setText('!');
+      } else {
+        entry.body.setFillStyle(style.bodyColor, 0.96);
+        entry.container.setAlpha(1);
+        entry.statusTag.setText('');
+      }
     }
   }
 }
