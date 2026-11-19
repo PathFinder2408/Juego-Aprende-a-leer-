@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { playCaptureFanfare, playCorrectChime, playSoftBounce } from '../../audio/sfx';
-import { speakText } from '../../audio/speech';
+import { speakStoryPassage, speakText } from '../../audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS, SLOW_FLOATING_MULTIPLIER } from '../../config/accessibility';
 import { DEFAULT_PHYSICS_PARAMS } from '../../config/physics';
 import sentencesData from '../../data/sentences.json';
@@ -108,12 +108,12 @@ export class AntigravityScene extends Phaser.Scene {
       const promptAudio = `${this.activeChallenge.storyContext ?? ''} ${this.activeChallenge.promptText ?? ''}`.trim();
       if (promptAudio) {
         this.time.delayedCall(260, () => {
-          speakText(promptAudio, { rate: 0.9 });
+          speakStoryPassage(promptAudio, { rate: 0.9 });
         });
       }
     } else if (this.activeChallenge.mode === 'sentence' && this.activeChallenge.promptText) {
       this.time.delayedCall(260, () => {
-        speakText(this.activeChallenge.promptText ?? '', { rate: 0.92 });
+        speakStoryPassage(this.activeChallenge.promptText ?? '', { rate: 0.92 });
       });
     }
 
@@ -620,7 +620,7 @@ export class AntigravityScene extends Phaser.Scene {
     });
 
     this.time.delayedCall(420, () => {
-      speakText(this.activeChallenge.speechText, { rate: 0.88 });
+      speakStoryPassage(this.activeChallenge.speechText, { rate: 0.88 });
     });
 
     // Destellos de celebración simples (respetando movimiento reducido)

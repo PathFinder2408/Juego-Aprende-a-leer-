@@ -75,6 +75,10 @@ function sanitizeAccessibility(raw: unknown): AccessibilitySettings {
       typeof source.sfxEnabled === 'boolean'
         ? source.sfxEnabled
         : DEFAULT_ACCESSIBILITY_SETTINGS.sfxEnabled,
+    musicEnabled:
+      typeof source.musicEnabled === 'boolean'
+        ? source.musicEnabled
+        : (DEFAULT_ACCESSIBILITY_SETTINGS.musicEnabled ?? true),
     slowFloating:
       typeof source.slowFloating === 'boolean'
         ? source.slowFloating

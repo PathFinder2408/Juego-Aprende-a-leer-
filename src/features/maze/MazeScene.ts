@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { playCaptureFanfare, playCorrectChime, playSoftBounce } from '../../audio/sfx';
+import { playBubblePop, playCaptureFanfare, playCorrectChime, playSoftBounce } from '../../audio/sfx';
 import { speakText } from '../../audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS, SLOW_FLOATING_MULTIPLIER } from '../../config/accessibility';
 import { CHAPTER_1_MAPS, getMazeMapById } from '../../data/maps';
@@ -287,7 +287,7 @@ export class MazeScene extends Phaser.Scene {
           this.mazePlayer.playBubbleDropBounce();
           break;
         case 'wave_triggered':
-          playSoftBounce();
+          playBubblePop();
           break;
         case 'block_damaged':
           this.mazeRenderer.updateBlockTile(ev.point, ev.remainingHp, ev.destroyed);

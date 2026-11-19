@@ -11,6 +11,7 @@ interface SettingsModalProps {
 const OPTIONS: Array<{ key: keyof AccessibilitySettings; label: string; hint: string }> = [
   { key: 'voiceEnabled', label: 'Voz en español (CL)', hint: 'Pronuncia cada letra y palabra' },
   { key: 'sfxEnabled', label: 'Sonidos suaves', hint: 'Campanitas y rebotes' },
+  { key: 'musicEnabled', label: 'Música ambiental', hint: 'Melodía tranquila de fondo' },
   { key: 'slowFloating', label: 'Flotación lenta', hint: 'Letras más despacio en la cúpula' },
   { key: 'reducedMotion', label: 'Reducir movimiento', hint: 'Menos brillos y animaciones' },
   { key: 'highContrast', label: 'Alto contraste', hint: 'Bordes y textos más marcados' },
@@ -32,7 +33,7 @@ export function SettingsModal({ settings, onToggle, onResetProgress, onClose }: 
         <h2>Ajustes y Accesibilidad</h2>
         <div className="settings-list">
           {OPTIONS.map((opt) => {
-            const active = settings[opt.key];
+            const active = settings[opt.key] ?? true;
             return (
               <button
                 key={opt.key}

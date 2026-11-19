@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 11 completada (fusionada a `main` — Cúpula 2.0 y Cartas Equipables)
+- **Fase actual:** Fase 12 en curso (rama `feat/fase-12-pulido-lanzamiento` — F12-01 completada)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -117,7 +117,7 @@
 ### Fase 12: Pulido Profesional, Audio/Arte, Balanceo y Lanzamiento v2.0
 | ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
 |---|---|---|---|---|---|---|
-| F12-01 | Audio dinámico (`sfx.ts` + música ambiental suave Web Audio + lectura fluida de relatos en `speech.ts`) con control independiente en `SettingsModal.tsx` | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Música/SFX respetan silencio y accesibilidad sin distorsión | Zero dependencias externas |
+| F12-01 | Audio dinámico (`sfx.ts` + música ambiental suave Web Audio + lectura fluida de relatos en `speech.ts`) con control independiente en `SettingsModal.tsx` | M | Gemini 4 Hydrogen (Medium) | hecha | Música/SFX respetan silencio y accesibilidad sin distorsión | `sfx.ts`, `speech.ts`, `accessibility.ts`, `saveStorage.ts`, `SettingsModal.tsx`, `StoryModal.tsx`, `AntigravityScene.ts`, `MazeScene.ts`, `App.tsx`; 52/52 tests y build OK |
 | F12-02 | Pack de arte 2.5D ampliado (`public/assets/`: biomas, enemigos, power-ups, jefes y criaturas restantes) + optimización de peso | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Assets originales optimizados (< 4 MB total) y cargados en `BootScene` | Cero referencias externas |
 | F12-03 | Balanceo de dificultad, accesibilidad completa en `MazeScene` (alto contraste, velocidad lenta, movimiento reducido) y tutorial en Etapa 1-1 | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Primera etapa guía controles universales y reglas en < 30 s | Pensado para 6+ años |
 | F12-04 | QA integral final v2.0 (`npm test`, `npm run build`, E2E campaña inicio → fin, persistencia `v2` y 60 FPS) + cierre en `main` y `push` | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Suite completa verde, 0 errores en consola y v2.0 publicada en `main` | Cierre del Master Plan v2.0 |
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Confirmar para crear rama `feat/fase-12-pulido-lanzamiento` e iniciar **F12-01** (audio dinámico en `sfx.ts` + música ambiental Web Audio + lectura fluida en `speech.ts`, esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**). Se recomienda abrir una sesión nueva para Fase 12.
+Iniciar **F12-02** en rama `feat/fase-12-pulido-lanzamiento` (pack de arte 2.5D ampliado en `public/assets/` y optimización de peso, esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -152,3 +152,4 @@ Confirmar para crear rama `feat/fase-12-pulido-lanzamiento` e iniciar **F12-01**
 - **2026-11-19 (Fase 11):** Completada `F11-02` (`fluencyEngine.ts`, `adaptiveEngine.ts` con ajuste suave por modo/precisión y registro de fluidez en `SaveStateV2`; 51/51 tests y `build` OK).
 - **2026-11-19 (Fase 11):** Completada `F11-03` (7 cartas equipables en `cards.json` para Capítulos 1–6, botón equipar en `CardGallery.tsx` y poderes reales en `MazeScene`/`AntigravityScene`; 52/52 tests y `build` OK).
 - **2026-11-19 (Fase 11):** Completada `F11-04` (E2E de Cúpula y Cartas equipables en navegador con 0 errores de consola; 52/52 tests y `build` OK) y cerrada Fase 11 en `main`.
+- **2026-11-19 (Fase 12):** Creada rama `feat/fase-12-pulido-lanzamiento` y completada `F12-01` (música ambiental Web Audio sin dependencias, `playBubblePop`, `speakStoryPassage` en `speech.ts` y toggle `musicEnabled` en `SettingsModal.tsx`; 52/52 tests y `build` OK).

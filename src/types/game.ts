@@ -130,6 +130,7 @@ export interface ProgressionSnapshot {
 export interface AccessibilitySettings {
   voiceEnabled: boolean;
   sfxEnabled: boolean;
+  musicEnabled?: boolean;
   slowFloating: boolean;
   reducedMotion: boolean;
   highContrast: boolean;

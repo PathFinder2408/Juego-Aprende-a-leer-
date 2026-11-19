@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { speakText, stopSpeech } from '../audio/speech';
+import { speakStoryPassage, stopSpeech } from '../audio/speech';
 import type { StorySequence } from '../types/game';
 
 interface StoryModalProps {
@@ -35,7 +35,7 @@ export function StoryModal({ sequence, onComplete }: StoryModalProps) {
 
   useEffect(() => {
     if (!currentLine) return;
-    speakText(currentLine.text, { rate: currentLine.speechRate ?? 0.9 });
+    speakStoryPassage(currentLine.text, { rate: currentLine.speechRate ?? 0.9 });
     return () => {
       stopSpeech();
     };
@@ -129,7 +129,7 @@ export function StoryModal({ sequence, onComplete }: StoryModalProps) {
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={() => speakText(currentLine.text, { rate: currentLine.speechRate ?? 0.9 })}
+            onClick={() => speakStoryPassage(currentLine.text, { rate: currentLine.speechRate ?? 0.9 })}
           >
             🔊 Escuchar
           </button>
