@@ -1,8 +1,8 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 6 completada (fusionada a `main` — MVP Fases 1 a 6 completo)
-- **Última actualización:** 2026-11-18
+- **Fase actual:** Plan Maestro v2.0 aprobado para planificación (`Fases 7 a 12`: Campaña Pac-Man + Bomberman + Cúpula + Lectura Fluida)
+- **Última actualización:** 2026-11-19
 
 ---
 
@@ -71,13 +71,67 @@
 
 ---
 
+## Roadmap v2.0 — Master Plan (Pac-Man + Bomberman + Cúpula + Historia y Lectura Fluida)
+> Referencia completa en `docs/MASTER_PLAN_V2.md`. Controles universales (`WASD`/Flechas, `Espacio`/`Enter`/`J`/`Z`, Gamepad y Táctil).
+
+### Fase 7: Arquitectura v2.0, Currículo de Lectura Fluida y Contratos JSON
+| ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
+|---|---|---|---|---|---|---|
+| F7-01 | Contratos TS v2.0 (`src/types/campaign.ts`, `src/types/game.ts`) para capítulos, mapas en grilla, enemigos, power-ups, historia y modos de lectura fluida | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Tipos estrictos sin `any`, cubriendo letras/sílabas/frases/comprensión y mapa de campaña | <= 3 archivos |
+| F7-02 | Currículo ampliado en JSON (`chapters.json`, `words.json`, `sentences.json`) para Capítulos 1–6 (de 6 años a lectura fluida) + test de integridad | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | 100% contenido pedagógico en JSON validado por test automático (`curriculum.test.ts`) | Sin textos hardcodeados en lógica |
+| F7-03 | Migración `SaveStateV1 -> SaveStateV2` en `saveStorage.ts` + tests en `saveStorage.test.ts` (progreso de campaña, estrellas por etapa, historia y cartas equipadas) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Guardados `v1` migran sin pérdida a `v2`; `npm test` valida migración y saneamiento | Conserva accesibilidad y capturas previas |
+| F7-04 | Controlador de entrada universal (`src/features/input/InputController.ts` + tests): `WASD`/Flechas, `Espacio/Enter/J/Z`, `E/Shift`, `P/Esc`, Gamepad y API táctil | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Mapeo unificado con soporte de buffer de giro y tests unitarios de prioridades teclado/táctil/gamepad | Reutilizable en `MazeScene` y `WorldScene` |
+
+### Fase 8: Motor de Laberintos 2.5D y Mecánica Pac-Man + Bomberman
+| ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
+|---|---|---|---|---|---|---|
+| F8-01 | Modelo lógico puro del laberinto (`src/features/maze/mazeEngine.ts` + `mazeEngine.test.ts`): grilla, bloques rompibles, orbes/sílabas y ondas de burbujas en cruz | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Lógica pura desacoplada de Phaser; `npm test` valida explosión en cruz, colisión con muros y recolección | Base determinista |
+| F8-02 | Mapas amplios JSON del Capítulo 1 + plantillas escalables (`src/data/maps/`) y validador de alcanzabilidad (`mapValidator.ts` + tests) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Test valida que todos los spawns, orbes y portales sean alcanzables | Mapas `15x11` a `23x15` |
+| F8-03 | Escena Phaser 2.5D `MazeScene` (`MazeScene.ts`, `MazeRenderer.ts`, `MazePlayer.ts`): cámara seguimiento, giro asistido en esquinas, burbujas sónicas y portal | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Explorador se mueve fluido con `WASD`/Flechas, rompe bloques con burbujas y abre portal al completar sellos | Integrada en `PhaserCanvas` |
+| F8-04 | Controles táctiles en pantalla (`TouchControls.tsx` + `styles.css`) + prueba E2E de controles universales en navegador | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Cruceta táctil + botón Burbuja/Poder operativos sin errores de consola | Verificado en viewport PC y tablet |
+
+### Fase 9: Enemigos, Power-Ups, Corazones y HUD Arcade
+| ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
+|---|---|---|---|---|---|---|
+| F9-01 | IA pura de enemigos (`src/features/maze/enemyAI.ts` + `enemyAI.test.ts`): patrulla, persecución por vista, aturdimiento por burbuja y huida (`Orbe Dorado`) | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Tests validan transiciones de estado y rutas válidas en grilla | Sin castigos agresivos |
+| F9-02 | Power-ups, corazones/escudo y drops (`src/features/maze/powerups.ts` + `MazeScene.ts`): `+Burbuja`, `Onda +1`, `Botas Turbo`, `Escudo Solar`, `Orbe Dorado` con voz `es-CL` | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Recoger power-ups aplica efecto inmediato y respeta límite de corazones/checkpoint | Invulnerabilidad breve al daño |
+| F9-03 | HUD Arcade en React (`ArcadeHud.tsx` + `styles.css`) conectado por `gameBus`: corazones, burbujas, fichas, puntaje y pausa (`Esc`/`P`) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | HUD refleja estado en vivo y pausa congela simulación sin errores | Reutiliza estilos accesibles |
+| F9-04 | Verificación integral Fase 9 (`npm test`, `npm run build`, prueba E2E de laberinto + enemigos + power-ups) + merge a `main` | L | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Tests, build y consola en 0 errores | Cierre de Fase 9 |
+
+### Fase 10: Campaña Completa (Inicio a Fin), Historia y 6 Jefes
+| ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
+|---|---|---|---|---|---|---|
+| F10-01 | Guion e historia en JSON (`src/data/story.json`: prólogo, diálogos de 6 capítulos, epílogo final) + `StoryModal.tsx` con lectura `es-CL` | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Narrativa completa inicio → desarrollo → fin, accesible y saltable | Texto `Lexend` + voz |
+| F10-02 | Mapa de Campaña (`CampaignMapView.tsx` + `campaignLogic.ts` + `App.tsx`): 6 islas, 30 etapas, estrellas, desbloqueo y modo rejugar | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Navegación fluida entre capítulos/etapas y persistencia `v2` automática | Sustituye/amplía acceso lineal |
+| F10-03 | Jefes de Capítulo (`bossBehavior.ts` + JSON de 6 jefes en `MazeScene`): patrullas especiales, obstáculos mudos, aturdimiento x3 y paso a Cúpula de Jefe | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Los 6 jefes funcionan por configuración JSON sin lógica hardcodeada | Incluye jefe final *Don Silencio* |
+| F10-04 | Contenido completo de las 30 etapas (Capítulos 1–6) en `src/data/maps/` + test integral `campaignContent.test.ts` + prueba E2E de flujo historia/jefe/final | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Todos los mapas/palabras/frases de los 6 capítulos pasan validación y build | Cierre de Fase 10 en `main` |
+
+### Fase 11: Cúpula Antigravedad 2.0 (Lectura Fluida) y Cartas con Poderes
+| ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
+|---|---|---|---|---|---|---|
+| F11-01 | Evolución de `puzzleLogic.ts` y `AntigravityScene.ts`: modo `sentence` (ordenar frases), modo `comprehension` (pregunta/respuesta) y burbujas con escudo | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Tests unitarios validan frases y comprensión; cúpula lee en `es-CL` la frase final | Mantiene 60 FPS en Matter.js |
+| F11-02 | Motor de fluidez y adaptación ampliada (`fluencyEngine.ts` + `adaptiveEngine.ts` + tests): ajuste por racha y velocidad de lectura sin castigo | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Progresión adapta señuelos/velocidad entre sílabas, frases y relatos | Retrocompatible con Fases 3–6 |
+| F11-03 | Álbum y Cartas Equipables (`cards.json` para Capítulos 1–6 + selección de carta activa en `CardGallery.tsx` con efecto en laberinto/cúpula) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Cartas otorgan habilidades reales (*Imán*, *Pista Sonora*, *+Burbuja*) | Máx. 1–2 equipadas |
+| F11-04 | Verificación integral Fase 11 (`npm test`, `npm run build`, prueba de frases/comprensión/cartas en navegador) + merge a `main` | L | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Tests, build y consola en 0 errores | Cierre de Fase 11 |
+
+### Fase 12: Pulido Profesional, Audio/Arte, Balanceo y Lanzamiento v2.0
+| ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
+|---|---|---|---|---|---|---|
+| F12-01 | Audio dinámico (`sfx.ts` + música ambiental suave Web Audio + lectura fluida de relatos en `speech.ts`) con control independiente en `SettingsModal.tsx` | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Música/SFX respetan silencio y accesibilidad sin distorsión | Zero dependencias externas |
+| F12-02 | Pack de arte 2.5D ampliado (`public/assets/`: biomas, enemigos, power-ups, jefes y criaturas restantes) + optimización de peso | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Assets originales optimizados (< 4 MB total) y cargados en `BootScene` | Cero referencias externas |
+| F12-03 | Balanceo de dificultad, accesibilidad completa en `MazeScene` (alto contraste, velocidad lenta, movimiento reducido) y tutorial en Etapa 1-1 | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Primera etapa guía controles universales y reglas en < 30 s | Pensado para 6+ años |
+| F12-04 | QA integral final v2.0 (`npm test`, `npm run build`, E2E campaña inicio → fin, persistencia `v2` y 60 FPS) + cierre en `main` y `push` | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Suite completa verde, 0 errores en consola y v2.0 publicada en `main` | Cierre del Master Plan v2.0 |
+
+---
+
 ## Siguiente paso
-Fase 6 cerrada en `main`. El MVP completo (Fases 1 a 6) está listo y verificado; puedes definir nuevas mejoras o contenido en JSON si deseas continuar.
+Confirmar para crear rama `feat/fase-7-arquitectura-v2` e iniciar **F7-01** (esfuerzo **P**, modelo recomendado **Gemini 4 Hydrogen (XHigh)** — coincide con tu modelo actual).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
-- Riesgos de Fase 1 documentados en `docs/GDD.md`.
+- Riesgos de Fase 1 documentados en `docs/GDD.md`; plan completo v2.0 en `docs/MASTER_PLAN_V2.md`.
 
 ## Registro de sesiones
 - **2026-11-18:** Fases 2, 3, 4 y 5 completas (`F2-01` a `F5-04` cerradas; accesibilidad, audio, alto contraste y `reduced-motion` verificados con 9/9 tests y 0 errores).
 - **2026-11-18:** Rama `feat/fase-6-persistencia` creada y Fase 6 completa (`F6-01` a `F6-04` cerradas; `localStorage` versionado con migraciones, reinicio en 2 pasos, 15/15 tests, build y navegador con 0 errores).
+- **2026-11-19:** Diseñado Master Plan v2.0 (`docs/MASTER_PLAN_V2.md` y Fases 7–12 en `PROGRESS.md`) para híbrido Pac-Man + Bomberman + Cúpula con historia completa, controles universales y currículo desde 6 años hasta lectura fluida.
