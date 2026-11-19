@@ -9,6 +9,7 @@ const BASE_SCALE = 0.175; // 320px -> ~56px para calzar limpio en grilla 56px
 export class MazePlayer {
   readonly sprite: Phaser.GameObjects.Image;
   private readonly shadow: Phaser.GameObjects.Ellipse;
+  private readonly shieldRing: Phaser.GameObjects.Arc;
   private readonly tileSize: number;
   private walkTime = 0;
   private prevX: number;
@@ -24,6 +25,10 @@ export class MazePlayer {
     const py = this.toPixel(initial.y);
 
     this.shadow = scene.add.ellipse(px, py + 18, 34, 14, 0x0f172a, 0.34);
+    this.shieldRing = scene.add
+      .circle(px, py - 2, 24, 0x4ade80, 0.18)
+      .setStrokeStyle(2.5, 0x86efac)
+      .setVisible(false);
     this.sprite = scene.add.image(px, py - 4, 'explorer');
     this.sprite.setScale(BASE_SCALE);
     this.updateDepth(py);
@@ -43,7 +48,12 @@ export class MazePlayer {
     });
   }
 
-  sync(state: MazePlayerState, deltaMs: number, reducedMotion: boolean): void {
+  sync(
+    state: MazePlayerState,
+    deltaMs: number,
+    reducedMotion: boolean,
+    options?: { hasSolarShield?: boolean; invulnerable?: boolean }
+  ): void {
     const px = this.toPixel(state.x);
     const py = this.toPixel(state.y);
     const moved = Math.hypot(state.x - this.prevX, state.y - this.prevY) > 0.002;
@@ -89,6 +99,17 @@ export class MazePlayer {
     this.sprite.setPosition(px, py - 5 + bobY);
     this.sprite.setRotation(rot);
     this.sprite.setScale(scaleX, scaleY);
+
+    if (options?.invulnerable) {
+      const blink = Math.floor(this.walkTime * 2) % 2 === 0 ? 0.45 : 0.95;
+      this.sprite.setAlpha(reducedMotion ? 0.65 : blink);
+    } else {
+      this.sprite.setAlpha(1);
+    }
+
+    this.shieldRing.setVisible(Boolean(options?.hasSolarShield));
+    this.shieldRing.setPosition(px, py - 2);
+    this.shieldRing.setDepth(py + 5);
 
     this.shadow.setPosition(px, py + 17);
     this.updateDepth(py);

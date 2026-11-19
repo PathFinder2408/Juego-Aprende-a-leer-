@@ -849,3 +849,133 @@ body,
 .hud-shell--high-contrast .touch-action-btn {
   border-color: #ffffff;
 }
+
+/* HUD Arcade y Pausa para MazeScene */
+.arcade-hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 16;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.arcade-hud-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.arcade-pill {
+  background: rgba(15, 23, 42, 0.86);
+  border: 2px solid #334155;
+  color: #f8fafc;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.arcade-pill--hearts {
+  gap: 3px;
+  font-size: 1rem;
+}
+
+.heart-on {
+  color: #fb7185;
+}
+
+.heart-off {
+  color: #475569;
+}
+
+.arcade-pill--shield {
+  border-color: #4ade80;
+  color: #bbf7d0;
+}
+
+.arcade-pill--orb {
+  border-color: #facc15;
+  color: #fef08a;
+}
+
+.arcade-pill--portal-open {
+  background: rgba(22, 163, 74, 0.9);
+  border-color: #86efac;
+  color: #ffffff;
+}
+
+.arcade-pill--score {
+  color: #fde047;
+}
+
+.arcade-pause-btn {
+  border: 2px solid #38bdf8;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #e0f2fe;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.arcade-pause-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.arcade-pause-card {
+  background: #0f172a;
+  border: 3px solid #38bdf8;
+  border-radius: 20px;
+  padding: 20px 24px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.arcade-pause-card h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.arcade-pause-hints {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.hud-shell--high-contrast .arcade-pill,
+.hud-shell--high-contrast .arcade-pause-btn,
+.hud-shell--high-contrast .arcade-pause-card {
+  background: #020617;
+  border-color: #facc15;
+  color: #ffffff;
+}

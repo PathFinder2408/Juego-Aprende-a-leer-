@@ -8,10 +8,17 @@ import type {
   AccessibilitySettings,
   ArcadeHudSnapshot,
   DomeChallengeMode,
-  PowerUpKind,
 } from '../../types/game';
 import { universalInput } from '../input/InputController';
 import { loadSaveState } from '../persistence/saveStorage';
+import {
+  createEnemyGridContext,
+  createEnemyStates,
+  resolveEnemyContacts,
+  stepEnemies,
+  type EnemyAIEvent,
+  type EnemyRuntimeState,
+} from './enemyAI';
 import {
   DEFAULT_PLAYER_SPEED_TILES_PER_SEC,
   MazeEngine,
@@ -20,6 +27,13 @@ import {
 } from './mazeEngine';
 import { MazePlayer } from './MazePlayer';
 import { MAZE_TILE_SIZE, MazeRenderer } from './MazeRenderer';
+import {
+  applyPlayerEnemyHit,
+  applySurvivalPowerUp,
+  createSurvivalState,
+  stepSurvivalTimers,
+  type MazeSurvivalState,
+} from './powerups';
 
 export interface MazeSceneInitData {
   mapId?: string;
@@ -30,18 +44,12 @@ export interface MazeSceneInitData {
   mode?: DomeChallengeMode;
 }
 
-const POWERUP_SPEECH_MAP: Record<PowerUpKind, string> = {
-  extra_bubble: 'Más burbujas',
-  long_wave: 'Onda larga',
-  turbo_boots: 'Botas turbo',
-  solar_shield: 'Escudo solar',
-  golden_orb: 'Orbe dorado',
-};
-
 export class MazeScene extends Phaser.Scene {
   private engine!: MazeEngine;
   private mazeRenderer!: MazeRenderer;
   private mazePlayer!: MazePlayer;
+  private enemies: EnemyRuntimeState[] = [];
+  private survival: MazeSurvivalState = createSurvivalState();
   private accessibility: AccessibilitySettings = { ...DEFAULT_ACCESSIBILITY_SETTINGS };
   private unsubscribers: Array<() => void> = [];
   private detachInput: (() => void) | null = null;
@@ -85,10 +93,13 @@ export class MazeScene extends Phaser.Scene {
 
     const baseSpeed = this.getTargetPlayerSpeed();
     this.engine = new MazeEngine(mapConfig, { playerSpeedTilesPerSec: baseSpeed });
+    this.enemies = createEnemyStates(mapConfig.enemies);
+    this.survival = createSurvivalState();
 
     const initialSnapshot = this.engine.getState();
     this.mazeRenderer = new MazeRenderer(this, initialSnapshot, this.accessibility.highContrast);
     this.mazePlayer = new MazePlayer(this, initialSnapshot.player, MAZE_TILE_SIZE);
+    this.mazeRenderer.syncEnemies(this.enemies, this.time.now, this.accessibility.reducedMotion);
 
     this.configureCamera(initialSnapshot.cols, initialSnapshot.rows);
     this.registerInputAndBus();
@@ -108,19 +119,36 @@ export class MazeScene extends Phaser.Scene {
 
     if (this.paused || this.portalTriggered) {
       this.mazeRenderer.sync(this.engine.getState(), time, this.accessibility.reducedMotion);
+      this.mazeRenderer.syncEnemies(this.enemies, time, this.accessibility.reducedMotion);
       return;
     }
 
     const dtSec = Math.min(Math.max(delta, 0), 50) / 1000;
+    this.survival = stepSurvivalTimers(this.survival, dtSec * 1000);
+
     const result = this.engine.step(dtSec, {
       direction: input.direction,
       placeBubble: input.bubblePressed,
     });
 
     this.handleEngineEvents(result.events);
-    this.mazeRenderer.sync(result.snapshot, time, this.accessibility.reducedMotion);
-    this.mazePlayer.sync(result.snapshot.player, delta, this.accessibility.reducedMotion);
-    this.emitHudSnapshot(result.snapshot);
+
+    const enemyCtx = createEnemyGridContext(
+      result.snapshot,
+      this.survival.frightenedRemainingMs > 0
+    );
+    const enemyEvents = stepEnemies(this.enemies, enemyCtx, dtSec);
+    const contactEvents = resolveEnemyContacts(this.enemies, enemyCtx);
+    this.handleEnemyEvents([...enemyEvents, ...contactEvents]);
+
+    const latestSnapshot = this.engine.getState();
+    this.mazeRenderer.sync(latestSnapshot, time, this.accessibility.reducedMotion);
+    this.mazeRenderer.syncEnemies(this.enemies, time, this.accessibility.reducedMotion);
+    this.mazePlayer.sync(latestSnapshot.player, delta, this.accessibility.reducedMotion, {
+      hasSolarShield: this.survival.hasSolarShield,
+      invulnerable: this.survival.invulnerableRemainingMs > 0,
+    });
+    this.emitHudSnapshot(latestSnapshot);
   }
 
   private getTargetPlayerSpeed(): number {
@@ -207,10 +235,13 @@ export class MazeScene extends Phaser.Scene {
           playCorrectChime(ev.collectedSeals);
           speakText(ev.token, { rate: 0.88 });
           break;
-        case 'powerup_collected':
+        case 'powerup_collected': {
+          const powerRes = applySurvivalPowerUp(this.survival, ev.kind);
+          this.survival = powerRes.state;
           playCorrectChime(3);
-          speakText(POWERUP_SPEECH_MAP[ev.kind], { rate: 0.95 });
+          speakText(powerRes.speechText, { rate: 0.95 });
           break;
+        }
         case 'portal_opened':
           playCaptureFanfare();
           speakText('¡Portal abierto!', { rate: 0.95 });
@@ -238,9 +269,51 @@ export class MazeScene extends Phaser.Scene {
     }
   }
 
+  private handleEnemyEvents(events: EnemyAIEvent[]): void {
+    for (const ev of events) {
+      switch (ev.type) {
+        case 'enemy_stunned':
+          this.engine.addBonusScore(ev.scoreGained);
+          playCorrectChime(1);
+          break;
+        case 'enemy_caught_frightened':
+          this.engine.addBonusScore(ev.scoreGained);
+          playCorrectChime(2);
+          speakText('¡Atrapado!', { rate: 1.0 });
+          break;
+        case 'player_touched_enemy': {
+          const hit = applyPlayerEnemyHit(this.survival);
+          this.survival = hit.state;
+          if (hit.ignoredByInvulnerability) break;
+
+          playSoftBounce();
+          if (hit.absorbedByShield) {
+            speakText('¡Escudo solar!', { rate: 0.95 });
+          } else if (hit.checkpointTriggered) {
+            this.engine.respawnPlayerAtCheckpoint();
+            speakText('¡De vuelta al inicio!', { rate: 0.95 });
+          }
+          break;
+        }
+        case 'enemy_recovered':
+        case 'enemy_frightened_started':
+          break;
+      }
+    }
+  }
+
   private emitHudSnapshot(snapshot: MazeEngineSnapshot): void {
+    const frightenedBucketMs =
+      this.survival.frightenedRemainingMs > 0
+        ? Math.ceil(this.survival.frightenedRemainingMs / 500) * 500
+        : 0;
+
     const hudKey = [
       this.stageId,
+      this.survival.hearts,
+      this.survival.maxHearts,
+      this.survival.hasSolarShield ? 1 : 0,
+      frightenedBucketMs,
       snapshot.activeBubbles.length,
       snapshot.player.maxBubbles,
       snapshot.player.waveRange,
@@ -257,9 +330,9 @@ export class MazeScene extends Phaser.Scene {
     const hud: ArcadeHudSnapshot = {
       stageId: this.stageId,
       stageTitle: this.stageTitle,
-      hearts: 3,
-      maxHearts: 3,
-      hasSolarShield: false,
+      hearts: this.survival.hearts,
+      maxHearts: this.survival.maxHearts,
+      hasSolarShield: this.survival.hasSolarShield,
       maxBubbles: snapshot.player.maxBubbles,
       activeBubbles: snapshot.activeBubbles.length,
       waveRange: snapshot.player.waveRange,
@@ -267,7 +340,7 @@ export class MazeScene extends Phaser.Scene {
       totalSeals: snapshot.totalSeals,
       portalOpen: snapshot.portalOpen,
       score: snapshot.score,
-      frightenedRemainingMs: 0,
+      frightenedRemainingMs: this.survival.frightenedRemainingMs,
       paused: this.paused,
       equippedCardId: null,
     };

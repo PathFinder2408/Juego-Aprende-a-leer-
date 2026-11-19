@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ArcadeHud } from './components/ArcadeHud';
 import { CaptureCardModal } from './components/CaptureCardModal';
 import { CardGallery } from './components/CardGallery';
 import { LobbyView } from './components/LobbyView';
@@ -281,6 +282,7 @@ export function App() {
         {(screen === 'world' || screen === 'antigravity' || screen === 'maze') && (
           <div className={screen === 'antigravity' && showDebug ? 'workspace' : 'workspace workspace--full'}>
             <div className="stage-card stage-card--interactive">
+              {screen === 'maze' && <ArcadeHud hud={mazeHud} />}
               <PhaserCanvas
                 screen={screen}
                 activeWordId={activeWordId}
