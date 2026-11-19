@@ -1,4 +1,5 @@
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from '../../config/accessibility';
+import { DEFAULT_PLAYER_SKIN, sanitizePlayerSkinId } from '../../config/skins';
 import cardsData from '../../data/cards.json';
 import chaptersData from '../../data/chapters.json';
 import difficultyData from '../../data/difficulty.json';
@@ -11,6 +12,7 @@ import type {
   DifficultyConfig,
   FluencyMetrics,
   PersistedProgressionState,
+  PlayerSkinId,
   SaveState,
   WordEntry,
 } from '../../types/game';
@@ -206,6 +208,7 @@ export function createDefaultSaveState(updatedAt = new Date().toISOString()): Sa
     accessibility: { ...DEFAULT_ACCESSIBILITY_SETTINGS },
     campaign: createDefaultCampaignState(),
     fluency: createDefaultFluencyMetrics(),
+    playerSkin: DEFAULT_PLAYER_SKIN,
     updatedAt,
   };
 }
@@ -229,6 +232,7 @@ export function sanitizeSaveState(raw: unknown): SaveState {
     accessibility: sanitizeAccessibility(raw.accessibility),
     campaign: sanitizeCampaign(raw.campaign),
     fluency: sanitizeFluency(raw.fluency),
+    playerSkin: sanitizePlayerSkinId(raw.playerSkin),
     updatedAt,
   };
 }
@@ -362,12 +366,14 @@ export function saveGameState(
 
 export function resetProgressState(
   preservedAccessibility: AccessibilitySettings,
-  storage: StorageLike | null = getDefaultStorage()
+  storage: StorageLike | null = getDefaultStorage(),
+  preservedSkin?: PlayerSkinId
 ): SaveState {
   const fresh = createDefaultSaveState();
   const nextState: SaveState = {
     ...fresh,
     accessibility: sanitizeAccessibility(preservedAccessibility),
+    playerSkin: sanitizePlayerSkinId(preservedSkin),
   };
   saveGameState(nextState, storage);
   return nextState;

@@ -151,6 +151,23 @@ export interface SaveStateV1 {
   updatedAt: string;
 }
 
+export type PlayerSkinId = 'explorer' | 'futbol7' | 'kayros24';
+
+export interface PlayerSkinConfig {
+  id: PlayerSkinId;
+  name: string;
+  subtitle: string;
+  badge: string;
+  sprite: string;
+  textureKey: string;
+  torsoColor: string;
+  torsoLight: string;
+  torsoDark: string;
+  torsoStroke: string;
+  accentColor: string;
+  jerseyNumber: string | null;
+}
+
 export interface SaveStateV2 {
   version: 2;
   capturedWordIds: string[];
@@ -159,6 +176,7 @@ export interface SaveStateV2 {
   accessibility: AccessibilitySettings;
   campaign: CampaignProgressState;
   fluency: FluencyMetrics;
+  playerSkin?: PlayerSkinId;
   updatedAt: string;
 }
 
@@ -198,6 +216,7 @@ export interface GameEventMap {
   'screen:change': ActiveScreen;
   'progression:update': ProgressionSnapshot;
   'accessibility:update': AccessibilitySettings;
+  'player:skin': PlayerSkinId;
   'maze:hud': ArcadeHudSnapshot;
   'maze:pause': boolean;
   'maze:portal': {
