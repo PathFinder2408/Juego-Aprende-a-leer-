@@ -6,12 +6,14 @@ import { LobbyView } from './components/LobbyView';
 import { PhaserCanvas } from './components/PhaserCanvas';
 import { PhysicsDebugPanel } from './components/PhysicsDebugPanel';
 import { SettingsModal } from './components/SettingsModal';
+import { StoryModal } from './components/StoryModal';
 import { TouchControls } from './components/TouchControls';
 import { setSfxEnabled } from './audio/sfx';
 import { setVoiceEnabled } from './audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from './config/accessibility';
 import { DEFAULT_PHYSICS_PARAMS } from './config/physics';
 import cardsData from './data/cards.json';
+import storyData from './data/story.json';
 import { gameBus } from './events/bus';
 import { ALBUM_COMPLETION_BONUS_STARS } from './features/album/albumLogic';
 import {
@@ -32,6 +34,7 @@ import type {
   PhysicsParams,
   ProgressionSnapshot,
   PuzzleStatePayload,
+  StorySequence,
 } from './types/game';
 
 export function App() {
@@ -59,6 +62,7 @@ export function App() {
   const [progression, setProgression] = useState<ProgressionSnapshot>(() => adaptiveEngine.getSnapshot());
   const [pauseReminder, setPauseReminder] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [activeStory, setActiveStory] = useState<StorySequence | null>(null);
   const [accessibility, setAccessibility] = useState<AccessibilitySettings>(() => ({
     ...DEFAULT_ACCESSIBILITY_SETTINGS,
     ...initialSave.accessibility,
@@ -176,6 +180,22 @@ export function App() {
     }
   };
 
+  const openStoryById = (storyId: string) => {
+    const seq = (storyData as StorySequence[]).find((s) => s.id === storyId);
+    if (seq) {
+      setActiveStory(seq);
+    }
+  };
+
+  const handleCompleteStory = (storyId: string) => {
+    setActiveStory(null);
+    setCampaign((prev) =>
+      prev.seenStoryIds.includes(storyId)
+        ? prev
+        : { ...prev, seenStoryIds: [...prev.seenStoryIds, storyId] }
+    );
+  };
+
   const progressTokens = puzzleState
     ? puzzleState.tokens.map((token, idx) => (idx < puzzleState.collectedIndex ? token : '_')).join(' ')
     : '...';
@@ -251,6 +271,10 @@ export function App() {
         />
       )}
 
+      {activeStory && (
+        <StoryModal sequence={activeStory} onComplete={handleCompleteStory} />
+      )}
+
       {captured && (
         <CaptureCardModal
           capture={captured}
@@ -276,6 +300,7 @@ export function App() {
             }}
             onQuickDome={() => openAntigravity('sol')}
             onOpenCards={() => setScreen('cards')}
+            onOpenStory={() => openStoryById('story-prologue')}
           />
         )}
 

@@ -1,0 +1,292 @@
+[
+  {
+    "id": "story-prologue",
+    "trigger": "prologue",
+    "title": "El Rescate del Archipiélago Silábico",
+    "lines": [
+      {
+        "speaker": "Solín",
+        "portraitKey": "solin",
+        "text": "¡Hola, Explorador! Don Silencio cubrió nuestras seis islas con su Niebla Muda y se llevó las palabras del Gran Libro.",
+        "speechRate": 0.88
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "¡No te preocupes, Solín! Con mis burbujas sónicas abriré camino en cada laberinto y reuniremos cada sílaba.",
+        "speechRate": 0.9
+      },
+      {
+        "speaker": "Solín",
+        "portraitKey": "solin",
+        "text": "Cuando juntes todos los sellos, el portal te llevará a la Cúpula de Antigravedad para rescatar a las criaturas.",
+        "speechRate": 0.88
+      }
+    ]
+  },
+  {
+    "id": "story-ch1-intro",
+    "trigger": "chapter_intro",
+    "chapterId": "ch1",
+    "title": "Capítulo 1: Playa Amanecer",
+    "lines": [
+      {
+        "speaker": "Solín",
+        "portraitKey": "solin",
+        "text": "¡Bienvenidos a Playa Amanecer! Aquí brillan las vocales y las primeras sílabas: MA, PA, LA y SA.",
+        "speechRate": 0.85
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "Evitemos las Sombras Dormilonas, rompamos cajas con burbujas y abramos el portal hacia la Cúpula.",
+        "speechRate": 0.87
+      }
+    ]
+  },
+  {
+    "id": "story-ch1-outro",
+    "trigger": "chapter_outro",
+    "chapterId": "ch1",
+    "title": "¡Playa Amanecer Despejada!",
+    "lines": [
+      {
+        "speaker": "Cangrejo Eco",
+        "portraitKey": "cangrejo",
+        "text": "¡Clic, clac! Gracias por quitar la niebla de mis pinzas. Ahora canto S-O-L y MA-PA con mucha alegría.",
+        "speechRate": 0.88
+      },
+      {
+        "speaker": "Solín",
+        "portraitKey": "solin",
+        "text": "¡Primer capítulo completo! El Gran Libro ya recuperó su primera página dorada. Vamos hacia la selva.",
+        "speechRate": 0.9
+      }
+    ]
+  },
+  {
+    "id": "story-ch2-intro",
+    "trigger": "chapter_intro",
+    "chapterId": "ch2",
+    "title": "Capítulo 2: Selva Murmullo",
+    "lines": [
+      {
+        "speaker": "Mumu",
+        "portraitKey": "mumu",
+        "text": "¡Muu-hola! En la Selva Murmullo crecieron lianas sobre las sílabas con T, D, N, C, B y V.",
+        "speechRate": 0.88
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "Usaremos burbujas extra y ondas largas para despejar las lianas y encontrar palabras de tres sílabas.",
+        "speechRate": 0.9
+      }
+    ]
+  },
+  {
+    "id": "story-ch2-outro",
+    "trigger": "chapter_outro",
+    "chapterId": "ch2",
+    "title": "¡Selva Murmullo Cantando!",
+    "lines": [
+      {
+        "speaker": "Camaleón Mudo",
+        "portraitKey": "camaleon",
+        "text": "¡Recuperé mis colores y mi voz! Ya puedo leer LUNA, CAMINO y VENTANA sin enredarme.",
+        "speechRate": 0.9
+      },
+      {
+        "speaker": "Mumu",
+        "portraitKey": "mumu",
+        "text": "¡Qué gran trabajo! Las hojas vuelven a susurrar y el Cañón del Eco nos espera.",
+        "speechRate": 0.9
+      }
+    ]
+  },
+  {
+    "id": "story-ch3-intro",
+    "trigger": "chapter_intro",
+    "chapterId": "ch3",
+    "title": "Capítulo 3: Cañón del Eco",
+    "lines": [
+      {
+        "speaker": "Sapín",
+        "portraitKey": "sapin",
+        "text": "¡Croac! Aquí viven sonidos especiales: CH, LL, RR, QU y sílabas inversas como AL, AR y ES.",
+        "speechRate": 0.9
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "También hay túneles mágicos a los lados del cañón para cruzar rápido y esquivar a los Ecos.",
+        "speechRate": 0.9
+      }
+    ]
+  },
+  {
+    "id": "story-ch3-outro",
+    "trigger": "chapter_outro",
+    "chapterId": "ch3",
+    "title": "¡El Eco Suena Claro!",
+    "lines": [
+      {
+        "speaker": "Eco Tartamudo",
+        "portraitKey": "eco",
+        "text": "¡Ll-lluvia... lluvia! ¡Pe-perro... perro! ¡Por fin mi eco repite cada palabra entera y clara!",
+        "speechRate": 0.92
+      },
+      {
+        "speaker": "Sapín",
+        "portraitKey": "sapin",
+        "text": "¡Ahora el cañón resuena con risas! Sigamos subiendo hacia Cumbre Brasa.",
+        "speechRate": 0.92
+      }
+    ]
+  },
+  {
+    "id": "story-ch4-intro",
+    "trigger": "chapter_intro",
+    "chapterId": "ch4",
+    "title": "Capítulo 4: Cumbre Brasa",
+    "lines": [
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "¡Qué calor! En Cumbre Brasa hay rocas duras de dos golpes y sílabas trabadas como BR, DR, GL y TR.",
+        "speechRate": 0.92
+      },
+      {
+        "speaker": "Solín",
+        "portraitKey": "solin",
+        "text": "Busca el Escudo Solar y las Botas Turbo para moverte ágil y vencer al Gólem de Ceniza.",
+        "speechRate": 0.92
+      }
+    ]
+  },
+  {
+    "id": "story-ch4-outro",
+    "trigger": "chapter_outro",
+    "chapterId": "ch4",
+    "title": "¡Cumbre Brasa Iluminada!",
+    "lines": [
+      {
+        "speaker": "Gólem de Ceniza",
+        "portraitKey": "golem",
+        "text": "¡Roca y fuego! Esas burbujas me despertaron de la niebla. ¡Dragón, estrella y pluma vuelven al libro!",
+        "speechRate": 0.92
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "¡Solo faltan dos islas! Próxima parada: las Ruinas del Saber.",
+        "speechRate": 0.94
+      }
+    ]
+  },
+  {
+    "id": "story-ch5-intro",
+    "trigger": "chapter_intro",
+    "chapterId": "ch5",
+    "title": "Capítulo 5: Ruinas del Saber",
+    "lines": [
+      {
+        "speaker": "Mumu",
+        "portraitKey": "mumu",
+        "text": "En las Ruinas del Saber ya no juntamos solo sílabas: ¡vamos a ordenar oraciones completas!",
+        "speechRate": 0.94
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "Leeremos con atención cada pista para responder las preguntas de la Esfinge de Tinta.",
+        "speechRate": 0.94
+      }
+    ]
+  },
+  {
+    "id": "story-ch5-outro",
+    "trigger": "chapter_outro",
+    "chapterId": "ch5",
+    "title": "¡Acertijos Resueltos!",
+    "lines": [
+      {
+        "speaker": "Esfinge de Tinta",
+        "portraitKey": "esfinge",
+        "text": "Has demostrado que no solo lees letras: ¡comprendes lo que dicen las historias! El camino estelar está abierto.",
+        "speechRate": 0.95
+      },
+      {
+        "speaker": "Solín",
+        "portraitKey": "solin",
+        "text": "¡Arriba en la Cúpula Estelar nos espera Don Silencio! Vamos juntos por el capítulo final.",
+        "speechRate": 0.95
+      }
+    ]
+  },
+  {
+    "id": "story-ch6-intro",
+    "trigger": "chapter_intro",
+    "chapterId": "ch6",
+    "title": "Capítulo 6: Cúpula Estelar",
+    "lines": [
+      {
+        "speaker": "Don Silencio",
+        "portraitKey": "don_silencio",
+        "text": "¿Llegaste hasta las estrellas? Mis relatos finales guardan comas, signos de pregunta y mucha velocidad.",
+        "speechRate": 0.95
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "¡No tenemos miedo a las frases largas! Con ritmo y calma devolveremos la voz a todo el archipiélago.",
+        "speechRate": 0.95
+      }
+    ]
+  },
+  {
+    "id": "story-ch6-outro",
+    "trigger": "chapter_outro",
+    "chapterId": "ch6",
+    "title": "¡La Niebla Muda Desaparece!",
+    "lines": [
+      {
+        "speaker": "Don Silencio",
+        "portraitKey": "don_silencio",
+        "text": "Confieso algo... cubrí las islas porque a mí también me costaba leer rápido. ¡Pero contigo aprendí a disfrutarlo!",
+        "speechRate": 0.95
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "Cada persona aprende a su ritmo. ¡Bienvenido al club de lectura del Archipiélago!",
+        "speechRate": 0.95
+      }
+    ]
+  },
+  {
+    "id": "story-epilogue",
+    "trigger": "epilogue",
+    "title": "¡El Gran Libro Brilla de Nuevo!",
+    "lines": [
+      {
+        "speaker": "Solín",
+        "portraitKey": "solin",
+        "text": "¡Felicitaciones, Gran Explorador! Las seis islas cantan, juegan y leen relatos completos bajo el sol.",
+        "speechRate": 0.94
+      },
+      {
+        "speaker": "Maestro Eco",
+        "portraitKey": "don_silencio",
+        "text": "Ahora ayudo a ordenar las cartas del álbum y a cuidar las bibliotecas de cada isla. ¡Gracias por tu paciencia!",
+        "speechRate": 0.95
+      },
+      {
+        "speaker": "Explorador",
+        "portraitKey": "explorer",
+        "text": "¡Misión cumplida! Siempre podemos volver a cualquier isla para mejorar nuestras estrellas y leer nuevas aventuras.",
+        "speechRate": 0.95
+      }
+    ]
+  }
+]

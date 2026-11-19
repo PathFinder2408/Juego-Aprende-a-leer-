@@ -7,6 +7,7 @@ interface LobbyViewProps {
   onExploreIsland: () => void;
   onQuickDome: () => void;
   onOpenCards: () => void;
+  onOpenStory: () => void;
 }
 
 export function LobbyView({
@@ -15,6 +16,7 @@ export function LobbyView({
   onExploreIsland,
   onQuickDome,
   onOpenCards,
+  onOpenStory,
 }: LobbyViewProps) {
   const world = worldData as WorldConfig;
 
@@ -47,6 +49,10 @@ export function LobbyView({
         <button type="button" className="quick-tile" onClick={onOpenCards}>
           <span className="quick-badge">{capturedCount}</span>
           <span>Mis Cartas</span>
+        </button>
+        <button type="button" className="quick-tile" onClick={onOpenStory}>
+          <span className="quick-badge">📖</span>
+          <span>Historia</span>
         </button>
       </div>
 

@@ -979,3 +979,107 @@ body,
   border-color: #facc15;
   color: #ffffff;
 }
+
+/* Modal de Historia */
+.story-modal {
+  background: #0f172a;
+  border: 3px solid #facc15;
+  border-radius: 24px;
+  padding: 20px 22px;
+  max-width: 560px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.65);
+}
+
+.story-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.story-kicker {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #fde047;
+  margin-bottom: 4px;
+}
+
+.story-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #f8fafc;
+}
+
+.story-skip-btn {
+  flex-shrink: 0;
+}
+
+.story-dialogue-box {
+  background: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.story-portrait {
+  width: 78px;
+  height: 78px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  border: 3px solid #facc15;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.story-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.story-portrait-emoji {
+  font-size: 2.3rem;
+}
+
+.story-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.story-speaker {
+  font-size: 0.92rem;
+  color: #38bdf8;
+}
+
+.story-line {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.5;
+  color: #f8fafc;
+}
+
+.story-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hud-shell--high-contrast .story-modal,
+.hud-shell--high-contrast .story-dialogue-box {
+  background: #020617;
+  border-color: #facc15;
+}
