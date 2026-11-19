@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArcadeHud } from './components/ArcadeHud';
+import { CampaignMapView } from './components/CampaignMapView';
 import { CaptureCardModal } from './components/CaptureCardModal';
 import { CardGallery } from './components/CardGallery';
 import { LobbyView } from './components/LobbyView';
@@ -16,6 +17,11 @@ import cardsData from './data/cards.json';
 import storyData from './data/story.json';
 import { gameBus } from './events/bus';
 import { ALBUM_COMPLETION_BONUS_STARS } from './features/album/albumLogic';
+import {
+  getPendingIntroStoryId,
+  getStageById,
+  recordStageCompletion,
+} from './features/campaign/campaignLogic';
 import {
   CURRENT_SAVE_VERSION,
   loadSaveState,
@@ -34,6 +40,7 @@ import type {
   PhysicsParams,
   ProgressionSnapshot,
   PuzzleStatePayload,
+  StageConfig,
   StorySequence,
 } from './types/game';
 
@@ -46,15 +53,22 @@ export function App() {
 
   const [screen, setScreen] = useState<ActiveScreen>('home');
   const [activeWordId, setActiveWordId] = useState<string>('sol');
-  const [activeMapId] = useState<string>('map-ch1-1');
-  const [activeStageId] = useState<string>('ch1-1');
-  const [activeStageTitle] = useState<string>('Playa Amanecer 1');
-  const [activeStageWordIds] = useState<string[]>(['sol']);
+  const [activeMapId, setActiveMapId] = useState<string>(
+    () => getStageById(initialSave.campaign.currentStageId)?.mapId ?? 'map-ch1-1'
+  );
+  const [activeStageId, setActiveStageId] = useState<string>(initialSave.campaign.currentStageId);
+  const [activeStageTitle, setActiveStageTitle] = useState<string>(
+    () => getStageById(initialSave.campaign.currentStageId)?.title ?? 'Orilla de Vocales'
+  );
+  const [activeStageWordIds, setActiveStageWordIds] = useState<string[]>(
+    () => getStageById(initialSave.campaign.currentStageId)?.wordIds ?? ['sol']
+  );
   const [mazeHud, setMazeHud] = useState<ArcadeHudSnapshot | null>(null);
   const [params, setParams] = useState<PhysicsParams>(() => ({ ...DEFAULT_PHYSICS_PARAMS }));
   const [showDebug, setShowDebug] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleStatePayload | null>(null);
   const [captured, setCaptured] = useState<CapturePayload | null>(null);
+  const [capturedFromCampaign, setCapturedFromCampaign] = useState(false);
   const [capturedWordIds, setCapturedWordIds] = useState<string[]>(() => initialSave.capturedWordIds);
   const [completedCardIds, setCompletedCardIds] = useState<string[]>(() => initialSave.completedCardIds);
   const [campaign, setCampaign] = useState<CampaignProgressState>(() => initialSave.campaign);
@@ -67,6 +81,13 @@ export function App() {
     ...DEFAULT_ACCESSIBILITY_SETTINGS,
     ...initialSave.accessibility,
   }));
+
+  const campaignRef = useRef(campaign);
+  campaignRef.current = campaign;
+  const latestMazeScoreRef = useRef(0);
+  const activeCampaignRunRef = useRef<{ stageId: string; mazeScore: number } | null>(null);
+  const pendingLaunchStageRef = useRef<StageConfig | null>(null);
+  const pendingOutroStoryIdRef = useRef<string | null>(null);
 
   const totalCards = (cardsData as CardEntry[]).length;
 
@@ -87,6 +108,8 @@ export function App() {
       setProgression(snap);
     });
     const unsubEncounter = gameBus.on('encounter:start', ({ wordId }) => {
+      activeCampaignRunRef.current = null;
+      setCapturedFromCampaign(false);
       setCaptured(null);
       setActiveWordId(wordId);
       setScreen('antigravity');
@@ -94,11 +117,32 @@ export function App() {
     const unsubCapture = gameBus.on('capture', (payload) => {
       setCaptured(payload);
       setCapturedWordIds((prev) => (prev.includes(payload.wordId) ? prev : [...prev, payload.wordId]));
+
+      const activeRun = activeCampaignRunRef.current;
+      if (activeRun) {
+        activeCampaignRunRef.current = null;
+        setCapturedFromCampaign(true);
+        const totalScore = activeRun.mazeScore + 150;
+        const result = recordStageCompletion(campaignRef.current, activeRun.stageId, totalScore);
+        setCampaign(result.progress);
+        pendingOutroStoryIdRef.current = result.storyToTriggerId;
+        gameBus.emit('stage:complete', {
+          stageId: activeRun.stageId,
+          score: totalScore,
+          stars: result.starsEarned,
+        });
+      } else {
+        setCapturedFromCampaign(false);
+      }
     });
     const unsubMazeHud = gameBus.on('maze:hud', (snap) => {
+      latestMazeScoreRef.current = snap.score;
       setMazeHud(snap);
     });
     const unsubMazePortal = gameBus.on('maze:portal', (payload) => {
+      if (activeCampaignRunRef.current) {
+        activeCampaignRunRef.current.mazeScore = latestMazeScoreRef.current;
+      }
       setCaptured(null);
       setActiveWordId(payload.wordIds[0] ?? 'sol');
       setScreen('antigravity');
@@ -131,9 +175,39 @@ export function App() {
   };
 
   const openAntigravity = (wordId = activeWordId) => {
+    activeCampaignRunRef.current = null;
+    setCapturedFromCampaign(false);
     setCaptured(null);
     setActiveWordId(wordId);
     setScreen('antigravity');
+  };
+
+  const launchStage = (stage: StageConfig) => {
+    activeCampaignRunRef.current = { stageId: stage.id, mazeScore: 0 };
+    latestMazeScoreRef.current = 0;
+    setCaptured(null);
+    setCapturedFromCampaign(false);
+    setActiveStageId(stage.id);
+    setActiveMapId(stage.mapId);
+    setActiveStageTitle(stage.title);
+    setActiveStageWordIds(stage.wordIds);
+    setActiveWordId(stage.wordIds[0] ?? 'sol');
+    setCampaign((prev) => ({
+      ...prev,
+      currentChapterId: stage.chapterId,
+      currentStageId: stage.id,
+    }));
+    setScreen('maze');
+  };
+
+  const handleStartCampaignStage = (stage: StageConfig) => {
+    const pendingStoryId = getPendingIntroStoryId(campaign, stage.chapterId);
+    if (pendingStoryId) {
+      pendingLaunchStageRef.current = stage;
+      openStoryById(pendingStoryId);
+      return;
+    }
+    launchStage(stage);
   };
 
   useEffect(() => {
@@ -166,6 +240,17 @@ export function App() {
   const handleResetProgress = () => {
     const nextSave = resetProgressState(accessibility);
     const nextProgression = adaptiveEngine.reset();
+    activeCampaignRunRef.current = null;
+    pendingLaunchStageRef.current = null;
+    pendingOutroStoryIdRef.current = null;
+    const firstStage = getStageById(nextSave.campaign.currentStageId);
+    if (firstStage) {
+      setActiveStageId(firstStage.id);
+      setActiveMapId(firstStage.mapId);
+      setActiveStageTitle(firstStage.title);
+      setActiveStageWordIds(firstStage.wordIds);
+      setActiveWordId(firstStage.wordIds[0] ?? 'sol');
+    }
     setCapturedWordIds(nextSave.capturedWordIds);
     setCompletedCardIds(nextSave.completedCardIds);
     setCampaign(nextSave.campaign);
@@ -189,11 +274,37 @@ export function App() {
 
   const handleCompleteStory = (storyId: string) => {
     setActiveStory(null);
-    setCampaign((prev) =>
-      prev.seenStoryIds.includes(storyId)
-        ? prev
-        : { ...prev, seenStoryIds: [...prev.seenStoryIds, storyId] }
-    );
+    const updatedSeen = campaignRef.current.seenStoryIds.includes(storyId)
+      ? campaignRef.current.seenStoryIds
+      : [...campaignRef.current.seenStoryIds, storyId];
+
+    setCampaign((prev) => ({
+      ...prev,
+      seenStoryIds: updatedSeen,
+    }));
+
+    const queuedStage = pendingLaunchStageRef.current;
+    if (queuedStage) {
+      pendingLaunchStageRef.current = null;
+      launchStage(queuedStage);
+      return;
+    }
+
+    if (storyId === 'story-ch6-outro' && !updatedSeen.includes('story-epilogue')) {
+      openStoryById('story-epilogue');
+    }
+  };
+
+  const handleCloseCaptureModal = (destination: ActiveScreen) => {
+    setCaptured(null);
+    setCapturedFromCampaign(false);
+    setScreen(destination);
+
+    const outroId = pendingOutroStoryIdRef.current;
+    if (outroId) {
+      pendingOutroStoryIdRef.current = null;
+      openStoryById(outroId);
+    }
   };
 
   const progressTokens = puzzleState
@@ -278,14 +389,9 @@ export function App() {
       {captured && (
         <CaptureCardModal
           capture={captured}
-          onGoIsland={() => {
-            setCaptured(null);
-            setScreen('world');
-          }}
-          onGoCards={() => {
-            setCaptured(null);
-            setScreen('cards');
-          }}
+          primaryActionLabel={capturedFromCampaign ? 'Volver al Mapa' : 'Seguir en Isla Sol'}
+          onGoIsland={() => handleCloseCaptureModal(capturedFromCampaign ? 'campaign' : 'world')}
+          onGoCards={() => handleCloseCaptureModal('cards')}
         />
       )}
 
@@ -298,9 +404,21 @@ export function App() {
               setCaptured(null);
               setScreen('world');
             }}
+            onOpenCampaign={() => {
+              setCaptured(null);
+              setScreen('campaign');
+            }}
             onQuickDome={() => openAntigravity('sol')}
             onOpenCards={() => setScreen('cards')}
             onOpenStory={() => openStoryById('story-prologue')}
+          />
+        )}
+
+        {screen === 'campaign' && (
+          <CampaignMapView
+            progress={campaign}
+            onStartStage={handleStartCampaignStage}
+            onOpenStory={openStoryById}
           />
         )}
 
@@ -350,6 +468,16 @@ export function App() {
         </button>
         <button
           type="button"
+          className={`dock-tab ${screen === 'campaign' ? 'dock-tab--active' : ''}`}
+          onClick={() => {
+            setCaptured(null);
+            setScreen('campaign');
+          }}
+        >
+          Campaña
+        </button>
+        <button
+          type="button"
           className={`dock-tab ${screen === 'world' ? 'dock-tab--active' : ''}`}
           onClick={() => {
             setCaptured(null);
@@ -362,8 +490,13 @@ export function App() {
           type="button"
           className={`dock-tab ${screen === 'maze' ? 'dock-tab--active' : ''}`}
           onClick={() => {
-            setCaptured(null);
-            setScreen('maze');
+            const stage = getStageById(campaign.currentStageId);
+            if (stage) {
+              launchStage(stage);
+            } else {
+              setCaptured(null);
+              setScreen('maze');
+            }
           }}
         >
           Laberinto

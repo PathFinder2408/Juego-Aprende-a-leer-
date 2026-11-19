@@ -86,7 +86,13 @@ export class MazeScene extends Phaser.Scene {
     this.portalTriggered = false;
     this.lastHudKey = '';
 
-    const mapConfig = getMazeMapById(this.mapId) ?? CHAPTER_1_MAPS[0];
+    const stageOrderMatch = /-(\d+|boss)$/.exec(this.stageId);
+    const templateIdx =
+      stageOrderMatch?.[1] === 'boss'
+        ? 4
+        : Math.max(0, Math.min(3, Number(stageOrderMatch?.[1] ?? 1) - 1));
+    const mapConfig =
+      getMazeMapById(this.mapId) ?? CHAPTER_1_MAPS[templateIdx] ?? CHAPTER_1_MAPS[0];
     if (!mapConfig) {
       throw new Error(`No existe mapa de laberinto configurado (${this.mapId})`);
     }
