@@ -16,10 +16,11 @@ export class WorldPlayer {
   private walkTime = 0;
   private readonly baseScale = 0.28; // 320px -> ~90px de altura en mundo 2.5D
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, textureKey = 'explorer') {
     this.shadow = scene.add.ellipse(x, y + 36, 46, 18, 0x0f172a, 0.32);
 
-    this.sprite = scene.matter.add.image(x, y, 'explorer', undefined, {
+    const safeKey = scene.textures.exists(textureKey) ? textureKey : 'explorer';
+    this.sprite = scene.matter.add.image(x, y, safeKey, undefined, {
       shape: { type: 'circle', radius: 22 },
       frictionAir: 0.18,
       friction: 0.05,
@@ -40,6 +41,11 @@ export class WorldPlayer {
           right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
         }
       : null;
+  }
+
+  setTextureKey(textureKey: string): void {
+    const safeKey = this.sprite.scene.textures.exists(textureKey) ? textureKey : 'explorer';
+    this.sprite.setTexture(safeKey);
   }
 
   setMoveTarget(x: number, y: number): void {

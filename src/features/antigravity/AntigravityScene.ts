@@ -85,7 +85,8 @@ export class AntigravityScene extends Phaser.Scene {
         : undefined;
 
     this.cleanupBusEvents();
-    this.accessibility = loadSaveState().accessibility;
+    const saved = loadSaveState();
+    this.accessibility = saved.accessibility;
     this.activeEntry = selectedEntry;
     this.activeChallenge = selectedSentence
       ? challengeFromSentence(selectedSentence, selectedEntry)
@@ -102,7 +103,13 @@ export class AntigravityScene extends Phaser.Scene {
     this.createWordSlots();
     this.createCreatureDisplay();
     this.createLetters();
-    this.player = new PlayerBumper(this, DOME_CENTER_X, DOME_CENTER_Y + 130, this.physicsParams);
+    this.player = new PlayerBumper(
+      this,
+      DOME_CENTER_X,
+      DOME_CENTER_Y + 130,
+      this.physicsParams,
+      saved.playerSkin
+    );
 
     if (this.activeChallenge.mode === 'comprehension') {
       const promptAudio = `${this.activeChallenge.storyContext ?? ''} ${this.activeChallenge.promptText ?? ''}`.trim();
@@ -508,6 +515,10 @@ export class AntigravityScene extends Phaser.Scene {
       gameBus.on('accessibility:update', (settings) => {
         if (!this.sys || !this.sys.isActive()) return;
         this.accessibility = { ...settings };
+      }),
+      gameBus.on('player:skin', (skinId) => {
+        if (!this.sys || !this.sys.isActive()) return;
+        this.player?.setSkin(this, skinId);
       }),
       gameBus.on('puzzle:reset', () => {
         if (!this.sys || !this.sys.isActive()) return;

@@ -126,13 +126,14 @@
 | ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
 |---|---|---|---|---|---|---|
 | F13-01 | Arte 3D-chibi (`explorer-futbol7.png` rojo/verde #7, `explorer-kayros24.png` negro/naranja Club Kayros #24), catálogo `skins.json`, tipos y persistencia `SaveStateV2` + tests | M | Gemini 4 Hydrogen (XHigh) | hecha | PNGs transparentes de 320px alto, JSON tipado y `playerSkin` saneado/persistido | `public/assets/explorer-futbol7.png`, `public/assets/explorer-kayros24.png`, `skins.json`, `config/skins.ts`, `types/game.ts`, `saveStorage.ts`, `saveStorage.test.ts`; typecheck y 53/53 tests OK |
-| F13-02 | Integración de estilos en escenas Phaser (`BootScene`, `MazePlayer`, `MazeScene`, `WorldPlayer`, `WorldScene`, `PlayerBumper`, `AntigravityScene`) + evento `player:skin` | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | El personaje refleja el estilo activo y cambia en vivo en laberinto, isla y cúpula | Sincronizado por `gameBus` y `loadSaveState().playerSkin` |
-| F13-03 | Selector táctil en UI (`LobbyView.tsx`, `SettingsModal.tsx`, `StoryModal.tsx`, `App.tsx`, `styles.css`), E2E en navegador con los 3 estilos + cierre en `main` y `push` | L | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Selector funciona y persiste tras recarga; `npm test`, `build` y navegador en 0 errores | Cierre en `main` y `push` |
+| F13-02 | Integración de estilos en escenas Phaser (`BootScene`, `MazePlayer`, `MazeScene`, `WorldPlayer`, `WorldScene`, `PlayerBumper`, `AntigravityScene`) + evento `player:skin` | M | Gemini 4 Hydrogen (XHigh) | hecha | El personaje refleja el estilo activo y cambia en vivo en laberinto, isla y cúpula | `PhaserCanvas.tsx`, `MazePlayer.ts`, `MazeScene.ts`, `WorldPlayer.ts`, `WorldScene.ts`, `PlayerBumper.ts`, `AntigravityScene.ts`; typecheck y 53/53 tests OK |
+| F13-03 | Selector táctil en UI (`LobbyView.tsx`, `SettingsModal.tsx`, `StoryModal.tsx`, `App.tsx`, `styles.css`) + verificación E2E en navegador con los 3 estilos | M | _(rec. Gemini 3.8 Flash / Medium)_ | pendiente | Selector funciona y persiste tras recarga; `npm test`, `build` y navegador en 0 errores | UI táctil para Explorador / Futbolista #7 / Kayros #24 |
+| F13-04 | Crear `README.md` profesional para GitHub (capturas/características, instalación, scripts, controles y arquitectura) + cierre de Fase 13 en `main` y `push` | L | _(rec. Gemini 3.8 Flash / Light)_ | pendiente | `README.md` claro y verídico basado en el código real; merge a `main` y `push` limpios | Incluye publicación en GitHub |
 
 ---
 
 ## Siguiente paso
-Iniciar **F13-02** en rama `feat/fase-13-estilos-deportivos` (integración de estilos deportivos en escenas Phaser + cambio en vivo por `gameBus`).
+Iniciar **F13-03** en rama `feat/fase-13-estilos-deportivos` (selector táctil en UI React, verificación E2E en navegador con los 3 estilos y persistencia tras recarga).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -165,3 +166,4 @@ Iniciar **F13-02** en rama `feat/fase-13-estilos-deportivos` (integración de es
 - **2026-11-19 (Fase 12):** Completada `F12-03` (balanceo de dificultad, accesibilidad reactiva con `setHighContrast` en `MazeRenderer.ts` y banner tutorial dinámico con voz `es-CL` en Etapa `ch1-1` de `MazeScene.ts`; 52/52 tests y `build` OK).
 - **2026-11-19 (Fase 12):** Completada `F12-04` (QA integral final v2.0: `typecheck`, 52/52 tests, `vite build` y E2E en navegador con 0 errores de consola/red) y cerrada Fase 12 / Master Plan v2.0 en `main`.
 - **2026-11-19 (Fase 13):** Creada rama `feat/fase-13-estilos-deportivos` y completada `F13-01` (2 PNG transparentes de 320px `explorer-futbol7.png` y `explorer-kayros24.png`, `skins.json`, `config/skins.ts`, persistencia `playerSkin` en `SaveStateV2`; typecheck y 53/53 tests OK).
+- **2026-11-19 (Fase 13):** Completada `F13-02` (precarga en `BootScene`, soporte y cambio en vivo por `player:skin` en `MazePlayer`/`MazeScene`, `WorldPlayer`/`WorldScene` y `PlayerBumper` con dorsal #7/#24 en `AntigravityScene`; typecheck y 53/53 tests OK).

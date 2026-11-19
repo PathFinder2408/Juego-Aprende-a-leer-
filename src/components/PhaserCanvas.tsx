@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
+import { PLAYER_SKINS } from '../config/skins';
 import wordsData from '../data/words.json';
 import { AntigravityScene } from '../features/antigravity/AntigravityScene';
 import { MazeScene } from '../features/maze/MazeScene';
@@ -31,8 +32,10 @@ class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
-    if (!this.textures.exists('explorer')) {
-      this.load.image('explorer', '/assets/explorer.png');
+    for (const skin of PLAYER_SKINS) {
+      if (!this.textures.exists(skin.textureKey)) {
+        this.load.image(skin.textureKey, skin.sprite);
+      }
     }
     if (!this.textures.exists('palm-tree')) {
       this.load.image('palm-tree', '/assets/palm-tree.png');

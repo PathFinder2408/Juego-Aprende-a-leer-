@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
 import { speakText } from '../../audio/speech';
+import { getPlayerSkinConfig } from '../../config/skins';
 import wordsData from '../../data/words.json';
 import worldData from '../../data/world.json';
 import { gameBus } from '../../events/bus';
 import type { WordEntry, WorldConfig } from '../../types/game';
+import { loadSaveState } from '../persistence/saveStorage';
 import { ensureWorldTextures, renderIslandTerrain } from './islandRenderer';
 import { WorldPlayer } from './WorldPlayer';
 
@@ -22,12 +24,15 @@ export class WorldScene extends Phaser.Scene {
   private dynamicProps: Array<{ sprite: Phaser.Physics.Matter.Image; shadow: Phaser.GameObjects.Ellipse }> = [];
   private tapMarker!: Phaser.GameObjects.Arc;
   private encounterGraceUntil = 0;
+  private unsubscribers: Array<() => void> = [];
 
   constructor() {
     super({ key: 'WorldScene' });
   }
 
   create(): void {
+    this.cleanupBusEvents();
+
     const world = worldData as WorldConfig;
     const words = wordsData as WordEntry[];
     this.wildActors = [];
@@ -42,12 +47,27 @@ export class WorldScene extends Phaser.Scene {
     this.spawnProps(world);
     this.spawnWildCreatures(world, words);
 
-    this.player = new WorldPlayer(this, world.spawn.x, world.spawn.y);
+    const playerSkin = getPlayerSkinConfig(loadSaveState().playerSkin);
+    this.player = new WorldPlayer(this, world.spawn.x, world.spawn.y, playerSkin.textureKey);
 
     this.cameras.main.setBounds(0, 0, world.width, world.height);
     this.cameras.main.startFollow(this.player.sprite, true, 0.12, 0.12);
 
     this.registerPointerNavigation();
+    this.unsubscribers.push(
+      gameBus.on('player:skin', (skinId) => {
+        if (!this.sys || !this.sys.isActive()) return;
+        const nextSkin = getPlayerSkinConfig(skinId);
+        this.player?.setTextureKey(nextSkin.textureKey);
+      })
+    );
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupBusEvents, this);
+    this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanupBusEvents, this);
+  }
+
+  private cleanupBusEvents(): void {
+    for (const unsub of this.unsubscribers) unsub();
+    this.unsubscribers = [];
   }
 
   update(time: number, delta: number): void {

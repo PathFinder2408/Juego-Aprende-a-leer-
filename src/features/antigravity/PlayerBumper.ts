@@ -1,44 +1,80 @@
 import Phaser from 'phaser';
-import type { PhysicsParams } from '../../types/game';
+import { getPlayerSkinConfig } from '../../config/skins';
+import type { PhysicsParams, PlayerSkinConfig, PlayerSkinId } from '../../types/game';
 
 const TORSO_RADIUS = 24;
 const HEAD_RADIUS = 17;
 const PLAYER_COLLISION_GROUP = -1;
 
-function ensurePlayerTextures(scene: Phaser.Scene): void {
-  if (!scene.textures.exists('player-torso')) {
+function torsoTexKey(skinId: PlayerSkinId): string {
+  return `player-torso-${skinId}`;
+}
+
+function headTexKey(skinId: PlayerSkinId): string {
+  return `player-head-${skinId}`;
+}
+
+function ensurePlayerTextures(scene: Phaser.Scene, skin: PlayerSkinConfig): void {
+  const tKey = torsoTexKey(skin.id);
+  if (!scene.textures.exists(tKey)) {
     const s = TORSO_RADIUS * 2;
-    const tex = scene.textures.createCanvas('player-torso', s, s);
+    const tex = scene.textures.createCanvas(tKey, s, s);
     if (tex) {
       const ctx = tex.getContext();
-      const grad = ctx.createRadialGradient(TORSO_RADIUS - 6, TORSO_RADIUS - 7, 3, TORSO_RADIUS, TORSO_RADIUS, TORSO_RADIUS - 2);
-      grad.addColorStop(0, '#5eead4');
-      grad.addColorStop(0.65, '#14b8a6');
-      grad.addColorStop(1, '#0f766e');
+      const grad = ctx.createRadialGradient(
+        TORSO_RADIUS - 6,
+        TORSO_RADIUS - 7,
+        3,
+        TORSO_RADIUS,
+        TORSO_RADIUS,
+        TORSO_RADIUS - 2
+      );
+      grad.addColorStop(0, skin.torsoLight);
+      grad.addColorStop(0.65, skin.torsoColor);
+      grad.addColorStop(1, skin.torsoDark);
 
       ctx.beginPath();
       ctx.arc(TORSO_RADIUS, TORSO_RADIUS, TORSO_RADIUS - 2, 0, Math.PI * 2);
       ctx.fillStyle = grad;
       ctx.fill();
       ctx.lineWidth = 3;
-      ctx.strokeStyle = '#134e4a';
+      ctx.strokeStyle = skin.torsoStroke;
       ctx.stroke();
 
-      // Insignia estrella dorada
-      ctx.beginPath();
-      ctx.arc(TORSO_RADIUS, TORSO_RADIUS, 7, 0, Math.PI * 2);
-      ctx.fillStyle = '#facc15';
-      ctx.fill();
+      if (skin.jerseyNumber) {
+        ctx.font = '900 18px Lexend, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#0f172a';
+        ctx.strokeText(skin.jerseyNumber, TORSO_RADIUS, TORSO_RADIUS + 1);
+        ctx.fillStyle = skin.accentColor;
+        ctx.fillText(skin.jerseyNumber, TORSO_RADIUS, TORSO_RADIUS + 1);
+      } else {
+        // Insignia estrella dorada
+        ctx.beginPath();
+        ctx.arc(TORSO_RADIUS, TORSO_RADIUS, 7, 0, Math.PI * 2);
+        ctx.fillStyle = skin.accentColor;
+        ctx.fill();
+      }
       tex.refresh();
     }
   }
 
-  if (!scene.textures.exists('player-head')) {
+  const hKey = headTexKey(skin.id);
+  if (!scene.textures.exists(hKey)) {
     const s = HEAD_RADIUS * 2;
-    const tex = scene.textures.createCanvas('player-head', s, s);
+    const tex = scene.textures.createCanvas(hKey, s, s);
     if (tex) {
       const ctx = tex.getContext();
-      const grad = ctx.createRadialGradient(HEAD_RADIUS - 4, HEAD_RADIUS - 6, 2, HEAD_RADIUS, HEAD_RADIUS, HEAD_RADIUS - 2);
+      const grad = ctx.createRadialGradient(
+        HEAD_RADIUS - 4,
+        HEAD_RADIUS - 6,
+        2,
+        HEAD_RADIUS,
+        HEAD_RADIUS,
+        HEAD_RADIUS - 2
+      );
       grad.addColorStop(0, '#ffffff');
       grad.addColorStop(0.75, '#e2e8f0');
       grad.addColorStop(1, '#94a3b8');
@@ -48,7 +84,7 @@ function ensurePlayerTextures(scene: Phaser.Scene): void {
       ctx.fillStyle = grad;
       ctx.fill();
       ctx.lineWidth = 2.5;
-      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeStyle = skin.id === 'explorer' ? '#38bdf8' : skin.accentColor;
       ctx.stroke();
 
       // Visor 3D brillante
@@ -58,7 +94,7 @@ function ensurePlayerTextures(scene: Phaser.Scene): void {
       ctx.fill();
 
       // Ojos amigables
-      ctx.fillStyle = '#7dd3fc';
+      ctx.fillStyle = skin.id === 'explorer' ? '#7dd3fc' : skin.accentColor;
       ctx.beginPath();
       ctx.arc(HEAD_RADIUS - 4, HEAD_RADIUS, 2.3, 0, Math.PI * 2);
       ctx.arc(HEAD_RADIUS + 4, HEAD_RADIUS, 2.3, 0, Math.PI * 2);
@@ -81,14 +117,24 @@ export class PlayerBumper {
   } | null;
   private pointerTarget: { x: number; y: number } | null = null;
   private wobbleTime = 0;
+  private skin: PlayerSkinConfig;
+  private limbColor: number;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, params: PhysicsParams) {
-    ensurePlayerTextures(scene);
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    params: PhysicsParams,
+    skinId?: PlayerSkinId | null
+  ) {
+    this.skin = getPlayerSkinConfig(skinId);
+    this.limbColor = Phaser.Display.Color.HexStringToColor(this.skin.torsoColor).color;
+    ensurePlayerTextures(scene, this.skin);
 
     this.limbsGraphics = scene.add.graphics().setDepth(4);
 
     // Ragdoll simplificado: torso + cabeza unidos por constraint elástico
-    this.torso = scene.matter.add.image(x, y, 'player-torso', undefined, {
+    this.torso = scene.matter.add.image(x, y, torsoTexKey(this.skin.id), undefined, {
       shape: { type: 'circle', radius: TORSO_RADIUS },
       restitution: params.restitution,
       frictionAir: params.frictionAir + 0.025,
@@ -99,7 +145,7 @@ export class PlayerBumper {
     });
     this.torso.setDepth(5);
 
-    this.head = scene.matter.add.image(x, y - 34, 'player-head', undefined, {
+    this.head = scene.matter.add.image(x, y - 34, headTexKey(this.skin.id), undefined, {
       shape: { type: 'circle', radius: HEAD_RADIUS },
       restitution: params.restitution,
       frictionAir: params.frictionAir + 0.02,
@@ -127,6 +173,15 @@ export class PlayerBumper {
 
   getPosition(): { x: number; y: number } {
     return { x: this.torso.x, y: this.torso.y };
+  }
+
+  setSkin(scene: Phaser.Scene, skinId?: PlayerSkinId | null): void {
+    const next = getPlayerSkinConfig(skinId);
+    this.skin = next;
+    this.limbColor = Phaser.Display.Color.HexStringToColor(next.torsoColor).color;
+    ensurePlayerTextures(scene, next);
+    if (this.torso.active) this.torso.setTexture(torsoTexKey(next.id));
+    if (this.head.active) this.head.setTexture(headTexKey(next.id));
   }
 
   setPointerTarget(x: number, y: number): void {
@@ -218,7 +273,7 @@ export class PlayerBumper {
 
     const g = this.limbsGraphics;
     g.clear();
-    g.lineStyle(7, 0x0d9488, 1);
+    g.lineStyle(7, this.limbColor, 1);
 
     const cx = this.torso.x;
     const cy = this.torso.y;

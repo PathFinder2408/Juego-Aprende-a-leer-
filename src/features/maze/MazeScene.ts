@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { playBubblePop, playCaptureFanfare, playCorrectChime, playSoftBounce } from '../../audio/sfx';
 import { speakText } from '../../audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS, SLOW_FLOATING_MULTIPLIER } from '../../config/accessibility';
+import { getPlayerSkinConfig } from '../../config/skins';
 import { CHAPTER_1_MAPS, getMazeMapById } from '../../data/maps';
 import { gameBus } from '../../events/bus';
 import type {
@@ -97,7 +98,9 @@ export class MazeScene extends Phaser.Scene {
   create(): void {
     this.cleanupScene();
 
-    this.accessibility = loadSaveState().accessibility;
+    const savedState = loadSaveState();
+    this.accessibility = savedState.accessibility;
+    const playerSkin = getPlayerSkinConfig(savedState.playerSkin);
     this.paused = false;
     this.portalTriggered = false;
     this.lastHudKey = '';
@@ -139,7 +142,12 @@ export class MazeScene extends Phaser.Scene {
 
     const initialSnapshot = this.engine.getState();
     this.mazeRenderer = new MazeRenderer(this, initialSnapshot, this.accessibility.highContrast);
-    this.mazePlayer = new MazePlayer(this, initialSnapshot.player, MAZE_TILE_SIZE);
+    this.mazePlayer = new MazePlayer(
+      this,
+      initialSnapshot.player,
+      MAZE_TILE_SIZE,
+      playerSkin.textureKey
+    );
     this.mazeRenderer.syncEnemies(this.enemies, this.time.now, this.accessibility.reducedMotion);
     this.mazeRenderer.syncBoss(this.boss, this.time.now, this.accessibility.reducedMotion);
 
@@ -258,6 +266,10 @@ export class MazeScene extends Phaser.Scene {
       gameBus.on('maze:pause', (paused) => {
         this.paused = paused;
         this.emitHudSnapshot(this.engine.getState());
+      }),
+      gameBus.on('player:skin', (skinId) => {
+        const nextSkin = getPlayerSkinConfig(skinId);
+        this.mazePlayer?.setTextureKey(nextSkin.textureKey);
       })
     );
   }
