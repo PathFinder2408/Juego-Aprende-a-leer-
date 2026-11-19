@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 13 en curso (rama `feat/fase-13-estilos-deportivos` — estilos deportivos del personaje)
+- **Fase actual:** Proyecto completo (Fases 0–13 cerradas en rama `main`)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -128,12 +128,12 @@
 | F13-01 | Arte 3D-chibi (`explorer-futbol7.png` rojo/verde #7, `explorer-kayros24.png` negro/naranja Club Kayros #24), catálogo `skins.json`, tipos y persistencia `SaveStateV2` + tests | M | Gemini 4 Hydrogen (XHigh) | hecha | PNGs transparentes de 320px alto, JSON tipado y `playerSkin` saneado/persistido | `public/assets/explorer-futbol7.png`, `public/assets/explorer-kayros24.png`, `skins.json`, `config/skins.ts`, `types/game.ts`, `saveStorage.ts`, `saveStorage.test.ts`; typecheck y 53/53 tests OK |
 | F13-02 | Integración de estilos en escenas Phaser (`BootScene`, `MazePlayer`, `MazeScene`, `WorldPlayer`, `WorldScene`, `PlayerBumper`, `AntigravityScene`) + evento `player:skin` | M | Gemini 4 Hydrogen (XHigh) | hecha | El personaje refleja el estilo activo y cambia en vivo en laberinto, isla y cúpula | `PhaserCanvas.tsx`, `MazePlayer.ts`, `MazeScene.ts`, `WorldPlayer.ts`, `WorldScene.ts`, `PlayerBumper.ts`, `AntigravityScene.ts`; typecheck y 53/53 tests OK |
 | F13-03 | Selector táctil en UI (`LobbyView.tsx`, `SettingsModal.tsx`, `StoryModal.tsx`, `App.tsx`, `styles.css`) + verificación E2E en navegador con los 3 estilos | M | Gemini 4 Hydrogen (Medium) | hecha | Selector funciona y persiste tras recarga; `npm test`, `build` y navegador en 0 errores | `LobbyView.tsx`, `SettingsModal.tsx`, `StoryModal.tsx`, `App.tsx`, `styles.css`; 53/53 tests, `build` y E2E en navegador con 0 errores |
-| F13-04 | Crear `README.md` profesional para GitHub (capturas/características, instalación, scripts, controles y arquitectura) + cierre de Fase 13 en `main` y `push` | L | _(rec. Gemini 3.8 Flash / Light)_ | pendiente | `README.md` claro y verídico basado en el código real; merge a `main` y `push` limpios | Incluye publicación en GitHub |
+| F13-04 | Crear `README.md` profesional para GitHub (capturas/características, instalación, scripts, controles y arquitectura) + cierre de Fase 13 en `main` y `push` | L | Gemini 4 Hydrogen (Low) | hecha | `README.md` claro y verídico basado en el código real; merge a `main` y `push` limpios | `README.md` creado; Fase 13 fusionada a `main` y publicada en GitHub |
 
 ---
 
 ## Siguiente paso
-Iniciar **F13-04** en rama `feat/fase-13-estilos-deportivos` (crear `README.md` para GitHub + cierre final en `main` y `push`; esfuerzo **L**, modelo recomendado **LIGERO (L)**).
+Proyecto y Fase 13 completados y cerrados en `main`. Listo para nuevas mejoras cuando el usuario indique.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -168,3 +168,4 @@ Iniciar **F13-04** en rama `feat/fase-13-estilos-deportivos` (crear `README.md` 
 - **2026-11-19 (Fase 13):** Creada rama `feat/fase-13-estilos-deportivos` y completada `F13-01` (2 PNG transparentes de 320px `explorer-futbol7.png` y `explorer-kayros24.png`, `skins.json`, `config/skins.ts`, persistencia `playerSkin` en `SaveStateV2`; typecheck y 53/53 tests OK).
 - **2026-11-19 (Fase 13):** Completada `F13-02` (precarga en `BootScene`, soporte y cambio en vivo por `player:skin` en `MazePlayer`/`MazeScene`, `WorldPlayer`/`WorldScene` y `PlayerBumper` con dorsal #7/#24 en `AntigravityScene`; typecheck y 53/53 tests OK).
 - **2026-11-19 (Fase 13):** Completada `F13-03` (selector táctil de estilos en `LobbyView`, `SettingsModal`, `StoryModal`, `App` y `styles.css`; E2E en navegador verificando los 3 estilos, Laberinto, Cúpula y persistencia tras recarga con 0 errores).
+- **2026-11-19 (Fase 13):** Completada `F13-04` (`README.md` creado para GitHub, merge de Fase 13 a `main` y `push` a `origin/main`).
