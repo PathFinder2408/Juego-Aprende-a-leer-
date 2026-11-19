@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Plan Maestro v2.0 aprobado para planificación (`Fases 7 a 12`: Campaña Pac-Man + Bomberman + Cúpula + Lectura Fluida)
+- **Fase actual:** Fase 7 en progreso (`feat/fase-7-arquitectura-v2` — Arquitectura v2.0, currículo fluido y controles universales)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -77,7 +77,7 @@
 ### Fase 7: Arquitectura v2.0, Currículo de Lectura Fluida y Contratos JSON
 | ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
 |---|---|---|---|---|---|---|
-| F7-01 | Contratos TS v2.0 (`src/types/campaign.ts`, `src/types/game.ts`) para capítulos, mapas en grilla, enemigos, power-ups, historia y modos de lectura fluida | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Tipos estrictos sin `any`, cubriendo letras/sílabas/frases/comprensión y mapa de campaña | <= 3 archivos |
+| F7-01 | Contratos TS v2.0 (`src/types/campaign.ts`, `src/types/game.ts`) para capítulos, mapas en grilla, enemigos, power-ups, historia y modos de lectura fluida | P | Gemini 4 Hydrogen (XHigh) | hecha | Tipos estrictos sin `any`, cubriendo letras/sílabas/frases/comprensión y mapa de campaña | `types/campaign.ts`, `types/game.ts`; `typecheck` y 15/15 tests OK |
 | F7-02 | Currículo ampliado en JSON (`chapters.json`, `words.json`, `sentences.json`) para Capítulos 1–6 (de 6 años a lectura fluida) + test de integridad | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | 100% contenido pedagógico en JSON validado por test automático (`curriculum.test.ts`) | Sin textos hardcodeados en lógica |
 | F7-03 | Migración `SaveStateV1 -> SaveStateV2` en `saveStorage.ts` + tests en `saveStorage.test.ts` (progreso de campaña, estrellas por etapa, historia y cartas equipadas) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Guardados `v1` migran sin pérdida a `v2`; `npm test` valida migración y saneamiento | Conserva accesibilidad y capturas previas |
 | F7-04 | Controlador de entrada universal (`src/features/input/InputController.ts` + tests): `WASD`/Flechas, `Espacio/Enter/J/Z`, `E/Shift`, `P/Esc`, Gamepad y API táctil | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Mapeo unificado con soporte de buffer de giro y tests unitarios de prioridades teclado/táctil/gamepad | Reutilizable en `MazeScene` y `WorldScene` |
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Confirmar para crear rama `feat/fase-7-arquitectura-v2` e iniciar **F7-01** (esfuerzo **P**, modelo recomendado **Gemini 4 Hydrogen (XHigh)** — coincide con tu modelo actual).
+Confirmar ejecución de **F7-02** (esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**) en rama `feat/fase-7-arquitectura-v2`.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -135,3 +135,4 @@ Confirmar para crear rama `feat/fase-7-arquitectura-v2` e iniciar **F7-01** (esf
 - **2026-11-18:** Fases 2, 3, 4 y 5 completas (`F2-01` a `F5-04` cerradas; accesibilidad, audio, alto contraste y `reduced-motion` verificados con 9/9 tests y 0 errores).
 - **2026-11-18:** Rama `feat/fase-6-persistencia` creada y Fase 6 completa (`F6-01` a `F6-04` cerradas; `localStorage` versionado con migraciones, reinicio en 2 pasos, 15/15 tests, build y navegador con 0 errores).
 - **2026-11-19:** Diseñado Master Plan v2.0 (`docs/MASTER_PLAN_V2.md` y Fases 7–12 en `PROGRESS.md`) para híbrido Pac-Man + Bomberman + Cúpula con historia completa, controles universales y currículo desde 6 años hasta lectura fluida.
+- **2026-11-19:** Iniciada rama `feat/fase-7-arquitectura-v2` y completada `F7-01` (contratos TS estrictos v2.0).
