@@ -77,13 +77,33 @@ describe('saveStorage', () => {
     };
 
     const migrated = migrateSave(legacy);
-    expect(migrated.version).toBe(1);
+    expect(migrated.version).toBe(2);
     expect(migrated.capturedWordIds).toEqual(['sol']);
     expect(migrated.completedCardIds).toEqual(['card-solin']);
     expect(migrated.progression).toEqual({ level: 4, correctStreak: 2, wrongStreak: 0 });
     expect(migrated.accessibility.voiceEnabled).toBe(false);
     expect(migrated.accessibility.reducedMotion).toBe(true);
     expect(migrated.accessibility.sfxEnabled).toBe(true);
+    expect(migrated.campaign.unlockedChapterIds).toEqual(['ch1']);
+    expect(migrated.fluency.wordsCompleted).toBe(1);
+
+    const v1Save = {
+      version: 1,
+      capturedWordIds: ['sol', 'luna'],
+      completedCardIds: ['card-solin'],
+      progression: { level: 3, correctStreak: 1, wrongStreak: 0 },
+      accessibility: {
+        ...DEFAULT_ACCESSIBILITY_SETTINGS,
+        highContrast: true,
+      },
+      updatedAt: '2026-11-18T14:00:00.000Z',
+    };
+    const migratedFromV1 = migrateSave(v1Save);
+    expect(migratedFromV1.version).toBe(2);
+    expect(migratedFromV1.capturedWordIds).toEqual(['sol', 'luna']);
+    expect(migratedFromV1.accessibility.highContrast).toBe(true);
+    expect(migratedFromV1.campaign.currentStageId).toBe('ch1-1');
+    expect(migratedFromV1.fluency.wordsCompleted).toBe(2);
 
     const customMigrations: Record<number, SaveMigration> = {
       0: (data) => ({ ...data, version: 1, step1: true }),
@@ -91,6 +111,48 @@ describe('saveStorage', () => {
     };
     const chained = runMigrations({ legacy: true }, 2, customMigrations);
     expect(chained).toEqual({ legacy: true, version: 2, step1: true, step2: true });
+  });
+
+  it('sanea campaña, estrellas y métricas de fluidez fuera de rango', () => {
+    const storage = createMemoryStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        version: 2,
+        capturedWordIds: ['sol'],
+        completedCardIds: [],
+        progression: { level: 2, correctStreak: 0, wrongStreak: 0 },
+        accessibility: DEFAULT_ACCESSIBILITY_SETTINGS,
+        campaign: {
+          unlockedChapterIds: ['ch2', 'ch99'],
+          completedStageIds: ['ch1-1', 'etapa-falsa'],
+          starsByStageId: { 'ch1-1': 9, 'etapa-falsa': 3 },
+          seenStoryIds: ['story-prologue', ''],
+          equippedCardId: 'card-inexistente',
+          currentChapterId: 'ch99',
+          currentStageId: 'ch1-2',
+        },
+        fluency: {
+          wordsCompleted: -5,
+          sentencesCompleted: 4,
+          comprehensionCompleted: 2,
+          bestAccuracyPercent: 140,
+        },
+      }),
+    });
+
+    const loaded = loadSaveState(storage);
+    expect(loaded.campaign.unlockedChapterIds).toEqual(['ch1', 'ch2']);
+    expect(loaded.campaign.completedStageIds).toEqual(['ch1-1']);
+    expect(loaded.campaign.starsByStageId).toEqual({ 'ch1-1': 3 });
+    expect(loaded.campaign.seenStoryIds).toEqual(['story-prologue']);
+    expect(loaded.campaign.equippedCardId).toBeNull();
+    expect(loaded.campaign.currentChapterId).toBe('ch1');
+    expect(loaded.campaign.currentStageId).toBe('ch1-2');
+    expect(loaded.fluency).toEqual({
+      wordsCompleted: 0,
+      sentencesCompleted: 4,
+      comprehensionCompleted: 2,
+      bestAccuracyPercent: 100,
+    });
   });
 
   it('maneja JSON corrupto, versión futura y fallos de storage sin lanzar errores', () => {

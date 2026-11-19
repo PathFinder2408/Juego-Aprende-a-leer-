@@ -79,7 +79,7 @@
 |---|---|---|---|---|---|---|
 | F7-01 | Contratos TS v2.0 (`src/types/campaign.ts`, `src/types/game.ts`) para capítulos, mapas en grilla, enemigos, power-ups, historia y modos de lectura fluida | P | Gemini 4 Hydrogen (XHigh) | hecha | Tipos estrictos sin `any`, cubriendo letras/sílabas/frases/comprensión y mapa de campaña | `types/campaign.ts`, `types/game.ts`; `typecheck` y 15/15 tests OK |
 | F7-02 | Currículo ampliado en JSON (`chapters.json`, `words.json`, `sentences.json`) para Capítulos 1–6 (de 6 años a lectura fluida) + test de integridad | M | Gemini 4 Hydrogen (Medium) | hecha | 100% contenido pedagógico en JSON validado por test automático (`curriculum.test.ts`) | 6 capítulos, 30 palabras, 9 frases/comprensión; 18/18 tests OK |
-| F7-03 | Migración `SaveStateV1 -> SaveStateV2` en `saveStorage.ts` + tests en `saveStorage.test.ts` (progreso de campaña, estrellas por etapa, historia y cartas equipadas) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Guardados `v1` migran sin pérdida a `v2`; `npm test` valida migración y saneamiento | Conserva accesibilidad y capturas previas |
+| F7-03 | Migración `SaveStateV1 -> SaveStateV2` en `saveStorage.ts` + tests en `saveStorage.test.ts` (progreso de campaña, estrellas por etapa, historia y cartas equipadas) | M | Gemini 4 Hydrogen (Medium) | hecha | Guardados `v1` migran sin pérdida a `v2`; `npm test` valida migración y saneamiento | `types/game.ts`, `saveStorage.ts`, `App.tsx`, `saveStorage.test.ts`; 19/19 tests OK |
 | F7-04 | Controlador de entrada universal (`src/features/input/InputController.ts` + tests): `WASD`/Flechas, `Espacio/Enter/J/Z`, `E/Shift`, `P/Esc`, Gamepad y API táctil | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Mapeo unificado con soporte de buffer de giro y tests unitarios de prioridades teclado/táctil/gamepad | Reutilizable en `MazeScene` y `WorldScene` |
 
 ### Fase 8: Motor de Laberintos 2.5D y Mecánica Pac-Man + Bomberman
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Confirmar ejecución de **F7-03** (esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**) en rama `feat/fase-7-arquitectura-v2`.
+Confirmar ejecución de **F7-04** (esfuerzo **P**, modelo recomendado **Gemini 4 Hydrogen (XHigh)**) en rama `feat/fase-7-arquitectura-v2`.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).

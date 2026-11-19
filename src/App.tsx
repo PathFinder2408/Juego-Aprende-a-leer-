@@ -22,8 +22,10 @@ import { adaptiveEngine } from './features/progression/adaptiveEngine';
 import type {
   AccessibilitySettings,
   ActiveScreen,
+  CampaignProgressState,
   CapturePayload,
   CardEntry,
+  FluencyMetrics,
   PhysicsParams,
   ProgressionSnapshot,
   PuzzleStatePayload,
@@ -44,6 +46,8 @@ export function App() {
   const [captured, setCaptured] = useState<CapturePayload | null>(null);
   const [capturedWordIds, setCapturedWordIds] = useState<string[]>(() => initialSave.capturedWordIds);
   const [completedCardIds, setCompletedCardIds] = useState<string[]>(() => initialSave.completedCardIds);
+  const [campaign, setCampaign] = useState<CampaignProgressState>(() => initialSave.campaign);
+  const [fluency, setFluency] = useState<FluencyMetrics>(() => initialSave.fluency);
   const [progression, setProgression] = useState<ProgressionSnapshot>(() => adaptiveEngine.getSnapshot());
   const [pauseReminder, setPauseReminder] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -131,15 +135,19 @@ export function App() {
         wrongStreak: progression.wrongStreak,
       },
       accessibility,
+      campaign,
+      fluency,
       updatedAt: new Date().toISOString(),
     });
-  }, [capturedWordIds, completedCardIds, progression, accessibility]);
+  }, [capturedWordIds, completedCardIds, progression, accessibility, campaign, fluency]);
 
   const handleResetProgress = () => {
     const nextSave = resetProgressState(accessibility);
     const nextProgression = adaptiveEngine.reset();
     setCapturedWordIds(nextSave.capturedWordIds);
     setCompletedCardIds(nextSave.completedCardIds);
+    setCampaign(nextSave.campaign);
+    setFluency(nextSave.fluency);
     setProgression(nextProgression);
     setCaptured(null);
     setPuzzleState(null);

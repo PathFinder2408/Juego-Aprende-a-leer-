@@ -161,7 +161,7 @@ export interface SaveStateV2 {
   updatedAt: string;
 }
 
-export type SaveState = SaveStateV1;
+export type SaveState = SaveStateV2;
 
 export interface PuzzleStatePayload {
   word: string;
