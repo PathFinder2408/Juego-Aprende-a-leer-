@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 8 en curso (rama `feat/fase-8-laberintos` — F8-03 completada)
+- **Fase actual:** Fase 8 completada (fusionada a `main` — Motor de Laberintos 2.5D y Controles Táctiles)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -88,7 +88,7 @@
 | F8-01 | Modelo lógico puro del laberinto (`src/features/maze/mazeEngine.ts` + `mazeEngine.test.ts`): grilla, bloques rompibles, orbes/sílabas y ondas de burbujas en cruz | P | Gemini 4 Hydrogen (XHigh) | hecha | Lógica pura desacoplada de Phaser; `npm test` valida explosión en cruz, colisión con muros y recolección | `mazeEngine.ts`, `mazeEngine.test.ts`; typecheck y 29/29 tests OK |
 | F8-02 | Mapas amplios JSON del Capítulo 1 + plantillas escalables (`src/data/maps/`) y validador de alcanzabilidad (`mapValidator.ts` + tests) | M | Gemini 4 Hydrogen (Medium) | hecha | Test valida que todos los spawns, orbes y portales sean alcanzables | `ch1.json`, `maps/index.ts`, `mapValidator.ts`, `mapValidator.test.ts`; 32/32 tests OK |
 | F8-03 | Escena Phaser 2.5D `MazeScene` (`MazeScene.ts`, `MazeRenderer.ts`, `MazePlayer.ts`): cámara seguimiento, giro asistido en esquinas, burbujas sónicas y portal | P | Gemini 4 Hydrogen (XHigh) | hecha | Explorador se mueve fluido con `WASD`/Flechas, rompe bloques con burbujas y abre portal al completar sellos | `MazeScene.ts`, `MazeRenderer.ts`, `MazePlayer.ts`, `PhaserCanvas.tsx`, `App.tsx`; typecheck, 32/32 tests y build OK |
-| F8-04 | Controles táctiles en pantalla (`TouchControls.tsx` + `styles.css`) + prueba E2E de controles universales en navegador | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Cruceta táctil + botón Burbuja/Poder operativos sin errores de consola | Verificado en viewport PC y tablet |
+| F8-04 | Controles táctiles en pantalla (`TouchControls.tsx` + `styles.css`) + prueba E2E de controles universales en navegador | M | Gemini 4 Hydrogen (Medium) | hecha | Cruceta táctil + botón Burbuja/Poder operativos sin errores de consola | `TouchControls.tsx`, `App.tsx`, `styles.css`; E2E PC (`1280x800`) y tablet (`768x1024`) con 0 errores |
 
 ### Fase 9: Enemigos, Power-Ups, Corazones y HUD Arcade
 | ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Iniciar **F8-04** en rama `feat/fase-8-laberintos` (`TouchControls.tsx` + `styles.css` y prueba E2E en navegador de PC/tablet, esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**).
+Confirmar para crear rama `feat/fase-9-enemigos-hud` e iniciar **F9-01** (`enemyAI.ts` + `enemyAI.test.ts`: IA pura de enemigos, patrulla, persecución por vista, aturdimiento y huida, esfuerzo **P**, modelo recomendado **Gemini 4 Hydrogen (XHigh)**).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -139,3 +139,4 @@ Iniciar **F8-04** en rama `feat/fase-8-laberintos` (`TouchControls.tsx` + `style
 - **2026-11-19 (Fase 8):** Creada rama `feat/fase-8-laberintos` y completada `F8-01` (`MazeEngine` puro y determinista con giro asistido, warps, ondas en cruz, bloques blandos/duros y recolección; typecheck y 29/29 tests OK).
 - **2026-11-19 (Fase 8):** Completada `F8-02` (5 mapas JSON del Capítulo 1 de `15x11` a `23x15` en `src/data/maps/ch1.json`, catálogo `maps/index.ts` y validador BFS `mapValidator.ts`; typecheck y 32/32 tests OK).
 - **2026-11-19 (Fase 8):** Completada `F8-03` (escena Phaser 2.5D `MazeScene`, `MazeRenderer`, `MazePlayer` integrada en `PhaserCanvas` y `App`; typecheck, 32/32 tests y `vite build` OK).
+- **2026-11-19 (Fase 8):** Completada `F8-04` (`TouchControls.tsx` con cruceta + Burbuja/Poder, E2E en navegador PC/tablet con 0 errores de consola) y cerrada Fase 8 en `main`.

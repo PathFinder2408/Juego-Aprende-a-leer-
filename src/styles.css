@@ -647,7 +647,7 @@ body,
 /* Barra inferior estilo móvil */
 .bottom-dock {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   background: rgba(15, 23, 42, 0.95);
   border: 2px solid #334155;
@@ -705,4 +705,147 @@ body,
 .slider-row input[type='range'] {
   width: 100%;
   accent-color: #38bdf8;
+}
+
+/* Controles táctiles en pantalla para MazeScene */
+.stage-card--interactive {
+  position: relative;
+}
+
+.touch-controls-overlay {
+  position: absolute;
+  inset: auto 12px 12px 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.touch-dpad {
+  position: relative;
+  width: 138px;
+  height: 138px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.touch-dpad-center {
+  grid-column: 2;
+  grid-row: 2;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.touch-dpad-btn {
+  border: 2px solid rgba(226, 232, 240, 0.55);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-dpad-btn--up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.touch-dpad-btn--left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.touch-dpad-btn--right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.touch-dpad-btn--down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.touch-dpad-btn.is-pressed {
+  background: #38bdf8;
+  color: #0f172a;
+  border-color: #ffffff;
+  transform: scale(0.94);
+}
+
+.touch-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.touch-action-btn {
+  border: 2.5px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  color: #0f172a;
+  font-family: inherit;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45);
+}
+
+.touch-action-btn--bubble {
+  width: 72px;
+  height: 72px;
+  background: rgba(56, 189, 248, 0.9);
+}
+
+.touch-action-btn--power {
+  width: 58px;
+  height: 58px;
+  background: rgba(250, 204, 21, 0.9);
+}
+
+.touch-action-btn span {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.touch-action-btn small {
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+.touch-action-btn.is-pressed {
+  transform: scale(0.92);
+  filter: brightness(1.1);
+}
+
+.hud-shell--high-contrast .touch-dpad-btn {
+  background: #020617;
+  border-color: #facc15;
+  color: #ffffff;
+}
+
+.hud-shell--high-contrast .touch-action-btn {
+  border-color: #ffffff;
 }

@@ -5,6 +5,7 @@ import { LobbyView } from './components/LobbyView';
 import { PhaserCanvas } from './components/PhaserCanvas';
 import { PhysicsDebugPanel } from './components/PhysicsDebugPanel';
 import { SettingsModal } from './components/SettingsModal';
+import { TouchControls } from './components/TouchControls';
 import { setSfxEnabled } from './audio/sfx';
 import { setVoiceEnabled } from './audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from './config/accessibility';
@@ -279,7 +280,7 @@ export function App() {
 
         {(screen === 'world' || screen === 'antigravity' || screen === 'maze') && (
           <div className={screen === 'antigravity' && showDebug ? 'workspace' : 'workspace workspace--full'}>
-            <div className="stage-card">
+            <div className="stage-card stage-card--interactive">
               <PhaserCanvas
                 screen={screen}
                 activeWordId={activeWordId}
@@ -288,6 +289,7 @@ export function App() {
                 activeStageTitle={activeStageTitle}
                 activeStageWordIds={activeStageWordIds}
               />
+              {screen === 'maze' && <TouchControls />}
             </div>
             {screen === 'antigravity' && showDebug && (
               <PhysicsDebugPanel
