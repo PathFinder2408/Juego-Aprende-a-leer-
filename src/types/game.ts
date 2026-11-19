@@ -1,3 +1,41 @@
+import type {
+  ArcadeHudSnapshot,
+  CampaignProgressState,
+  CardPowerKind,
+  DomeChallengeMode,
+  FluencyMetrics,
+} from './campaign';
+
+export type {
+  ArcadeHudSnapshot,
+  BiomeId,
+  BossAbilityKind,
+  BossConfig,
+  CampaignProgressState,
+  CardPowerKind,
+  ChapterConfig,
+  DomeChallengeMode,
+  EnemyBehavior,
+  EnemyBehaviorState,
+  EnemyKind,
+  FluencyMetrics,
+  GridPoint,
+  InputAction,
+  MazeEnemySpawn,
+  MazeMapConfig,
+  MazeTileKind,
+  MoveDirection,
+  PowerUpKind,
+  ReadingFocus,
+  SentenceEntry,
+  StageConfig,
+  StageKind,
+  StoryDialogueLine,
+  StorySequence,
+  StoryTrigger,
+  UniversalInputState,
+} from './campaign';
+
 export interface PhysicsParams {
   maxSpeed: number;
   restitution: number;
@@ -15,6 +53,8 @@ export interface WordEntry {
   creatureName: string;
   creatureColor: string;
   sprite?: string;
+  chapterId?: string;
+  category?: string;
 }
 
 export interface WildSpawn {
@@ -56,9 +96,12 @@ export interface CardEntry {
   descriptionTemplate: string;
   missingWord: string;
   wordChoices: string[];
+  chapterId?: string;
+  powerKind?: CardPowerKind;
+  powerHint?: string;
 }
 
-export type ActiveScreen = 'home' | 'world' | 'antigravity' | 'cards';
+export type ActiveScreen = 'home' | 'world' | 'antigravity' | 'cards' | 'campaign' | 'maze';
 
 export interface DifficultyLevelConfig {
   level: number;
@@ -107,7 +150,18 @@ export interface SaveStateV1 {
   updatedAt: string;
 }
 
-export type SaveState = SaveStateV1;
+export interface SaveStateV2 {
+  version: 2;
+  capturedWordIds: string[];
+  completedCardIds: string[];
+  progression: PersistedProgressionState;
+  accessibility: AccessibilitySettings;
+  campaign: CampaignProgressState;
+  fluency: FluencyMetrics;
+  updatedAt: string;
+}
+
+export type SaveState = SaveStateV2;
 
 export interface PuzzleStatePayload {
   word: string;
@@ -139,5 +193,18 @@ export interface GameEventMap {
   'screen:change': ActiveScreen;
   'progression:update': ProgressionSnapshot;
   'accessibility:update': AccessibilitySettings;
+  'maze:hud': ArcadeHudSnapshot;
+  'maze:pause': boolean;
+  'maze:portal': {
+    stageId: string;
+    wordIds: string[];
+    sentenceIds: string[];
+    mode: DomeChallengeMode;
+  };
+  'stage:complete': {
+    stageId: string;
+    score: number;
+    stars: number;
+  };
   capture: CapturePayload;
 }

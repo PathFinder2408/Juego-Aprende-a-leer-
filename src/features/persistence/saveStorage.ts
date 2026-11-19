@@ -1,18 +1,22 @@
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from '../../config/accessibility';
 import cardsData from '../../data/cards.json';
+import chaptersData from '../../data/chapters.json';
 import difficultyData from '../../data/difficulty.json';
 import wordsData from '../../data/words.json';
 import type {
   AccessibilitySettings,
+  CampaignProgressState,
   CardEntry,
+  ChapterConfig,
   DifficultyConfig,
+  FluencyMetrics,
   PersistedProgressionState,
   SaveState,
   WordEntry,
 } from '../../types/game';
 
 export const SAVE_STORAGE_KEY = 'cupula_letras_save';
-export const CURRENT_SAVE_VERSION = 1;
+export const CURRENT_SAVE_VERSION = 2;
 
 export type SaveRecord = Record<string, unknown>;
 export type SaveMigration = (data: SaveRecord) => SaveRecord;
@@ -27,6 +31,12 @@ const difficultyConfig = difficultyData as DifficultyConfig;
 const sortedLevels = [...difficultyConfig.levels].sort((a, b) => a.level - b.level);
 const MIN_LEVEL = sortedLevels[0]?.level ?? 1;
 const MAX_LEVEL = sortedLevels[sortedLevels.length - 1]?.level ?? MIN_LEVEL;
+
+const chapters = chaptersData as ChapterConfig[];
+const FIRST_CHAPTER_ID = chapters[0]?.id ?? 'ch1';
+const FIRST_STAGE_ID = chapters[0]?.stageIds[0] ?? 'ch1-1';
+const VALID_CHAPTER_IDS = new Set(chapters.map((chapter) => chapter.id));
+const VALID_STAGE_IDS = new Set(chapters.flatMap((chapter) => chapter.stageIds));
 
 const VALID_WORD_IDS = new Set((wordsData as WordEntry[]).map((entry) => entry.id));
 const VALID_CARD_IDS = new Set((cardsData as CardEntry[]).map((entry) => entry.id));
@@ -90,6 +100,95 @@ function sanitizeProgression(raw: unknown): PersistedProgressionState {
   return { level, correctStreak, wrongStreak };
 }
 
+function sanitizeStringList(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const item of raw) {
+    if (typeof item === 'string' && item.trim().length > 0 && !seen.has(item)) {
+      seen.add(item);
+      result.push(item);
+    }
+  }
+  return result;
+}
+
+function createDefaultCampaignState(): CampaignProgressState {
+  return {
+    unlockedChapterIds: [FIRST_CHAPTER_ID],
+    completedStageIds: [],
+    starsByStageId: {},
+    seenStoryIds: [],
+    equippedCardId: null,
+    currentChapterId: FIRST_CHAPTER_ID,
+    currentStageId: FIRST_STAGE_ID,
+  };
+}
+
+function createDefaultFluencyMetrics(): FluencyMetrics {
+  return {
+    wordsCompleted: 0,
+    sentencesCompleted: 0,
+    comprehensionCompleted: 0,
+    bestAccuracyPercent: 0,
+  };
+}
+
+function sanitizeCampaign(raw: unknown): CampaignProgressState {
+  const defaults = createDefaultCampaignState();
+  const source = isRecord(raw) ? raw : {};
+
+  const unlocked = sanitizeIdList(source.unlockedChapterIds, VALID_CHAPTER_IDS);
+  if (!unlocked.includes(FIRST_CHAPTER_ID)) {
+    unlocked.unshift(FIRST_CHAPTER_ID);
+  }
+
+  const starsByStageId: Record<string, number> = {};
+  if (isRecord(source.starsByStageId)) {
+    for (const [stageId, stars] of Object.entries(source.starsByStageId)) {
+      if (VALID_STAGE_IDS.has(stageId)) {
+        starsByStageId[stageId] = clampInt(stars, 0, 3, 0);
+      }
+    }
+  }
+
+  const currentChapterId =
+    typeof source.currentChapterId === 'string' && VALID_CHAPTER_IDS.has(source.currentChapterId)
+      ? source.currentChapterId
+      : defaults.currentChapterId;
+
+  const currentStageId =
+    typeof source.currentStageId === 'string' && VALID_STAGE_IDS.has(source.currentStageId)
+      ? source.currentStageId
+      : defaults.currentStageId;
+
+  const equippedCardId =
+    typeof source.equippedCardId === 'string' && VALID_CARD_IDS.has(source.equippedCardId)
+      ? source.equippedCardId
+      : null;
+
+  return {
+    unlockedChapterIds: unlocked,
+    completedStageIds: sanitizeIdList(source.completedStageIds, VALID_STAGE_IDS),
+    starsByStageId,
+    seenStoryIds: sanitizeStringList(source.seenStoryIds),
+    equippedCardId,
+    currentChapterId,
+    currentStageId,
+  };
+}
+
+function sanitizeFluency(raw: unknown): FluencyMetrics {
+  const source = isRecord(raw) ? raw : {};
+  return {
+    wordsCompleted: clampInt(source.wordsCompleted, 0, 100_000, 0),
+    sentencesCompleted: clampInt(source.sentencesCompleted, 0, 100_000, 0),
+    comprehensionCompleted: clampInt(source.comprehensionCompleted, 0, 100_000, 0),
+    bestAccuracyPercent: clampInt(source.bestAccuracyPercent, 0, 100, 0),
+  };
+}
+
 export function createDefaultSaveState(updatedAt = new Date().toISOString()): SaveState {
   return {
     version: CURRENT_SAVE_VERSION,
@@ -101,6 +200,8 @@ export function createDefaultSaveState(updatedAt = new Date().toISOString()): Sa
       wrongStreak: 0,
     },
     accessibility: { ...DEFAULT_ACCESSIBILITY_SETTINGS },
+    campaign: createDefaultCampaignState(),
+    fluency: createDefaultFluencyMetrics(),
     updatedAt,
   };
 }
@@ -122,6 +223,8 @@ export function sanitizeSaveState(raw: unknown): SaveState {
     completedCardIds: sanitizeIdList(raw.completedCardIds, VALID_CARD_IDS),
     progression: sanitizeProgression(raw.progression),
     accessibility: sanitizeAccessibility(raw.accessibility),
+    campaign: sanitizeCampaign(raw.campaign),
+    fluency: sanitizeFluency(raw.fluency),
     updatedAt,
   };
 }
@@ -129,6 +232,7 @@ export function sanitizeSaveState(raw: unknown): SaveState {
 /**
  * Migraciones incrementales de esquema por número de versión.
  * v0 -> v1 normaliza guardados heredados sin campo `version` o con claves planas previas.
+ * v1 -> v2 añade progreso de campaña v2.0 y métricas de fluidez lectora.
  */
 export const SAVE_MIGRATIONS: Record<number, SaveMigration> = {
   0: (legacy) => {
@@ -154,6 +258,20 @@ export const SAVE_MIGRATIONS: Record<number, SaveMigration> = {
       progression,
       accessibility,
       updatedAt: legacy.updatedAt,
+    };
+  },
+  1: (v1) => {
+    const capturedCount = sanitizeIdList(v1.capturedWordIds, VALID_WORD_IDS).length;
+    return {
+      ...v1,
+      version: 2,
+      campaign: isRecord(v1.campaign) ? v1.campaign : createDefaultCampaignState(),
+      fluency: isRecord(v1.fluency)
+        ? v1.fluency
+        : {
+            ...createDefaultFluencyMetrics(),
+            wordsCompleted: capturedCount,
+          },
     };
   },
 };

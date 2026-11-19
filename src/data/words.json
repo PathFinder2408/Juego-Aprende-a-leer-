@@ -4,50 +4,302 @@
     "word": "SOL",
     "tokens": ["S", "O", "L"],
     "level": 1,
+    "chapterId": "ch1",
+    "category": "vocales_directas",
     "creatureName": "Solín",
     "creatureColor": "#facc15",
     "sprite": "/assets/creature-solin.png"
+  },
+  {
+    "id": "sapo",
+    "word": "SAPO",
+    "tokens": ["SA", "PO"],
+    "level": 1,
+    "chapterId": "ch1",
+    "category": "silabas_directas",
+    "creatureName": "Sapín",
+    "creatureColor": "#4ade80",
+    "sprite": "/assets/creature-sapin.png"
+  },
+  {
+    "id": "mesa",
+    "word": "MESA",
+    "tokens": ["ME", "SA"],
+    "level": 1,
+    "chapterId": "ch1",
+    "category": "silabas_directas",
+    "creatureName": "Mesín",
+    "creatureColor": "#fde047"
+  },
+  {
+    "id": "pala",
+    "word": "PALA",
+    "tokens": ["PA", "LA"],
+    "level": 1,
+    "chapterId": "ch1",
+    "category": "silabas_directas",
+    "creatureName": "Palito",
+    "creatureColor": "#fbbf24"
+  },
+  {
+    "id": "loma",
+    "word": "LOMA",
+    "tokens": ["LO", "MA"],
+    "level": 1,
+    "chapterId": "ch1",
+    "category": "silabas_directas",
+    "creatureName": "Lomita",
+    "creatureColor": "#fcd34d"
+  },
+  {
+    "id": "mapa",
+    "word": "MAPA",
+    "tokens": ["MA", "PA"],
+    "level": 1,
+    "chapterId": "ch1",
+    "category": "silabas_directas",
+    "creatureName": "Mapín",
+    "creatureColor": "#f59e0b"
   },
   {
     "id": "luna",
     "word": "LUNA",
     "tokens": ["LU", "NA"],
     "level": 2,
+    "chapterId": "ch2",
+    "category": "consonantes",
     "creatureName": "Mumu",
     "creatureColor": "#a5b4fc",
     "sprite": "/assets/creature-mumu.png"
   },
   {
-    "id": "sapo",
-    "word": "SAPO",
-    "tokens": ["SA", "PO"],
-    "level": 2,
-    "creatureName": "Sapín",
-    "creatureColor": "#4ade80",
-    "sprite": "/assets/creature-sapin.png"
-  },
-  {
     "id": "pelo",
     "word": "PELO",
     "tokens": ["PE", "LO"],
-    "level": 3,
+    "level": 2,
+    "chapterId": "ch2",
+    "category": "consonantes",
     "creatureName": "Pelufo",
     "creatureColor": "#f472b6"
+  },
+  {
+    "id": "nube",
+    "word": "NUBE",
+    "tokens": ["NU", "BE"],
+    "level": 2,
+    "chapterId": "ch2",
+    "category": "consonantes",
+    "creatureName": "Nubel",
+    "creatureColor": "#bae6fd"
+  },
+  {
+    "id": "tomate",
+    "word": "TOMATE",
+    "tokens": ["TO", "MA", "TE"],
+    "level": 2,
+    "chapterId": "ch2",
+    "category": "trisilabas",
+    "creatureName": "Tomatín",
+    "creatureColor": "#ef4444"
+  },
+  {
+    "id": "conejo",
+    "word": "CONEJO",
+    "tokens": ["CO", "NE", "JO"],
+    "level": 2,
+    "chapterId": "ch2",
+    "category": "trisilabas",
+    "creatureName": "Saltín",
+    "creatureColor": "#f9a8d4"
+  },
+  {
+    "id": "ventana",
+    "word": "VENTANA",
+    "tokens": ["VEN", "TA", "NA"],
+    "level": 2,
+    "chapterId": "ch2",
+    "category": "mixtas",
+    "creatureName": "Brisita",
+    "creatureColor": "#67e8f9"
   },
   {
     "id": "chispa",
     "word": "CHISPA",
     "tokens": ["CHIS", "PA"],
-    "level": 4,
+    "level": 3,
+    "chapterId": "ch3",
+    "category": "digrafos",
     "creatureName": "Chispón",
     "creatureColor": "#fb923c"
+  },
+  {
+    "id": "lluvia",
+    "word": "LLUVIA",
+    "tokens": ["LLU", "VIA"],
+    "level": 3,
+    "chapterId": "ch3",
+    "category": "digrafos",
+    "creatureName": "Gotita",
+    "creatureColor": "#60a5fa"
+  },
+  {
+    "id": "perro",
+    "word": "PERRO",
+    "tokens": ["PE", "RRO"],
+    "level": 3,
+    "chapterId": "ch3",
+    "category": "digrafos",
+    "creatureName": "Guauchi",
+    "creatureColor": "#fb7185"
+  },
+  {
+    "id": "queso",
+    "word": "QUESO",
+    "tokens": ["QUE", "SO"],
+    "level": 3,
+    "chapterId": "ch3",
+    "category": "digrafos",
+    "creatureName": "Quesín",
+    "creatureColor": "#fde047"
+  },
+  {
+    "id": "arbol",
+    "word": "ÁRBOL",
+    "tokens": ["ÁR", "BOL"],
+    "level": 3,
+    "chapterId": "ch3",
+    "category": "inversas",
+    "creatureName": "Copito",
+    "creatureColor": "#34d399"
+  },
+  {
+    "id": "escuela",
+    "word": "ESCUELA",
+    "tokens": ["ES", "CUE", "LA"],
+    "level": 3,
+    "chapterId": "ch3",
+    "category": "inversas",
+    "creatureName": "Librito",
+    "creatureColor": "#c084fc"
   },
   {
     "id": "tren",
     "word": "TREN",
     "tokens": ["T", "R", "E", "N"],
-    "level": 5,
+    "level": 4,
+    "chapterId": "ch4",
+    "category": "trabadas",
     "creatureName": "Brumín",
     "creatureColor": "#38bdf8"
+  },
+  {
+    "id": "brujula",
+    "word": "BRÚJULA",
+    "tokens": ["BRÚ", "JU", "LA"],
+    "level": 4,
+    "chapterId": "ch4",
+    "category": "trabadas",
+    "creatureName": "Nortín",
+    "creatureColor": "#f59e0b"
+  },
+  {
+    "id": "dragon",
+    "word": "DRAGÓN",
+    "tokens": ["DRA", "GÓN"],
+    "level": 4,
+    "chapterId": "ch4",
+    "category": "trabadas",
+    "creatureName": "Fumarol",
+    "creatureColor": "#f87171"
+  },
+  {
+    "id": "estrella",
+    "word": "ESTRELLA",
+    "tokens": ["ES", "TRE", "LLA"],
+    "level": 4,
+    "chapterId": "ch4",
+    "category": "trabadas",
+    "creatureName": "Destello",
+    "creatureColor": "#fef08a"
+  },
+  {
+    "id": "planta",
+    "word": "PLANTA",
+    "tokens": ["PLAN", "TA"],
+    "level": 4,
+    "chapterId": "ch4",
+    "category": "trabadas",
+    "creatureName": "Brote",
+    "creatureColor": "#4ade80"
+  },
+  {
+    "id": "globo",
+    "word": "GLOBO",
+    "tokens": ["GLO", "BO"],
+    "level": 4,
+    "chapterId": "ch4",
+    "category": "trabadas",
+    "creatureName": "Flotín",
+    "creatureColor": "#f472b6"
+  },
+  {
+    "id": "historia",
+    "word": "HISTORIA",
+    "tokens": ["HIS", "TO", "RIA"],
+    "level": 5,
+    "chapterId": "ch5",
+    "category": "vocabulario_fluido",
+    "creatureName": "Crono",
+    "creatureColor": "#a78bfa"
+  },
+  {
+    "id": "puente",
+    "word": "PUENTE",
+    "tokens": ["PUEN", "TE"],
+    "level": 5,
+    "chapterId": "ch5",
+    "category": "vocabulario_fluido",
+    "creatureName": "Arco",
+    "creatureColor": "#818cf8"
+  },
+  {
+    "id": "sabio",
+    "word": "SABIO",
+    "tokens": ["SA", "BIO"],
+    "level": 5,
+    "chapterId": "ch5",
+    "category": "vocabulario_fluido",
+    "creatureName": "Búho Luz",
+    "creatureColor": "#c4b5fd"
+  },
+  {
+    "id": "galaxia",
+    "word": "GALAXIA",
+    "tokens": ["GA", "LA", "XIA"],
+    "level": 5,
+    "chapterId": "ch6",
+    "category": "lectura_fluida",
+    "creatureName": "Astral",
+    "creatureColor": "#38bdf8"
+  },
+  {
+    "id": "melodia",
+    "word": "MELODÍA",
+    "tokens": ["ME", "LO", "DÍA"],
+    "level": 5,
+    "chapterId": "ch6",
+    "category": "lectura_fluida",
+    "creatureName": "Cantarín",
+    "creatureColor": "#7dd3fc"
+  },
+  {
+    "id": "victoria",
+    "word": "VICTORIA",
+    "tokens": ["VIC", "TO", "RIA"],
+    "level": 5,
+    "chapterId": "ch6",
+    "category": "lectura_fluida",
+    "creatureName": "Laurelio",
+    "creatureColor": "#facc15"
   }
 ]
