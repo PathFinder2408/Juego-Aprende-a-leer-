@@ -209,4 +209,23 @@ describe('saveStorage', () => {
     expect(reloaded.capturedWordIds).toEqual([]);
     expect(reloaded.accessibility).toEqual(customAccessibility);
   });
+
+  it('persiste y sanea estilos deportivos del personaje (futbol7 y kayros24)', () => {
+    const storage = createMemoryStorage();
+    expect(loadSaveState(storage).playerSkin).toBe('explorer');
+
+    saveGameState({ ...createDefaultSaveState(), playerSkin: 'futbol7' }, storage);
+    expect(loadSaveState(storage).playerSkin).toBe('futbol7');
+
+    saveGameState({ ...createDefaultSaveState(), playerSkin: 'kayros24' }, storage);
+    expect(loadSaveState(storage).playerSkin).toBe('kayros24');
+
+    const invalidSkinStorage = createMemoryStorage({
+      [SAVE_STORAGE_KEY]: JSON.stringify({
+        ...createDefaultSaveState(),
+        playerSkin: 'skin-inventado',
+      }),
+    });
+    expect(loadSaveState(invalidSkinStorage).playerSkin).toBe('explorer');
+  });
 });

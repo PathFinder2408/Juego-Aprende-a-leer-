@@ -16,7 +16,12 @@ export class MazePlayer {
   private prevY: number;
   private dropPulse = 0;
 
-  constructor(scene: Phaser.Scene, initial: MazePlayerState, tileSize: number) {
+  constructor(
+    scene: Phaser.Scene,
+    initial: MazePlayerState,
+    tileSize: number,
+    textureKey = 'explorer'
+  ) {
     this.tileSize = tileSize;
     this.prevX = initial.x;
     this.prevY = initial.y;
@@ -29,9 +34,15 @@ export class MazePlayer {
       .circle(px, py - 2, 24, 0x4ade80, 0.18)
       .setStrokeStyle(2.5, 0x86efac)
       .setVisible(false);
-    this.sprite = scene.add.image(px, py - 4, 'explorer');
+    const safeKey = scene.textures.exists(textureKey) ? textureKey : 'explorer';
+    this.sprite = scene.add.image(px, py - 4, safeKey);
     this.sprite.setScale(BASE_SCALE);
     this.updateDepth(py);
+  }
+
+  setTextureKey(textureKey: string): void {
+    const safeKey = this.sprite.scene.textures.exists(textureKey) ? textureKey : 'explorer';
+    this.sprite.setTexture(safeKey);
   }
 
   playBubbleDropBounce(): void {

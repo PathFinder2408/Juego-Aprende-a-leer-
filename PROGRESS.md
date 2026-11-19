@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Proyecto v2.0 completo (Fases 0–12 cerradas en rama `main`)
+- **Fase actual:** Proyecto completo (Fases 0–13 cerradas en rama `main`)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -122,10 +122,18 @@
 | F12-03 | Balanceo de dificultad, accesibilidad completa en `MazeScene` (alto contraste, velocidad lenta, movimiento reducido) y tutorial en Etapa 1-1 | M | Gemini 4 Hydrogen (Medium) | hecha | Primera etapa guía controles universales y reglas en < 30 s | `MazeScene.ts`, `MazeRenderer.ts`; banner accesible en `ch1-1` con voz `es-CL`, `setHighContrast` reactivo, 52/52 tests y build OK |
 | F12-04 | QA integral final v2.0 (`npm test`, `npm run build`, E2E campaña inicio → fin, persistencia `v2` y 60 FPS) + cierre en `main` y `push` | P | Gemini 4 Hydrogen (XHigh) | hecha | Suite completa verde, 0 errores en consola y v2.0 publicada en `main` | `typecheck`, 52/52 tests (`saveStorage` v2 incluido), `vite build` y E2E en navegador (`Ajustes`, `Historia`, `Campaña`, `Laberinto ch1-1`, `Cúpula`, `Cartas` + recarga) con 0 errores; cerrada en `main` y publicada |
 
+### Fase 13: Estilos Alternativos Deportivos del Explorador
+| ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
+|---|---|---|---|---|---|---|
+| F13-01 | Arte 3D-chibi (`explorer-futbol7.png` rojo/verde #7, `explorer-kayros24.png` negro/naranja Club Kayros #24), catálogo `skins.json`, tipos y persistencia `SaveStateV2` + tests | M | Gemini 4 Hydrogen (XHigh) | hecha | PNGs transparentes de 320px alto, JSON tipado y `playerSkin` saneado/persistido | `public/assets/explorer-futbol7.png`, `public/assets/explorer-kayros24.png`, `skins.json`, `config/skins.ts`, `types/game.ts`, `saveStorage.ts`, `saveStorage.test.ts`; typecheck y 53/53 tests OK |
+| F13-02 | Integración de estilos en escenas Phaser (`BootScene`, `MazePlayer`, `MazeScene`, `WorldPlayer`, `WorldScene`, `PlayerBumper`, `AntigravityScene`) + evento `player:skin` | M | Gemini 4 Hydrogen (XHigh) | hecha | El personaje refleja el estilo activo y cambia en vivo en laberinto, isla y cúpula | `PhaserCanvas.tsx`, `MazePlayer.ts`, `MazeScene.ts`, `WorldPlayer.ts`, `WorldScene.ts`, `PlayerBumper.ts`, `AntigravityScene.ts`; typecheck y 53/53 tests OK |
+| F13-03 | Selector táctil en UI (`LobbyView.tsx`, `SettingsModal.tsx`, `StoryModal.tsx`, `App.tsx`, `styles.css`) + verificación E2E en navegador con los 3 estilos | M | Gemini 4 Hydrogen (Medium) | hecha | Selector funciona y persiste tras recarga; `npm test`, `build` y navegador en 0 errores | `LobbyView.tsx`, `SettingsModal.tsx`, `StoryModal.tsx`, `App.tsx`, `styles.css`; 53/53 tests, `build` y E2E en navegador con 0 errores |
+| F13-04 | Crear `README.md` profesional para GitHub (capturas/características, instalación, scripts, controles y arquitectura) + cierre de Fase 13 en `main` y `push` | L | Gemini 4 Hydrogen (Low) | hecha | `README.md` claro y verídico basado en el código real; merge a `main` y `push` limpios | `README.md` creado; Fase 13 fusionada a `main` y publicada en GitHub |
+
 ---
 
 ## Siguiente paso
-Master Plan v2.0 completado y cerrado en `main` (Fases 0–12 finalizadas). Listo para nuevas iteraciones o expansión de contenido cuando el usuario indique.
+Proyecto y Fase 13 completados y cerrados en `main`. Listo para nuevas mejoras cuando el usuario indique.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -157,3 +165,7 @@ Master Plan v2.0 completado y cerrado en `main` (Fases 0–12 finalizadas). List
 - **2026-11-19 (Fase 12):** Completada `F12-02` (pack de arte 2.5D ampliado con 4 nuevos PNG transparentes en `public/assets/`, total 816 KB < 4 MB, cargados en `BootScene`, `StoryModal`, `cards.json` y `MazeRenderer`; 52/52 tests y `build` OK).
 - **2026-11-19 (Fase 12):** Completada `F12-03` (balanceo de dificultad, accesibilidad reactiva con `setHighContrast` en `MazeRenderer.ts` y banner tutorial dinámico con voz `es-CL` en Etapa `ch1-1` de `MazeScene.ts`; 52/52 tests y `build` OK).
 - **2026-11-19 (Fase 12):** Completada `F12-04` (QA integral final v2.0: `typecheck`, 52/52 tests, `vite build` y E2E en navegador con 0 errores de consola/red) y cerrada Fase 12 / Master Plan v2.0 en `main`.
+- **2026-11-19 (Fase 13):** Creada rama `feat/fase-13-estilos-deportivos` y completada `F13-01` (2 PNG transparentes de 320px `explorer-futbol7.png` y `explorer-kayros24.png`, `skins.json`, `config/skins.ts`, persistencia `playerSkin` en `SaveStateV2`; typecheck y 53/53 tests OK).
+- **2026-11-19 (Fase 13):** Completada `F13-02` (precarga en `BootScene`, soporte y cambio en vivo por `player:skin` en `MazePlayer`/`MazeScene`, `WorldPlayer`/`WorldScene` y `PlayerBumper` con dorsal #7/#24 en `AntigravityScene`; typecheck y 53/53 tests OK).
+- **2026-11-19 (Fase 13):** Completada `F13-03` (selector táctil de estilos en `LobbyView`, `SettingsModal`, `StoryModal`, `App` y `styles.css`; E2E en navegador verificando los 3 estilos, Laberinto, Cúpula y persistencia tras recarga con 0 errores).
+- **2026-11-19 (Fase 13):** Completada `F13-04` (`README.md` creado para GitHub, merge de Fase 13 a `main` y `push` a `origin/main`).

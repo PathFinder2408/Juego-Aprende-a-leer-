@@ -1,9 +1,12 @@
+import { PLAYER_SKINS, getPlayerSkinConfig } from '../config/skins';
 import worldData from '../data/world.json';
-import type { WorldConfig } from '../types/game';
+import type { PlayerSkinId, WorldConfig } from '../types/game';
 
 interface LobbyViewProps {
   capturedCount: number;
   totalCount: number;
+  playerSkin: PlayerSkinId;
+  onSelectSkin: (skinId: PlayerSkinId) => void;
   onExploreIsland: () => void;
   onOpenCampaign: () => void;
   onQuickDome: () => void;
@@ -14,6 +17,8 @@ interface LobbyViewProps {
 export function LobbyView({
   capturedCount,
   totalCount,
+  playerSkin,
+  onSelectSkin,
   onExploreIsland,
   onOpenCampaign,
   onQuickDome,
@@ -21,6 +26,7 @@ export function LobbyView({
   onOpenStory,
 }: LobbyViewProps) {
   const world = worldData as WorldConfig;
+  const activeSkin = getPlayerSkinConfig(playerSkin);
 
   return (
     <section className="lobby-stage" aria-label="Campamento principal">
@@ -39,8 +45,25 @@ export function LobbyView({
 
       <div className="lobby-hero">
         <div className="lobby-aura" />
-        <img src="/assets/explorer.png" alt="Explorador chibi" className="lobby-character" />
+        <img src={activeSkin.sprite} alt={`${activeSkin.name} chibi`} className="lobby-character" />
         <div className="lobby-pedestal" />
+        <div className="skin-switcher" role="group" aria-label="Estilo del explorador">
+          {PLAYER_SKINS.map((skin) => {
+            const active = skin.id === activeSkin.id;
+            return (
+              <button
+                key={skin.id}
+                type="button"
+                className={`skin-pill ${active ? 'skin-pill--active' : ''}`}
+                aria-pressed={active}
+                onClick={() => onSelectSkin(skin.id)}
+              >
+                <span>{skin.badge}</span>
+                <span>{skin.name}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="lobby-side-right">

@@ -13,6 +13,7 @@ import { setMusicEnabled, setSfxEnabled, startAmbientMusic, stopAmbientMusic } f
 import { setVoiceEnabled } from './audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from './config/accessibility';
 import { DEFAULT_PHYSICS_PARAMS } from './config/physics';
+import { getPlayerSkinConfig, sanitizePlayerSkinId } from './config/skins';
 import cardsData from './data/cards.json';
 import storyData from './data/story.json';
 import { gameBus } from './events/bus';
@@ -40,6 +41,7 @@ import type {
   DomeChallengeMode,
   FluencyMetrics,
   PhysicsParams,
+  PlayerSkinId,
   ProgressionSnapshot,
   PuzzleStatePayload,
   StageConfig,
@@ -83,6 +85,9 @@ export function App() {
   const [completedCardIds, setCompletedCardIds] = useState<string[]>(() => initialSave.completedCardIds);
   const [campaign, setCampaign] = useState<CampaignProgressState>(() => initialSave.campaign);
   const [fluency, setFluency] = useState<FluencyMetrics>(() => initialSave.fluency);
+  const [playerSkin, setPlayerSkin] = useState<PlayerSkinId>(() =>
+    sanitizePlayerSkinId(initialSave.playerSkin)
+  );
   const [progression, setProgression] = useState<ProgressionSnapshot>(() => adaptiveEngine.getSnapshot());
   const [pauseReminder, setPauseReminder] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -270,12 +275,19 @@ export function App() {
       accessibility,
       campaign,
       fluency,
+      playerSkin,
       updatedAt: new Date().toISOString(),
     });
-  }, [capturedWordIds, completedCardIds, progression, accessibility, campaign, fluency]);
+  }, [capturedWordIds, completedCardIds, progression, accessibility, campaign, fluency, playerSkin]);
+
+  const handleSelectSkin = (skinId: PlayerSkinId) => {
+    const safeSkin = sanitizePlayerSkinId(skinId);
+    setPlayerSkin(safeSkin);
+    gameBus.emit('player:skin', safeSkin);
+  };
 
   const handleResetProgress = () => {
-    const nextSave = resetProgressState(accessibility);
+    const nextSave = resetProgressState(accessibility, undefined, playerSkin);
     const nextProgression = adaptiveEngine.reset();
     activeCampaignRunRef.current = null;
     pendingLaunchStageRef.current = null;
@@ -360,13 +372,17 @@ export function App() {
     .filter(Boolean)
     .join(' ');
 
+  const activeSkin = getPlayerSkinConfig(playerSkin);
+
   return (
     <div className={shellClass}>
       <header className="top-hud">
         <div className="player-chip">
-          <img src="/assets/explorer.png" alt="Avatar" className="player-avatar" />
+          <img src={activeSkin.sprite} alt={activeSkin.name} className="player-avatar" />
           <div>
-            <div className="player-name">Explorador · Nv. {1 + capturedWordIds.length}</div>
+            <div className="player-name">
+              {activeSkin.name} · Nv. {1 + capturedWordIds.length}
+            </div>
             <div className="player-sub">
               {screen === 'antigravity'
                 ? `Cúpula: ${progressTokens} · Dif. Nv.${progression.level}`
@@ -417,6 +433,8 @@ export function App() {
       {showSettings && (
         <SettingsModal
           settings={accessibility}
+          playerSkin={playerSkin}
+          onSelectSkin={handleSelectSkin}
           onToggle={handleToggleAccessibility}
           onResetProgress={handleResetProgress}
           onClose={() => setShowSettings(false)}
@@ -424,7 +442,11 @@ export function App() {
       )}
 
       {activeStory && (
-        <StoryModal sequence={activeStory} onComplete={handleCompleteStory} />
+        <StoryModal
+          sequence={activeStory}
+          playerSkin={playerSkin}
+          onComplete={handleCompleteStory}
+        />
       )}
 
       {captured && (
@@ -441,6 +463,8 @@ export function App() {
           <LobbyView
             capturedCount={capturedWordIds.length}
             totalCount={totalCards}
+            playerSkin={playerSkin}
+            onSelectSkin={handleSelectSkin}
             onExploreIsland={() => {
               setCaptured(null);
               setScreen('world');

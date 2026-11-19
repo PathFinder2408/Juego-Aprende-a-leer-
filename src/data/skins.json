@@ -1,0 +1,44 @@
+[
+  {
+    "id": "explorer",
+    "name": "Explorador",
+    "subtitle": "Traje clásico de aventura",
+    "badge": "🧭",
+    "sprite": "/assets/explorer.png",
+    "textureKey": "explorer",
+    "torsoColor": "#14b8a6",
+    "torsoLight": "#5eead4",
+    "torsoDark": "#0f766e",
+    "torsoStroke": "#134e4a",
+    "accentColor": "#facc15",
+    "jerseyNumber": null
+  },
+  {
+    "id": "futbol7",
+    "name": "Futbolista #7",
+    "subtitle": "Rojo y verde · Dorsal 7",
+    "badge": "⚽",
+    "sprite": "/assets/explorer-futbol7.png",
+    "textureKey": "explorer-futbol7",
+    "torsoColor": "#dc2626",
+    "torsoLight": "#f87171",
+    "torsoDark": "#991b1b",
+    "torsoStroke": "#14532d",
+    "accentColor": "#facc15",
+    "jerseyNumber": "7"
+  },
+  {
+    "id": "kayros24",
+    "name": "Kayros #24",
+    "subtitle": "Básquet Club Kayros · Negro y Naranja",
+    "badge": "🏀",
+    "sprite": "/assets/explorer-kayros24.png",
+    "textureKey": "explorer-kayros24",
+    "torsoColor": "#1e293b",
+    "torsoLight": "#334155",
+    "torsoDark": "#0f172a",
+    "torsoStroke": "#f97316",
+    "accentColor": "#fb923c",
+    "jerseyNumber": "24"
+  }
+]
