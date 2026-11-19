@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 10 en curso (rama `feat/fase-10-campana-jefes` — F10-02 completada)
+- **Fase actual:** Fase 10 en curso (rama `feat/fase-10-campana-jefes` — F10-03 completada)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -103,7 +103,7 @@
 |---|---|---|---|---|---|---|
 | F10-01 | Guion e historia en JSON (`src/data/story.json`: prólogo, diálogos de 6 capítulos, epílogo final) + `StoryModal.tsx` con lectura `es-CL` | P | Gemini 4 Hydrogen (High) | hecha | Narrativa completa inicio → desarrollo → fin, accesible y saltable | `story.json`, `StoryModal.tsx`, `LobbyView.tsx`, `App.tsx`, `curriculum.test.ts`; typecheck, 40/40 tests y build OK |
 | F10-02 | Mapa de Campaña (`CampaignMapView.tsx` + `campaignLogic.ts` + `App.tsx`): 6 islas, 30 etapas, estrellas, desbloqueo y modo rejugar | P | Gemini 4 Hydrogen (XHigh) | hecha | Navegación fluida entre capítulos/etapas y persistencia `v2` automática | `stages.json`, `campaignLogic.ts`, `campaignLogic.test.ts`, `CampaignMapView.tsx`, `CaptureCardModal.tsx`, `LobbyView.tsx`, `MazeScene.ts`, `App.tsx`; 43/43 tests y build OK |
-| F10-03 | Jefes de Capítulo (`bossBehavior.ts` + JSON de 6 jefes en `MazeScene`): patrullas especiales, obstáculos mudos, aturdimiento x3 y paso a Cúpula de Jefe | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Los 6 jefes funcionan por configuración JSON sin lógica hardcodeada | Incluye jefe final *Don Silencio* |
+| F10-03 | Jefes de Capítulo (`bossBehavior.ts` + JSON de 6 jefes en `MazeScene`): patrullas especiales, obstáculos mudos, aturdimiento x3 y paso a Cúpula de Jefe | P | Gemini 4 Hydrogen (XHigh) | hecha | Los 6 jefes funcionan por configuración JSON sin lógica hardcodeada | `bosses.json`, `bossBehavior.ts`, `bossBehavior.test.ts`, `MazeScene.ts`, `MazeRenderer.ts`, `mazeEngine.ts`, `PhaserCanvas.tsx`, `App.tsx`; 45/45 tests y build OK |
 | F10-04 | Contenido completo de las 30 etapas (Capítulos 1–6) en `src/data/maps/` + test integral `campaignContent.test.ts` + prueba E2E de flujo historia/jefe/final | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Todos los mapas/palabras/frases de los 6 capítulos pasan validación y build | Cierre de Fase 10 en `main` |
 
 ### Fase 11: Cúpula Antigravedad 2.0 (Lectura Fluida) y Cartas con Poderes
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Iniciar **F10-03** en rama `feat/fase-10-campana-jefes` (`bossBehavior.ts` + JSON de 6 jefes en `MazeScene`: patrullas especiales, obstáculos mudos, aturdimiento x3 y paso a Cúpula de Jefe, esfuerzo **P**, modelo recomendado **Gemini 4 Hydrogen (XHigh)**).
+Iniciar **F10-04** en rama `feat/fase-10-campana-jefes` (contenido completo de los 30 mapas en `src/data/maps/`, test integral `campaignContent.test.ts`, E2E historia/jefe/final en navegador y cierre de Fase 10 en `main`, esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -146,3 +146,4 @@ Iniciar **F10-03** en rama `feat/fase-10-campana-jefes` (`bossBehavior.ts` + JSO
 - **2026-11-19 (Fase 9):** Completada `F9-04` (verificación E2E de `ArcadeHud`, movimiento, burbujas, puntaje y pausa con 0 errores de consola; 39/39 tests, `build` OK) y cerrada Fase 9 en `main`.
 - **2026-11-19 (Fase 10):** Creada rama `feat/fase-10-campana-jefes` y completada `F10-01` (`story.json` con prólogo, 6 capítulos y epílogo, más `StoryModal.tsx` accesible/saltable con voz `es-CL`; 40/40 tests y `build` OK).
 - **2026-11-19 (Fase 10):** Completada `F10-02` (`stages.json` con 30 etapas, `campaignLogic.ts`, `CampaignMapView.tsx` de 6 islas y persistencia `v2` al completar etapas; 43/43 tests y `build` OK).
+- **2026-11-19 (Fase 10):** Completada `F10-03` (`bosses.json` con los 6 jefes incluido *Don Silencio*, `bossBehavior.ts` dirigido por datos con bloques mudos, ráfagas y aturdimiento x3 que abre el portal en `MazeScene`; 45/45 tests y `build` OK).

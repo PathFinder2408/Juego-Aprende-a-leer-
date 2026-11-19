@@ -63,6 +63,9 @@ export function App() {
   const [activeStageWordIds, setActiveStageWordIds] = useState<string[]>(
     () => getStageById(initialSave.campaign.currentStageId)?.wordIds ?? ['sol']
   );
+  const [activeBossId, setActiveBossId] = useState<string | undefined>(
+    () => getStageById(initialSave.campaign.currentStageId)?.bossId
+  );
   const [mazeHud, setMazeHud] = useState<ArcadeHudSnapshot | null>(null);
   const [params, setParams] = useState<PhysicsParams>(() => ({ ...DEFAULT_PHYSICS_PARAMS }));
   const [showDebug, setShowDebug] = useState(false);
@@ -191,6 +194,7 @@ export function App() {
     setActiveMapId(stage.mapId);
     setActiveStageTitle(stage.title);
     setActiveStageWordIds(stage.wordIds);
+    setActiveBossId(stage.bossId);
     setActiveWordId(stage.wordIds[0] ?? 'sol');
     setCampaign((prev) => ({
       ...prev,
@@ -249,6 +253,7 @@ export function App() {
       setActiveMapId(firstStage.mapId);
       setActiveStageTitle(firstStage.title);
       setActiveStageWordIds(firstStage.wordIds);
+      setActiveBossId(firstStage.bossId);
       setActiveWordId(firstStage.wordIds[0] ?? 'sol');
     }
     setCapturedWordIds(nextSave.capturedWordIds);
@@ -433,6 +438,7 @@ export function App() {
                 activeStageId={activeStageId}
                 activeStageTitle={activeStageTitle}
                 activeStageWordIds={activeStageWordIds}
+                activeBossId={activeBossId}
               />
               {screen === 'maze' && <TouchControls />}
             </div>
