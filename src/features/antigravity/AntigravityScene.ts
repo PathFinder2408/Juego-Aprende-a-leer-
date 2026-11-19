@@ -3,14 +3,26 @@ import { playCaptureFanfare, playCorrectChime, playSoftBounce } from '../../audi
 import { speakText } from '../../audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS, SLOW_FLOATING_MULTIPLIER } from '../../config/accessibility';
 import { DEFAULT_PHYSICS_PARAMS } from '../../config/physics';
+import sentencesData from '../../data/sentences.json';
 import wordsData from '../../data/words.json';
 import { gameBus } from '../../events/bus';
-import type { AccessibilitySettings, PhysicsParams, WordEntry } from '../../types/game';
+import type {
+  AccessibilitySettings,
+  DomeChallengeMode,
+  PhysicsParams,
+  SentenceEntry,
+  WordEntry,
+} from '../../types/game';
 import { loadSaveState } from '../persistence/saveStorage';
 import { adaptiveEngine } from '../progression/adaptiveEngine';
 import { LetterBody } from './LetterBody';
 import { PlayerBumper } from './PlayerBumper';
-import { PuzzleTracker } from './puzzleLogic';
+import {
+  PuzzleTracker,
+  challengeFromSentence,
+  challengeFromWord,
+  type DomeChallenge,
+} from './puzzleLogic';
 
 const SCENE_WIDTH = 800;
 const SCENE_HEIGHT = 600;
@@ -27,6 +39,7 @@ export class AntigravityScene extends Phaser.Scene {
   private player: PlayerBumper | null = null;
   private tracker!: PuzzleTracker;
   private activeEntry!: WordEntry;
+  private activeChallenge!: DomeChallenge;
   private slotPositions: Array<{ x: number; y: number }> = [];
   private slotBoxes: Phaser.GameObjects.Rectangle[] = [];
   private creatureBubble!: Phaser.GameObjects.Container;
@@ -34,27 +47,41 @@ export class AntigravityScene extends Phaser.Scene {
   private unsubscribers: Array<() => void> = [];
   private collisionGraceUntil = 0;
   private requestedWordId: string | null = null;
+  private requestedSentenceId: string | null = null;
+  private requestedMode: DomeChallengeMode | null = null;
 
   constructor() {
     super({ key: 'AntigravityScene' });
   }
 
-  init(data?: { wordId?: string }): void {
+  init(data?: { wordId?: string; sentenceId?: string; mode?: DomeChallengeMode }): void {
     this.requestedWordId = data?.wordId ?? null;
+    this.requestedSentenceId = data?.sentenceId ?? null;
+    this.requestedMode = data?.mode ?? null;
   }
 
   create(): void {
     const entries = wordsData as WordEntry[];
+    const sentences = sentencesData as SentenceEntry[];
     const selectedEntry =
       (this.requestedWordId ? entries.find((e) => e.id === this.requestedWordId) : undefined) ??
       entries[0];
     if (!selectedEntry) {
       throw new Error('No hay palabras configuradas en src/data/words.json');
     }
+
+    const selectedSentence =
+      this.requestedSentenceId && this.requestedMode !== 'word'
+        ? sentences.find((s) => s.id === this.requestedSentenceId)
+        : undefined;
+
     this.cleanupBusEvents();
     this.accessibility = loadSaveState().accessibility;
     this.activeEntry = selectedEntry;
-    this.tracker = new PuzzleTracker(this.activeEntry);
+    this.activeChallenge = selectedSentence
+      ? challengeFromSentence(selectedSentence, selectedEntry)
+      : challengeFromWord(selectedEntry);
+    this.tracker = new PuzzleTracker(this.activeChallenge);
     this.letters = [];
     this.slotPositions = [];
     this.slotBoxes = [];
@@ -66,6 +93,19 @@ export class AntigravityScene extends Phaser.Scene {
     this.createCreatureDisplay();
     this.createLetters();
     this.player = new PlayerBumper(this, DOME_CENTER_X, DOME_CENTER_Y + 130, this.physicsParams);
+
+    if (this.activeChallenge.mode === 'comprehension') {
+      const promptAudio = `${this.activeChallenge.storyContext ?? ''} ${this.activeChallenge.promptText ?? ''}`.trim();
+      if (promptAudio) {
+        this.time.delayedCall(260, () => {
+          speakText(promptAudio, { rate: 0.9 });
+        });
+      }
+    } else if (this.activeChallenge.mode === 'sentence' && this.activeChallenge.promptText) {
+      this.time.delayedCall(260, () => {
+        speakText(this.activeChallenge.promptText ?? '', { rate: 0.92 });
+      });
+    }
 
     this.registerInput();
     this.registerCollisions();
@@ -170,7 +210,91 @@ export class AntigravityScene extends Phaser.Scene {
   }
 
   private createWordSlots(): void {
-    const tokens = this.activeEntry.tokens;
+    const challenge = this.activeChallenge;
+    const tokens = challenge.tokens;
+
+    if (challenge.mode === 'comprehension') {
+      const passage = challenge.storyContext ?? '';
+      const question = challenge.promptText ?? '';
+
+      this.add
+        .rectangle(DOME_CENTER_X, 42, 740, 68, 0x0f172a, 0.88)
+        .setStrokeStyle(2, 0x38bdf8)
+        .setDepth(5);
+      this.add
+        .text(DOME_CENTER_X, 26, passage, {
+          fontFamily: 'Lexend, system-ui, sans-serif',
+          fontSize: '13px',
+          color: '#e2e8f0',
+          wordWrap: { width: 690 },
+          align: 'center',
+        })
+        .setOrigin(0.5)
+        .setDepth(6);
+      this.add
+        .text(DOME_CENTER_X, 58, question, {
+          fontFamily: 'Lexend, system-ui, sans-serif',
+          fontSize: '15px',
+          fontStyle: 'bold',
+          color: '#fef08a',
+          align: 'center',
+        })
+        .setOrigin(0.5)
+        .setDepth(6);
+
+      const box = this.add
+        .rectangle(DOME_CENTER_X, 94, 240, 34, 0x1e293b, 0.92)
+        .setStrokeStyle(2.5, 0x475569)
+        .setDepth(5);
+      this.slotBoxes.push(box);
+      this.slotPositions.push({ x: DOME_CENTER_X, y: 94 });
+      return;
+    }
+
+    if (challenge.mode === 'sentence') {
+      if (challenge.promptText) {
+        this.add
+          .text(DOME_CENTER_X, 20, challenge.promptText, {
+            fontFamily: 'Lexend, system-ui, sans-serif',
+            fontSize: '15px',
+            fontStyle: 'bold',
+            color: '#fef08a',
+          })
+          .setOrigin(0.5)
+          .setDepth(6);
+      }
+
+      const slotY = 64;
+      const boxWidths = tokens.map((t) => Math.max(70, Math.min(132, t.length * 14 + 24)));
+      const gap = 10;
+      const totalWidth = boxWidths.reduce((sum, w) => sum + w, 0) + Math.max(0, tokens.length - 1) * gap;
+      let cursorX = DOME_CENTER_X - totalWidth / 2;
+
+      tokens.forEach((token, idx) => {
+        const w = boxWidths[idx] ?? 84;
+        const sx = cursorX + w / 2;
+        cursorX += w + gap;
+
+        const box = this.add
+          .rectangle(sx, slotY, w, 46, 0x1e293b, 0.9)
+          .setStrokeStyle(2.5, 0x475569)
+          .setDepth(5);
+        this.slotBoxes.push(box);
+        this.slotPositions.push({ x: sx, y: slotY });
+
+        this.add
+          .text(sx, slotY, token, {
+            fontFamily: 'Lexend, system-ui, sans-serif',
+            fontSize: '15px',
+            fontStyle: 'bold',
+            color: '#334155',
+          })
+          .setOrigin(0.5)
+          .setDepth(6);
+      });
+      return;
+    }
+
     const spacing = 74;
     const startX = DOME_CENTER_X - ((tokens.length - 1) * spacing) / 2;
 
@@ -240,11 +364,15 @@ export class AntigravityScene extends Phaser.Scene {
   }
 
   private createLetters(): void {
-    const targetTokens = this.activeEntry.tokens;
-    const decoys = adaptiveEngine.selectDecoys(targetTokens);
+    const targetTokens = this.activeChallenge.tokens;
+    const decoys =
+      this.activeChallenge.decoys.length > 0
+        ? this.activeChallenge.decoys
+        : adaptiveEngine.selectDecoys(targetTokens);
     const allTokens = [...targetTokens, ...decoys];
     const spawnRadiusX = 142;
     const spawnRadiusY = 95;
+    const shieldedSet = new Set(this.activeChallenge.shieldedTokens);
 
     // Distribuimos objetivo + señuelos en el arco superior de la cúpula, lejos del jugador
     allTokens.forEach((token, idx) => {
@@ -254,9 +382,18 @@ export class AntigravityScene extends Phaser.Scene {
       const lx = DOME_CENTER_X + Math.cos(angle) * spawnRadiusX;
       const ly = DOME_CENTER_Y + Math.sin(angle) * spawnRadiusY + 25;
 
-      const letter = new LetterBody(this, token, idx, lx, ly, this.physicsParams, (tapped) => {
-        this.handleLetterHit(tapped, this.input.activePointer.x, this.input.activePointer.y);
-      });
+      const letter = new LetterBody(
+        this,
+        token,
+        idx,
+        lx,
+        ly,
+        this.physicsParams,
+        (tapped) => {
+          this.handleLetterHit(tapped, this.input.activePointer.x, this.input.activePointer.y);
+        },
+        { shielded: shieldedSet.has(token) }
+      );
       this.letters.push(letter);
     });
   }
@@ -330,7 +467,11 @@ export class AntigravityScene extends Phaser.Scene {
       }),
       gameBus.on('puzzle:reset', () => {
         if (!this.sys || !this.sys.isActive()) return;
-        this.scene.restart({ wordId: this.activeEntry.id });
+        this.scene.restart({
+          wordId: this.activeEntry.id,
+          sentenceId: this.requestedSentenceId ?? undefined,
+          mode: this.requestedMode ?? undefined,
+        });
       })
     );
   }
@@ -339,8 +480,17 @@ export class AntigravityScene extends Phaser.Scene {
     if (!letter.canTriggerHit(this.time.now)) return;
 
     speakText(letter.token);
-    const result = this.tracker.evaluateHit(letter.token);
+    const result = this.tracker.evaluateHit(letter.token, {
+      shieldIntact: letter.isShielded(),
+    });
     if (result.ignored) return;
+
+    if (result.shieldBroken) {
+      letter.breakShield(sourceX, sourceY, this.physicsParams);
+      playSoftBounce();
+      this.statusText.setText(`¡Escudo roto en "${letter.token}"! Tócala de nuevo.`);
+      return;
+    }
 
     const adaptation = adaptiveEngine.recordHit(result.correct);
     gameBus.emit('progression:update', adaptation.snapshot);
@@ -371,7 +521,9 @@ export class AntigravityScene extends Phaser.Scene {
       }
 
       this.bounceCreature(1.18);
-      this.statusText.setText(`¡Bien! ${this.activeEntry.tokens.slice(0, result.collectedIndex).join(' - ')}`);
+      this.statusText.setText(
+        `¡Bien! ${this.activeChallenge.tokens.slice(0, result.collectedIndex).join(' ')}`
+      );
 
       if (result.completed) {
         this.triggerCaptureCelebration();
@@ -384,7 +536,7 @@ export class AntigravityScene extends Phaser.Scene {
         for (const item of this.letters) {
           item.setHintActive(!item.isCollected() && item.token === result.hintToken);
         }
-        this.statusText.setText(`Pista: busca la letra "${result.hintToken}"`);
+        this.statusText.setText(`Pista: busca "${result.hintToken}"`);
         this.time.delayedCall(500, () => {
           speakText(result.hintToken ?? '');
         });
@@ -408,16 +560,18 @@ export class AntigravityScene extends Phaser.Scene {
   private triggerCaptureCelebration(): void {
     playCaptureFanfare();
     this.bounceCreature(1.35);
-    this.statusText.setText(`¡Capturaste a ${this.activeEntry.creatureName} con "${this.activeEntry.word}"!`);
+    this.statusText.setText(
+      `¡Completaste "${this.activeChallenge.speechText}" con ${this.activeChallenge.creatureName}!`
+    );
 
     gameBus.emit('capture', {
       wordId: this.activeEntry.id,
-      word: this.activeEntry.word,
-      creatureName: this.activeEntry.creatureName,
+      word: this.activeChallenge.displayTitle,
+      creatureName: this.activeChallenge.creatureName,
     });
 
     this.time.delayedCall(420, () => {
-      speakText(this.activeEntry.word, { rate: 0.85 });
+      speakText(this.activeChallenge.speechText, { rate: 0.88 });
     });
 
     // Destellos de celebración simples (respetando movimiento reducido)

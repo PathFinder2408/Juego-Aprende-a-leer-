@@ -2,58 +2,127 @@ import Phaser from 'phaser';
 import type { PhysicsParams } from '../../types/game';
 
 const ORB_RADIUS = 40;
-const MAX_READABLE_ANGLE = 0.42; // ~24 grados: legible siempre, pero con balanceo cómico
+const MAX_READABLE_ANGLE = 0.42;
 
-function createLetterTexture(scene: Phaser.Scene, key: string, token: string): void {
+interface OrbDimensions {
+  isPill: boolean;
+  width: number;
+  height: number;
+  lines: string[];
+  fontSize: number;
+}
+
+function measureOrbDimensions(token: string): OrbDimensions {
+  const trimmed = token.trim();
+  if (trimmed.length <= 4) {
+    return {
+      isPill: false,
+      width: ORB_RADIUS * 2,
+      height: ORB_RADIUS * 2,
+      lines: [trimmed],
+      fontSize: trimmed.length <= 2 ? 36 : 24,
+    };
+  }
+
+  let lines = [trimmed];
+  if (trimmed.length > 13 && trimmed.includes(' ')) {
+    const words = trimmed.split(' ');
+    const mid = Math.ceil(words.length / 2);
+    lines = [words.slice(0, mid).join(' '), words.slice(mid).join(' ')];
+  }
+
+  const longest = Math.max(...lines.map((l) => l.length));
+  const fontSize = longest > 11 ? 16 : 19;
+  const width = Math.max(96, Math.min(204, longest * (fontSize * 0.68) + 34));
+  const height = lines.length > 1 ? 68 : 54;
+
+  return { isPill: true, width, height, lines, fontSize };
+}
+
+function drawPillPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  radius: number
+): void {
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, radius);
+}
+
+function createLetterTexture(
+  scene: Phaser.Scene,
+  key: string,
+  dims: OrbDimensions
+): void {
   if (scene.textures.exists(key)) return;
 
-  const size = ORB_RADIUS * 2;
-  const canvasTex = scene.textures.createCanvas(key, size, size);
+  const canvasTex = scene.textures.createCanvas(key, dims.width, dims.height);
   if (!canvasTex) return;
 
   const ctx = canvasTex.getContext();
-  const cx = ORB_RADIUS;
-  const cy = ORB_RADIUS;
+  const cx = dims.width / 2;
+  const cy = dims.height / 2;
 
-  ctx.clearRect(0, 0, size, size);
+  ctx.clearRect(0, 0, dims.width, dims.height);
 
-  // Halo exterior 3D con degradado radial
-  const outerGrad = ctx.createRadialGradient(cx - 10, cy - 12, 6, cx, cy, ORB_RADIUS - 2);
-  outerGrad.addColorStop(0, '#bae6fd');
-  outerGrad.addColorStop(0.65, '#38bdf8');
-  outerGrad.addColorStop(1, '#0284c7');
+  if (!dims.isPill) {
+    const outerGrad = ctx.createRadialGradient(cx - 10, cy - 12, 6, cx, cy, ORB_RADIUS - 2);
+    outerGrad.addColorStop(0, '#bae6fd');
+    outerGrad.addColorStop(0.65, '#38bdf8');
+    outerGrad.addColorStop(1, '#0284c7');
 
-  ctx.beginPath();
-  ctx.arc(cx, cy, ORB_RADIUS - 2, 0, Math.PI * 2);
-  ctx.fillStyle = outerGrad;
-  ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx, cy, ORB_RADIUS - 2, 0, Math.PI * 2);
+    ctx.fillStyle = outerGrad;
+    ctx.fill();
 
-  // Esfera interior cálida con sombreado 3D suave
-  const innerGrad = ctx.createRadialGradient(cx - 8, cy - 10, 4, cx, cy, ORB_RADIUS - 7);
-  innerGrad.addColorStop(0, '#ffffff');
-  innerGrad.addColorStop(0.7, '#fefce8');
-  innerGrad.addColorStop(1, '#fde68a');
+    const innerGrad = ctx.createRadialGradient(cx - 8, cy - 10, 4, cx, cy, ORB_RADIUS - 7);
+    innerGrad.addColorStop(0, '#ffffff');
+    innerGrad.addColorStop(0.7, '#fefce8');
+    innerGrad.addColorStop(1, '#fde68a');
 
-  ctx.beginPath();
-  ctx.arc(cx, cy, ORB_RADIUS - 7, 0, Math.PI * 2);
-  ctx.fillStyle = innerGrad;
-  ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx, cy, ORB_RADIUS - 7, 0, Math.PI * 2);
+    ctx.fillStyle = innerGrad;
+    ctx.fill();
 
-  // Reflejo cristalino superior
-  ctx.beginPath();
-  ctx.ellipse(cx - 11, cy - 17, 13, 6, -0.45, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-  ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx - 11, cy - 17, 13, 6, -0.45, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.fill();
+  } else {
+    const outerGrad = ctx.createLinearGradient(0, 0, 0, dims.height);
+    outerGrad.addColorStop(0, '#bae6fd');
+    outerGrad.addColorStop(0.55, '#38bdf8');
+    outerGrad.addColorStop(1, '#0284c7');
+    drawPillPath(ctx, 2, 2, dims.width - 4, dims.height - 4, 24);
+    ctx.fillStyle = outerGrad;
+    ctx.fill();
 
-  // Texto en Lexend grande con sombra suave para máximo contraste
-  const fontSize = token.length <= 2 ? 36 : 24;
-  ctx.font = `800 ${fontSize}px Lexend, system-ui, sans-serif`;
+    const innerGrad = ctx.createLinearGradient(0, 6, 0, dims.height - 6);
+    innerGrad.addColorStop(0, '#ffffff');
+    innerGrad.addColorStop(0.75, '#fefce8');
+    innerGrad.addColorStop(1, '#fde68a');
+    drawPillPath(ctx, 7, 6, dims.width - 14, dims.height - 12, 20);
+    ctx.fillStyle = innerGrad;
+    ctx.fill();
+  }
+
+  ctx.font = `800 ${dims.fontSize}px Lexend, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.16)';
-  ctx.fillText(token, cx + 1.5, cy + 3.5);
-  ctx.fillStyle = '#0f172a';
-  ctx.fillText(token, cx, cy + 2);
+
+  const lineStep = dims.fontSize + 3;
+  const startY = cy - ((dims.lines.length - 1) * lineStep) / 2 + 1;
+  dims.lines.forEach((line, idx) => {
+    const ly = startY + idx * lineStep;
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.16)';
+    ctx.fillText(line, cx + 1.2, ly + 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText(line, cx, ly);
+  });
 
   canvasTex.refresh();
 }
@@ -62,9 +131,11 @@ export class LetterBody {
   readonly token: string;
   readonly sprite: Phaser.Physics.Matter.Image;
   private readonly scene: Phaser.Scene;
-  private readonly hintRing: Phaser.GameObjects.Arc;
+  private readonly hintRing: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Arc;
+  private readonly shieldVisual: Phaser.GameObjects.Container | null = null;
   private hintTween: Phaser.Tweens.Tween | null = null;
   private collected = false;
+  private shielded: boolean;
   private lastHitAt = 0;
 
   constructor(
@@ -74,16 +145,30 @@ export class LetterBody {
     x: number,
     y: number,
     params: PhysicsParams,
-    onTap: (letter: LetterBody) => void
+    onTap: (letter: LetterBody) => void,
+    options?: { shielded?: boolean }
   ) {
     this.scene = scene;
     this.token = token;
+    this.shielded = Boolean(options?.shielded);
 
-    const texKey = `letter-orb-${token}`;
-    createLetterTexture(scene, texKey, token);
+    const dims = measureOrbDimensions(token);
+    const texKey = `letter-orb-${dims.isPill ? 'pill' : 'orb'}-${token}`;
+    createLetterTexture(scene, texKey, dims);
+
+    const shapeConfig: Phaser.Types.Physics.Matter.MatterSetBodyConfig = dims.isPill
+      ? {
+          type: 'rectangle',
+          width: dims.width,
+          height: dims.height,
+        }
+      : {
+          type: 'circle',
+          radius: ORB_RADIUS,
+        };
 
     this.sprite = scene.matter.add.image(x, y, texKey, undefined, {
-      shape: { type: 'circle', radius: ORB_RADIUS },
+      shape: shapeConfig,
       restitution: params.restitution,
       frictionAir: params.frictionAir,
       friction: 0.01,
@@ -98,17 +183,56 @@ export class LetterBody {
       onTap(this);
     });
 
-    // Impulso inicial suave para que empiece flotando
     const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
     const initialSpeed = Math.min(params.maxSpeed * 0.65, 2.0);
     this.sprite.setVelocity(Math.cos(angle) * initialSpeed, Math.sin(angle) * initialSpeed);
 
-    // Aro de pista (oculto hasta que se active tras 3 errores seguidos)
-    this.hintRing = scene.add.circle(x, y, ORB_RADIUS + 8);
-    this.hintRing.setStrokeStyle(4, 0xfacc15, 0.95);
-    this.hintRing.setFillStyle(0xfacc15, 0.14);
+    if (dims.isPill) {
+      this.hintRing = scene.add
+        .rectangle(x, y, dims.width + 14, dims.height + 14, 0xfacc15, 0.14)
+        .setStrokeStyle(4, 0xfacc15, 0.95);
+    } else {
+      this.hintRing = scene.add
+        .circle(x, y, ORB_RADIUS + 8, 0xfacc15, 0.14)
+        .setStrokeStyle(4, 0xfacc15, 0.95);
+    }
     this.hintRing.setVisible(false);
     this.hintRing.setDepth(7);
+
+    if (this.shielded) {
+      const armor = dims.isPill
+        ? scene.add
+            .rectangle(0, 0, dims.width + 12, dims.height + 12, 0x38bdf8, 0.18)
+            .setStrokeStyle(3.5, 0x22d3ee, 0.95)
+        : scene.add
+            .circle(0, 0, ORB_RADIUS + 7, 0x38bdf8, 0.18)
+            .setStrokeStyle(3.5, 0x22d3ee, 0.95);
+      const badge = scene.add
+        .text(dims.width / 2 - 4, -dims.height / 2 + 2, '🛡', {
+          fontFamily: 'Lexend, system-ui, sans-serif',
+          fontSize: '15px',
+        })
+        .setOrigin(0.5);
+      this.shieldVisual = scene.add.container(x, y, [armor, badge]).setDepth(9);
+    }
+  }
+
+  isShielded(): boolean {
+    return this.shielded;
+  }
+
+  breakShield(awayFromX: number, awayFromY: number, params: PhysicsParams): void {
+    if (!this.shielded) return;
+    this.shielded = false;
+    if (this.shieldVisual) {
+      this.shieldVisual.setVisible(false);
+    }
+
+    const dx = this.sprite.x - awayFromX;
+    const dy = this.sprite.y - awayFromY;
+    const len = Math.hypot(dx, dy) || 1;
+    const kick = Math.min(params.maxSpeed, 2.2);
+    this.sprite.setVelocity((dx / len) * kick, (dy / len) * kick);
   }
 
   canTriggerHit(now: number, cooldownMs = 280): boolean {
@@ -134,7 +258,6 @@ export class LetterBody {
     const body = this.sprite.body as MatterJS.BodyType | undefined;
     if (!body) return;
 
-    // Limitar velocidad máxima y dar un empujón sutil si queda casi quieta
     const vx = body.velocity.x;
     const vy = body.velocity.y;
     const speed = Math.hypot(vx, vy);
@@ -149,7 +272,6 @@ export class LetterBody {
       );
     }
 
-    // Amortiguar giro y enderezar suavemente para mantener lectura clara
     const dampedAngular =
       body.angularVelocity * Math.max(0, 1 - params.angularDamping * 0.3) -
       this.sprite.rotation * params.uprightStiffness;
@@ -164,6 +286,12 @@ export class LetterBody {
 
     if (this.hintRing.visible) {
       this.hintRing.setPosition(this.sprite.x, this.sprite.y);
+      this.hintRing.setRotation(this.sprite.rotation);
+    }
+
+    if (this.shieldVisual && this.shieldVisual.visible) {
+      this.shieldVisual.setPosition(this.sprite.x, this.sprite.y);
+      this.shieldVisual.setRotation(this.sprite.rotation);
     }
   }
 
@@ -176,7 +304,7 @@ export class LetterBody {
       this.hintRing.setPosition(this.sprite.x, this.sprite.y);
       this.hintTween = this.scene.tweens.add({
         targets: this.hintRing,
-        scale: { from: 0.95, to: 1.18 },
+        scale: { from: 0.95, to: 1.14 },
         alpha: { from: 0.95, to: 0.4 },
         duration: 550,
         yoyo: true,
@@ -210,7 +338,9 @@ export class LetterBody {
   collectToSlot(targetX: number, targetY: number): void {
     if (this.collected) return;
     this.collected = true;
+    this.shielded = false;
     this.setHintActive(false);
+    this.shieldVisual?.setVisible(false);
     this.sprite.disableInteractive();
     this.sprite.clearTint();
 
@@ -233,7 +363,7 @@ export class LetterBody {
       x: targetX,
       y: targetY,
       rotation: 0,
-      scale: 0.72,
+      scale: 0.68,
       duration: 420,
       ease: 'Back.easeOut',
     });
@@ -242,6 +372,7 @@ export class LetterBody {
   destroy(): void {
     this.hintTween?.stop();
     this.hintRing.destroy();
+    this.shieldVisual?.destroy();
     this.sprite.destroy();
   }
 }
