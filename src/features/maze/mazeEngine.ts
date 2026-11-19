@@ -544,6 +544,13 @@ export class MazeEngine {
   }
 
   /**
+   * Actualiza la velocidad base del jugador (p. ej. modo lento accesible).
+   */
+  setPlayerSpeed(speedTilesPerSec: number): void {
+    this.player.speedTilesPerSec = Math.max(0.5, speedTilesPerSec);
+  }
+
+  /**
    * Aplica efecto inmediato de un power-up sobre las estadísticas del laberinto.
    */
   applyPowerUp(kind: PowerUpKind): void {
