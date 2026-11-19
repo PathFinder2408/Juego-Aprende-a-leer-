@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 9 en curso (rama `feat/fase-9-enemigos-hud` — F9-02 completada)
+- **Fase actual:** Fase 9 en curso (rama `feat/fase-9-enemigos-hud` — F9-03 completada)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -95,7 +95,7 @@
 |---|---|---|---|---|---|---|
 | F9-01 | IA pura de enemigos (`src/features/maze/enemyAI.ts` + `enemyAI.test.ts`): patrulla, persecución por vista, aturdimiento por burbuja y huida (`Orbe Dorado`) | P | Gemini 4 Hydrogen (XHigh) | hecha | Tests validan transiciones de estado y rutas válidas en grilla | `enemyAI.ts`, `enemyAI.test.ts`; typecheck y 37/37 tests OK |
 | F9-02 | Power-ups, corazones/escudo y drops (`src/features/maze/powerups.ts` + `MazeScene.ts`): `+Burbuja`, `Onda +1`, `Botas Turbo`, `Escudo Solar`, `Orbe Dorado` con voz `es-CL` | M | Gemini 4 Hydrogen (Medium) | hecha | Recoger power-ups aplica efecto inmediato y respeta límite de corazones/checkpoint | `powerups.ts`, `powerups.test.ts`, `MazeScene.ts`, `MazeRenderer.ts`, `MazePlayer.ts`, `mazeEngine.ts`; typecheck, 39/39 tests y build OK |
-| F9-03 | HUD Arcade en React (`ArcadeHud.tsx` + `styles.css`) conectado por `gameBus`: corazones, burbujas, fichas, puntaje y pausa (`Esc`/`P`) | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | HUD refleja estado en vivo y pausa congela simulación sin errores | Reutiliza estilos accesibles |
+| F9-03 | HUD Arcade en React (`ArcadeHud.tsx` + `styles.css`) conectado por `gameBus`: corazones, burbujas, fichas, puntaje y pausa (`Esc`/`P`) | M | Gemini 4 Hydrogen (Medium) | hecha | HUD refleja estado en vivo y pausa congela simulación sin errores | `ArcadeHud.tsx`, `App.tsx`, `styles.css`; typecheck, 39/39 tests y build OK |
 | F9-04 | Verificación integral Fase 9 (`npm test`, `npm run build`, prueba E2E de laberinto + enemigos + power-ups) + merge a `main` | L | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Tests, build y consola en 0 errores | Cierre de Fase 9 |
 
 ### Fase 10: Campaña Completa (Inicio a Fin), Historia y 6 Jefes
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Iniciar **F9-03** en rama `feat/fase-9-enemigos-hud` (`ArcadeHud.tsx` + `styles.css` conectado por `gameBus`: corazones, burbujas, fichas, puntaje y pausa `Esc`/`P`, esfuerzo **M**, modelo recomendado **Gemini 4 Hydrogen (Medium)**).
+Iniciar **F9-04** en rama `feat/fase-9-enemigos-hud` (verificación integral Fase 9: `npm test`, `npm run build`, E2E de laberinto + enemigos + power-ups + HUD + pausa en navegador y merge a `main`, esfuerzo **L**, modelo recomendado **Gemini 4 Hydrogen (Medium)**).
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -142,3 +142,4 @@ Iniciar **F9-03** en rama `feat/fase-9-enemigos-hud` (`ArcadeHud.tsx` + `styles.
 - **2026-11-19 (Fase 8):** Completada `F8-04` (`TouchControls.tsx` con cruceta + Burbuja/Poder, E2E en navegador PC/tablet con 0 errores de consola) y cerrada Fase 8 en `main`.
 - **2026-11-19 (Fase 9):** Creada rama `feat/fase-9-enemigos-hud` y completada `F9-01` (`enemyAI.ts` puro con patrulla, LoS + BFS, emboscada, aturdimiento por burbuja y huida por Orbe Dorado; typecheck y 37/37 tests OK).
 - **2026-11-19 (Fase 9):** Completada `F9-02` (`powerups.ts` con corazones, escudo solar, invulnerabilidad breve, checkpoint y voz `es-CL`, más renderizado e integración de enemigos en `MazeScene`/`MazeRenderer`/`MazePlayer`; typecheck, 39/39 tests y build OK).
+- **2026-11-19 (Fase 9):** Completada `F9-03` (`ArcadeHud.tsx` en React con corazones, escudo, Orbe Dorado, burbujas, sellos, puntaje y overlay de pausa conectado por `gameBus`; typecheck, 39/39 tests y build OK).
