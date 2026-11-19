@@ -1,0 +1,196 @@
+[
+  {
+    "id": "map-ch1-1",
+    "cols": 15,
+    "rows": 11,
+    "biome": "beach",
+    "layout": [
+      "###############",
+      "#P..B.S.B..B..#",
+      "# # # ### # # #",
+      "#..B... ...B..#",
+      "# ### # # ### #",
+      "#..?.S.....B..#",
+      "# ### # # ### #",
+      "#..B... ...B..#",
+      "# # # ### # # #",
+      "#.....S..B...X#",
+      "###############"
+    ],
+    "syllableTokens": ["S", "O", "L"],
+    "powerUpPool": ["extra_bubble", "long_wave", "solar_shield"],
+    "enemies": [
+      {
+        "id": "ch1-1-sombra-1",
+        "kind": "sleepy_shadow",
+        "behavior": "patrol",
+        "spawn": { "col": 10, "row": 5 },
+        "speedTilesPerSec": 2.1
+      }
+    ]
+  },
+  {
+    "id": "map-ch1-2",
+    "cols": 17,
+    "rows": 11,
+    "biome": "beach",
+    "layout": [
+      "#################",
+      "#P..B..S..B..?. #",
+      "# # # ##### # # #",
+      "#..B.... ....B..#",
+      "# ### # # # ### #",
+      "#..K.. ...B.....#",
+      "# ### # # # ### #",
+      "#..B.... ....B..#",
+      "# # # ##### # # #",
+      "#.....B....B...X#",
+      "#################"
+    ],
+    "syllableTokens": ["SA", "PO"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield"],
+    "enemies": [
+      {
+        "id": "ch1-2-sombra-1",
+        "kind": "sleepy_shadow",
+        "behavior": "patrol",
+        "spawn": { "col": 12, "row": 3 },
+        "speedTilesPerSec": 2.2
+      },
+      {
+        "id": "ch1-2-sombra-2",
+        "kind": "sleepy_shadow",
+        "behavior": "patrol",
+        "spawn": { "col": 12, "row": 9 },
+        "speedTilesPerSec": 2.2
+      }
+    ]
+  },
+  {
+    "id": "map-ch1-3",
+    "cols": 19,
+    "rows": 13,
+    "biome": "beach",
+    "layout": [
+      "###################",
+      "#P..B..S...B..?. .#",
+      "# # # ####### # # #",
+      "#..B...  .  ...B..#",
+      "# ### # # # # ### #",
+      "#1..B...   ...B..2#",
+      "# ### # # # # ### #",
+      "#..B...  K  ...B..#",
+      "# ### # # # # ### #",
+      "#.....B.....B.....#",
+      "# # # ####### # # #",
+      "#..B...........X..#",
+      "###################"
+    ],
+    "syllableTokens": ["ME", "SA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch1-3-sombra-1",
+        "kind": "sleepy_shadow",
+        "behavior": "patrol",
+        "spawn": { "col": 9, "row": 5 },
+        "speedTilesPerSec": 2.3
+      },
+      {
+        "id": "ch1-3-cangrejo-1",
+        "kind": "mischief_crab",
+        "behavior": "patrol",
+        "spawn": { "col": 15, "row": 9 },
+        "speedTilesPerSec": 2.5
+      }
+    ]
+  },
+  {
+    "id": "map-ch1-4",
+    "cols": 21,
+    "rows": 13,
+    "biome": "beach",
+    "layout": [
+      "#####################",
+      "#P..B...S...B...?...#",
+      "# # # ######### # # #",
+      "#..B....  .  ....B..#",
+      "# ### # # # # # ### #",
+      "#1..B...     ...B..2#",
+      "# ### # # # # # ### #",
+      "#..B....  K  ....B..#",
+      "# ### # # # # # ### #",
+      "#.....B... ...B.....#",
+      "# # # ######### # # #",
+      "#..B.............X..#",
+      "#####################"
+    ],
+    "syllableTokens": ["LO", "MA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch1-4-sombra-1",
+        "kind": "sleepy_shadow",
+        "behavior": "patrol",
+        "spawn": { "col": 10, "row": 5 },
+        "speedTilesPerSec": 2.4
+      },
+      {
+        "id": "ch1-4-cangrejo-1",
+        "kind": "mischief_crab",
+        "behavior": "chase_los",
+        "spawn": { "col": 16, "row": 3 },
+        "speedTilesPerSec": 2.6
+      },
+      {
+        "id": "ch1-4-cangrejo-2",
+        "kind": "mischief_crab",
+        "behavior": "patrol",
+        "spawn": { "col": 13, "row": 11 },
+        "speedTilesPerSec": 2.5
+      }
+    ]
+  },
+  {
+    "id": "map-ch1-boss",
+    "cols": 23,
+    "rows": 15,
+    "biome": "beach",
+    "layout": [
+      "#######################",
+      "#P..B....S....B....?..#",
+      "# # # ########### # # #",
+      "#..B.....  .  .....B..#",
+      "# ### # # # # # # ### #",
+      "#1..B...       ...B..2#",
+      "# ### #         # ### #",
+      "#..B...         ...B..#",
+      "# ### #         # ### #",
+      "#..B...   B.B   ...B..#",
+      "# ### # # # # # # ### #",
+      "#.....B....K....B.....#",
+      "# # # ########### # # #",
+      "#..B.......?.......X..#",
+      "#######################"
+    ],
+    "syllableTokens": ["MA", "PA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch1-boss-cangrejo-1",
+        "kind": "mischief_crab",
+        "behavior": "patrol",
+        "spawn": { "col": 17, "row": 3 },
+        "speedTilesPerSec": 2.6
+      },
+      {
+        "id": "ch1-boss-sombra-1",
+        "kind": "sleepy_shadow",
+        "behavior": "patrol",
+        "spawn": { "col": 5, "row": 11 },
+        "speedTilesPerSec": 2.4
+      }
+    ],
+    "bossSpawn": { "col": 11, "row": 7 }
+  }
+]

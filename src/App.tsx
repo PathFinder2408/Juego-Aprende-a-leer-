@@ -5,6 +5,7 @@ import { LobbyView } from './components/LobbyView';
 import { PhaserCanvas } from './components/PhaserCanvas';
 import { PhysicsDebugPanel } from './components/PhysicsDebugPanel';
 import { SettingsModal } from './components/SettingsModal';
+import { TouchControls } from './components/TouchControls';
 import { setSfxEnabled } from './audio/sfx';
 import { setVoiceEnabled } from './audio/speech';
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from './config/accessibility';
@@ -22,6 +23,7 @@ import { adaptiveEngine } from './features/progression/adaptiveEngine';
 import type {
   AccessibilitySettings,
   ActiveScreen,
+  ArcadeHudSnapshot,
   CampaignProgressState,
   CapturePayload,
   CardEntry,
@@ -40,6 +42,11 @@ export function App() {
 
   const [screen, setScreen] = useState<ActiveScreen>('home');
   const [activeWordId, setActiveWordId] = useState<string>('sol');
+  const [activeMapId] = useState<string>('map-ch1-1');
+  const [activeStageId] = useState<string>('ch1-1');
+  const [activeStageTitle] = useState<string>('Playa Amanecer 1');
+  const [activeStageWordIds] = useState<string[]>(['sol']);
+  const [mazeHud, setMazeHud] = useState<ArcadeHudSnapshot | null>(null);
   const [params, setParams] = useState<PhysicsParams>(() => ({ ...DEFAULT_PHYSICS_PARAMS }));
   const [showDebug, setShowDebug] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleStatePayload | null>(null);
@@ -83,12 +90,22 @@ export function App() {
       setCaptured(payload);
       setCapturedWordIds((prev) => (prev.includes(payload.wordId) ? prev : [...prev, payload.wordId]));
     });
+    const unsubMazeHud = gameBus.on('maze:hud', (snap) => {
+      setMazeHud(snap);
+    });
+    const unsubMazePortal = gameBus.on('maze:portal', (payload) => {
+      setCaptured(null);
+      setActiveWordId(payload.wordIds[0] ?? 'sol');
+      setScreen('antigravity');
+    });
     return () => {
       window.clearInterval(timer);
       unsubState();
       unsubProg();
       unsubEncounter();
       unsubCapture();
+      unsubMazeHud();
+      unsubMazePortal();
     };
   }, []);
 
@@ -180,7 +197,11 @@ export function App() {
             <div className="player-sub">
               {screen === 'antigravity'
                 ? `Cúpula: ${progressTokens} · Dif. Nv.${progression.level}`
-                : `Isla Sol · Dif. Nv.${progression.level}`}
+                : screen === 'maze'
+                  ? mazeHud
+                    ? `${mazeHud.stageTitle} · Sellos ${mazeHud.collectedSeals}/${mazeHud.totalSeals} · ${mazeHud.portalOpen ? '¡Portal abierto!' : 'Burbujas: Espacio'}`
+                    : 'Laberinto · Mueve con WASD/Flechas'
+                  : `Isla Sol · Dif. Nv.${progression.level}`}
             </div>
           </div>
         </div>
@@ -257,10 +278,18 @@ export function App() {
           />
         )}
 
-        {(screen === 'world' || screen === 'antigravity') && (
+        {(screen === 'world' || screen === 'antigravity' || screen === 'maze') && (
           <div className={screen === 'antigravity' && showDebug ? 'workspace' : 'workspace workspace--full'}>
-            <div className="stage-card">
-              <PhaserCanvas screen={screen} activeWordId={activeWordId} />
+            <div className="stage-card stage-card--interactive">
+              <PhaserCanvas
+                screen={screen}
+                activeWordId={activeWordId}
+                activeMapId={activeMapId}
+                activeStageId={activeStageId}
+                activeStageTitle={activeStageTitle}
+                activeStageWordIds={activeStageWordIds}
+              />
+              {screen === 'maze' && <TouchControls />}
             </div>
             {screen === 'antigravity' && showDebug && (
               <PhysicsDebugPanel
@@ -301,6 +330,16 @@ export function App() {
           }}
         >
           Isla Sol
+        </button>
+        <button
+          type="button"
+          className={`dock-tab ${screen === 'maze' ? 'dock-tab--active' : ''}`}
+          onClick={() => {
+            setCaptured(null);
+            setScreen('maze');
+          }}
+        >
+          Laberinto
         </button>
         <button
           type="button"
