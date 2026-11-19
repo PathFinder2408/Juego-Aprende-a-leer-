@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { speakStoryPassage, stopSpeech } from '../audio/speech';
-import type { StorySequence } from '../types/game';
+import { getPlayerSkinConfig } from '../config/skins';
+import type { PlayerSkinId, StorySequence } from '../types/game';
 
 interface StoryModalProps {
   sequence: StorySequence;
+  playerSkin?: PlayerSkinId;
   onComplete: (storyId: string) => void;
 }
 
@@ -25,7 +27,7 @@ const PORTRAIT_BADGES: Record<string, { emoji: string; accent: string }> = {
   don_silencio: { emoji: '🎩', accent: '#38bdf8' },
 };
 
-export function StoryModal({ sequence, onComplete }: StoryModalProps) {
+export function StoryModal({ sequence, playerSkin = 'explorer', onComplete }: StoryModalProps) {
   const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
@@ -68,7 +70,10 @@ export function StoryModal({ sequence, onComplete }: StoryModalProps) {
 
   if (!currentLine) return null;
 
-  const portraitSrc = PORTRAIT_IMAGES[currentLine.portraitKey];
+  const portraitSrc =
+    currentLine.portraitKey === 'explorer'
+      ? getPlayerSkinConfig(playerSkin).sprite
+      : PORTRAIT_IMAGES[currentLine.portraitKey];
   const portraitBadge = PORTRAIT_BADGES[currentLine.portraitKey] ?? {
     emoji: '📖',
     accent: '#facc15',

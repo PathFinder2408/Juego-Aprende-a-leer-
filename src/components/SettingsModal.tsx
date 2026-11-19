@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import type { AccessibilitySettings } from '../types/game';
+import { PLAYER_SKINS } from '../config/skins';
+import type { AccessibilitySettings, PlayerSkinId } from '../types/game';
 
 interface SettingsModalProps {
   settings: AccessibilitySettings;
+  playerSkin: PlayerSkinId;
+  onSelectSkin: (skinId: PlayerSkinId) => void;
   onToggle: (key: keyof AccessibilitySettings) => void;
   onResetProgress: () => void;
   onClose: () => void;
@@ -17,7 +20,14 @@ const OPTIONS: Array<{ key: keyof AccessibilitySettings; label: string; hint: st
   { key: 'highContrast', label: 'Alto contraste', hint: 'Bordes y textos más marcados' },
 ];
 
-export function SettingsModal({ settings, onToggle, onResetProgress, onClose }: SettingsModalProps) {
+export function SettingsModal({
+  settings,
+  playerSkin,
+  onSelectSkin,
+  onToggle,
+  onResetProgress,
+  onClose,
+}: SettingsModalProps) {
   const [confirmReset, setConfirmReset] = useState(false);
   const [resetDone, setResetDone] = useState(false);
 
@@ -31,6 +41,29 @@ export function SettingsModal({ settings, onToggle, onResetProgress, onClose }: 
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Ajustes">
       <div className="capture-modal settings-modal">
         <h2>Ajustes y Accesibilidad</h2>
+        <div className="settings-skin-section">
+          <span className="settings-section-title">Estilo del Explorador</span>
+          <div className="settings-skin-grid" role="group" aria-label="Elegir estilo del personaje">
+            {PLAYER_SKINS.map((skin) => {
+              const active = skin.id === playerSkin;
+              return (
+                <button
+                  key={skin.id}
+                  type="button"
+                  aria-pressed={active}
+                  className={`settings-skin-card ${active ? 'settings-skin-card--active' : ''}`}
+                  onClick={() => onSelectSkin(skin.id)}
+                >
+                  <img src={skin.sprite} alt={skin.name} className="settings-skin-thumb" />
+                  <strong>
+                    {skin.badge} {skin.name}
+                  </strong>
+                  <small>{skin.subtitle}</small>
+                </button>
+              );
+            })}
+          </div>
+        </div>
         <div className="settings-list">
           {OPTIONS.map((opt) => {
             const active = settings[opt.key] ?? true;
