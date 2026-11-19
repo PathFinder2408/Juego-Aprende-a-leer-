@@ -77,6 +77,7 @@ export class MazeScene extends Phaser.Scene {
   private paused = false;
   private portalTriggered = false;
   private lastHudKey = '';
+  private tutorialBanner: Phaser.GameObjects.Container | null = null;
 
   constructor() {
     super({ key: 'MazeScene' });
@@ -145,6 +146,10 @@ export class MazeScene extends Phaser.Scene {
     this.configureCamera(initialSnapshot.cols, initialSnapshot.rows);
     this.registerInputAndBus();
     this.registerLifecycleCleanup();
+
+    if (this.stageId === 'ch1-1') {
+      this.showTutorialBanner();
+    }
 
     this.emitHudSnapshot(initialSnapshot);
   }
@@ -245,6 +250,7 @@ export class MazeScene extends Phaser.Scene {
       gameBus.on('accessibility:update', (settings) => {
         this.accessibility = { ...settings };
         this.engine.setPlayerSpeed(this.getTargetPlayerSpeed());
+        this.mazeRenderer.setHighContrast(settings.highContrast, this.engine.getState());
       })
     );
 
@@ -267,6 +273,10 @@ export class MazeScene extends Phaser.Scene {
   }
 
   private cleanupScene(): void {
+    if (this.tutorialBanner) {
+      this.tutorialBanner.destroy();
+      this.tutorialBanner = null;
+    }
     if (this.detachInput) {
       this.detachInput();
       this.detachInput = null;
@@ -441,5 +451,95 @@ export class MazeScene extends Phaser.Scene {
     };
 
     gameBus.emit('maze:hud', hud);
+  }
+
+  private showTutorialBanner(): void {
+    const isHc = this.accessibility.highContrast;
+    const isRm = this.accessibility.reducedMotion;
+
+    const bannerW = Math.min(this.scale.width - 32, 540);
+    const bannerH = 74;
+    const bannerX = this.scale.width / 2;
+    const bannerY = 88;
+
+    const container = this.add.container(bannerX, bannerY);
+    container.setScrollFactor(0);
+    container.setDepth(9999);
+
+    const bg = this.add.graphics();
+    bg.fillStyle(isHc ? 0x000000 : 0x0f172a, isHc ? 0.98 : 0.9);
+    bg.lineStyle(2, isHc ? 0xfacc15 : 0x38bdf8, 1);
+    bg.fillRoundedRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH, 12);
+    bg.strokeRoundedRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH, 12);
+    container.add(bg);
+
+    const titleText = this.add.text(
+      0,
+      -14,
+      '🎮 ¡Usa Flechas / WASD o Táctil para moverte!',
+      {
+        fontFamily: 'Lexend, system-ui, sans-serif',
+        fontSize: '15px',
+        fontStyle: 'bold',
+        color: isHc ? '#facc15' : '#38bdf8',
+        align: 'center',
+      }
+    );
+    titleText.setOrigin(0.5);
+    container.add(titleText);
+
+    const hintText = this.add.text(
+      0,
+      12,
+      '🫧 ¡Presiona Espacio o Botón Burbuja para abrir paso!',
+      {
+        fontFamily: 'Lexend, system-ui, sans-serif',
+        fontSize: '13px',
+        color: '#ffffff',
+        align: 'center',
+      }
+    );
+    hintText.setOrigin(0.5);
+    container.add(hintText);
+
+    this.tutorialBanner = container;
+
+    speakText('¡Usa las flechas para moverte y espacio para soltar burbujas!', { rate: 0.95 });
+
+    if (isRm) {
+      this.time.delayedCall(7000, () => {
+        if (this.tutorialBanner) {
+          this.tutorialBanner.destroy();
+          this.tutorialBanner = null;
+        }
+      });
+    } else {
+      container.setAlpha(0);
+      this.tweens.add({
+        targets: container,
+        alpha: 1,
+        duration: 350,
+        ease: 'Cubic.easeOut',
+        onComplete: () => {
+          this.time.delayedCall(6500, () => {
+            if (this.tutorialBanner && !this.tutorialBanner.scene) return;
+            if (this.tutorialBanner) {
+              this.tweens.add({
+                targets: this.tutorialBanner,
+                alpha: 0,
+                duration: 500,
+                ease: 'Cubic.easeIn',
+                onComplete: () => {
+                  if (this.tutorialBanner) {
+                    this.tutorialBanner.destroy();
+                    this.tutorialBanner = null;
+                  }
+                },
+              });
+            }
+          });
+        },
+      });
+    }
   }
 }
