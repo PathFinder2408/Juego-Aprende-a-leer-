@@ -1,0 +1,189 @@
+[
+  {
+    "id": "map-ch5-1",
+    "cols": 15,
+    "rows": 11,
+    "biome": "ruins",
+    "layout": [
+      "###############",
+      "#P..H.S.B..B..#",
+      "# # # ### # # #",
+      "#1.B... ...B.2#",
+      "# ### # # ### #",
+      "#..?.S...K.B..#",
+      "# ### # # ### #",
+      "#..B... ...H..#",
+      "# # # ### # # #",
+      "#.....B..B...X#",
+      "###############"
+    ],
+    "syllableTokens": ["HIS", "TO", "RIA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield"],
+    "enemies": [
+      {
+        "id": "ch5-1-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 10, "row": 5 },
+        "speedTilesPerSec": 2.6
+      }
+    ]
+  },
+  {
+    "id": "map-ch5-2",
+    "cols": 17,
+    "rows": 11,
+    "biome": "ruins",
+    "layout": [
+      "#################",
+      "#P..H..S..B..?. #",
+      "# # # ##### # # #",
+      "#1.B.... ....H.2#",
+      "# ### # # # ### #",
+      "#..K.. ...B.....#",
+      "# ### # # # ### #",
+      "#..B.... ....B..#",
+      "# # # ##### # # #",
+      "#.....H....B...X#",
+      "#################"
+    ],
+    "syllableTokens": ["PUEN", "TE"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch5-2-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "chase_los",
+        "spawn": { "col": 12, "row": 3 },
+        "speedTilesPerSec": 2.7
+      },
+      {
+        "id": "ch5-2-eco-1",
+        "kind": "mute_echo",
+        "behavior": "patrol",
+        "spawn": { "col": 12, "row": 9 },
+        "speedTilesPerSec": 2.6
+      }
+    ]
+  },
+  {
+    "id": "map-ch5-3",
+    "cols": 19,
+    "rows": 13,
+    "biome": "ruins",
+    "layout": [
+      "###################",
+      "#P..H..S...B..?. .#",
+      "# # # ####### # # #",
+      "#..B...  .  ...H..#",
+      "# ### # # # # ### #",
+      "#1..B...   ...B..2#",
+      "# ### # # # # ### #",
+      "#..H...  K  ...B..#",
+      "# ### # # # # ### #",
+      "#.....B.....H.....#",
+      "# # # ####### # # #",
+      "#..B...........X..#",
+      "###################"
+    ],
+    "syllableTokens": ["SA", "BIO"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch5-3-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 9, "row": 5 },
+        "speedTilesPerSec": 2.7
+      },
+      {
+        "id": "ch5-3-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "chase_los",
+        "spawn": { "col": 15, "row": 9 },
+        "speedTilesPerSec": 2.7
+      }
+    ]
+  },
+  {
+    "id": "map-ch5-4",
+    "cols": 21,
+    "rows": 13,
+    "biome": "ruins",
+    "layout": [
+      "#####################",
+      "#P..H...S...B...?...#",
+      "# # # ######### # # #",
+      "#..B....  .  ....H..#",
+      "# ### # # # # # ### #",
+      "#1..B...     ...B..2#",
+      "# ### # # # # # ### #",
+      "#..H....  K  ....B..#",
+      "# ### # # # # # ### #",
+      "#.....B... ...H.....#",
+      "# # # ######### # # #",
+      "#..B.............X..#",
+      "#####################"
+    ],
+    "syllableTokens": ["LI", "BRO"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch5-4-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 16, "row": 3 },
+        "speedTilesPerSec": 2.8
+      },
+      {
+        "id": "ch5-4-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "chase_los",
+        "spawn": { "col": 13, "row": 11 },
+        "speedTilesPerSec": 2.7
+      }
+    ]
+  },
+  {
+    "id": "map-ch5-boss",
+    "cols": 23,
+    "rows": 15,
+    "biome": "ruins",
+    "layout": [
+      "#######################",
+      "#P..H....S....B....?..#",
+      "# # # ########### # # #",
+      "#..B.....  .  .....H..#",
+      "# ### # # # # # # ### #",
+      "#1..B...       ...B..2#",
+      "# ### #         # ### #",
+      "#..H...         ...H..#",
+      "# ### #         # ### #",
+      "#..B...   H.H   ...B..#",
+      "# ### # # # # # # ### #",
+      "#.....B....K....B.....#",
+      "# # # ########### # # #",
+      "#..B.......?.......X..#",
+      "#######################"
+    ],
+    "syllableTokens": ["ES", "FIN"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch5-boss-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 17, "row": 3 },
+        "speedTilesPerSec": 2.8
+      },
+      {
+        "id": "ch5-boss-eco-1",
+        "kind": "mute_echo",
+        "behavior": "patrol",
+        "spawn": { "col": 5, "row": 11 },
+        "speedTilesPerSec": 2.6
+      }
+    ],
+    "bossSpawn": { "col": 11, "row": 7 }
+  }
+]

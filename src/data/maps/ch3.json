@@ -1,0 +1,189 @@
+[
+  {
+    "id": "map-ch3-1",
+    "cols": 15,
+    "rows": 11,
+    "biome": "canyon",
+    "layout": [
+      "###############",
+      "#P..B.S.B..B..#",
+      "# # # ### # # #",
+      "#1.B... ...B.2#",
+      "# ### # # ### #",
+      "#..?.B...K.B..#",
+      "# ### # # ### #",
+      "#..B... ...B..#",
+      "# # # ### # # #",
+      "#.....B..B...X#",
+      "###############"
+    ],
+    "syllableTokens": ["CHIS", "PA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "solar_shield"],
+    "enemies": [
+      {
+        "id": "ch3-1-eco-1",
+        "kind": "mute_echo",
+        "behavior": "chase_los",
+        "spawn": { "col": 10, "row": 5 },
+        "speedTilesPerSec": 2.5
+      }
+    ]
+  },
+  {
+    "id": "map-ch3-2",
+    "cols": 17,
+    "rows": 11,
+    "biome": "canyon",
+    "layout": [
+      "#################",
+      "#P..B..S..B..?. #",
+      "# # # ##### # # #",
+      "#1.B.... ....B.2#",
+      "# ### # # # ### #",
+      "#..K.. ...B.....#",
+      "# ### # # # ### #",
+      "#..B.... ....B..#",
+      "# # # ##### # # #",
+      "#.....B....B...X#",
+      "#################"
+    ],
+    "syllableTokens": ["LLU", "VIA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield"],
+    "enemies": [
+      {
+        "id": "ch3-2-eco-1",
+        "kind": "mute_echo",
+        "behavior": "chase_los",
+        "spawn": { "col": 12, "row": 3 },
+        "speedTilesPerSec": 2.5
+      },
+      {
+        "id": "ch3-2-cangrejo-1",
+        "kind": "mischief_crab",
+        "behavior": "patrol",
+        "spawn": { "col": 12, "row": 9 },
+        "speedTilesPerSec": 2.5
+      }
+    ]
+  },
+  {
+    "id": "map-ch3-3",
+    "cols": 19,
+    "rows": 13,
+    "biome": "canyon",
+    "layout": [
+      "###################",
+      "#P..B..S...B..?. .#",
+      "# # # ####### # # #",
+      "#..B...  .  ...B..#",
+      "# ### # # # # ### #",
+      "#1..B...   ...B..2#",
+      "# ### # # # # ### #",
+      "#..B...  K  ...B..#",
+      "# ### # # # # ### #",
+      "#.....B.....B.....#",
+      "# # # ####### # # #",
+      "#..B...........X..#",
+      "###################"
+    ],
+    "syllableTokens": ["PE", "RRO"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch3-3-eco-1",
+        "kind": "mute_echo",
+        "behavior": "chase_los",
+        "spawn": { "col": 9, "row": 5 },
+        "speedTilesPerSec": 2.6
+      },
+      {
+        "id": "ch3-3-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "patrol",
+        "spawn": { "col": 15, "row": 9 },
+        "speedTilesPerSec": 2.6
+      }
+    ]
+  },
+  {
+    "id": "map-ch3-4",
+    "cols": 21,
+    "rows": 13,
+    "biome": "canyon",
+    "layout": [
+      "#####################",
+      "#P..B...S...B...?...#",
+      "# # # ######### # # #",
+      "#..B....  .  ....B..#",
+      "# ### # # # # # ### #",
+      "#1..B...     ...B..2#",
+      "# ### # # # # # ### #",
+      "#..B....  K  ....B..#",
+      "# ### # # # # # ### #",
+      "#.....B... ...B.....#",
+      "# # # ######### # # #",
+      "#..B.............X..#",
+      "#####################"
+    ],
+    "syllableTokens": ["ÁR", "BOL"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch3-4-eco-1",
+        "kind": "mute_echo",
+        "behavior": "chase_los",
+        "spawn": { "col": 16, "row": 3 },
+        "speedTilesPerSec": 2.6
+      },
+      {
+        "id": "ch3-4-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "ambush",
+        "spawn": { "col": 13, "row": 11 },
+        "speedTilesPerSec": 2.6
+      }
+    ]
+  },
+  {
+    "id": "map-ch3-boss",
+    "cols": 23,
+    "rows": 15,
+    "biome": "canyon",
+    "layout": [
+      "#######################",
+      "#P..B....S....B....?..#",
+      "# # # ########### # # #",
+      "#..B.....  .  .....B..#",
+      "# ### # # # # # # ### #",
+      "#1..B...   S   ...B..2#",
+      "# ### #         # ### #",
+      "#..B...         ...B..#",
+      "# ### #         # ### #",
+      "#..B...   B.B   ...B..#",
+      "# ### # # # # # # ### #",
+      "#.....B....K....B.....#",
+      "# # # ########### # # #",
+      "#..B.......?.......X..#",
+      "#######################"
+    ],
+    "syllableTokens": ["ES", "CUE", "LA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch3-boss-eco-1",
+        "kind": "mute_echo",
+        "behavior": "chase_los",
+        "spawn": { "col": 17, "row": 3 },
+        "speedTilesPerSec": 2.6
+      },
+      {
+        "id": "ch3-boss-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "patrol",
+        "spawn": { "col": 5, "row": 11 },
+        "speedTilesPerSec": 2.5
+      }
+    ],
+    "bossSpawn": { "col": 11, "row": 7 }
+  }
+]
