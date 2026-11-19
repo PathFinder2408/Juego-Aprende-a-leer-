@@ -1,0 +1,99 @@
+[
+  {
+    "id": "sent-ch2-1",
+    "chapterId": "ch2",
+    "level": 2,
+    "mode": "sentence",
+    "promptText": "Ordena la oración sobre la luna",
+    "tokens": ["LA", "LUNA", "BRILLA"],
+    "decoys": ["PALA", "MESA"],
+    "speechText": "La luna brilla."
+  },
+  {
+    "id": "sent-ch3-1",
+    "chapterId": "ch3",
+    "level": 3,
+    "mode": "sentence",
+    "promptText": "Ordena la oración del perro",
+    "tokens": ["EL", "PERRO", "SALTA", "MUCHO"],
+    "decoys": ["QUESO", "NUBE"],
+    "speechText": "El perro salta mucho."
+  },
+  {
+    "id": "sent-ch4-1",
+    "chapterId": "ch4",
+    "level": 4,
+    "mode": "sentence",
+    "promptText": "Arma la oración de la brújula",
+    "tokens": ["LA", "BRÚJULA", "GUÍA", "EL", "TREN"],
+    "decoys": ["GLOBO", "SOPA"],
+    "speechText": "La brújula guía el tren.",
+    "shieldedTokens": ["BRÚJULA"]
+  },
+  {
+    "id": "sent-ch5-1",
+    "chapterId": "ch5",
+    "level": 5,
+    "mode": "sentence",
+    "promptText": "Ordena la frase del puente antiguo",
+    "tokens": ["EL", "PUENTE", "UNE", "DOS", "ISLAS"],
+    "decoys": ["ZAPATO", "CAJA"],
+    "speechText": "El puente une dos islas.",
+    "shieldedTokens": ["PUENTE"]
+  },
+  {
+    "id": "comp-ch5-1",
+    "chapterId": "ch5",
+    "level": 5,
+    "mode": "comprehension",
+    "storyContext": "Sapín puso sus botas verdes y cruzó el puente de madera para buscar moras dulces.",
+    "promptText": "¿Qué cruzó Sapín para buscar moras?",
+    "tokens": ["EL PUENTE"],
+    "decoys": ["EL VOLCÁN", "LA NUBE", "UN TREN"],
+    "speechText": "Sapín cruzó el puente."
+  },
+  {
+    "id": "comp-ch5-2",
+    "chapterId": "ch5",
+    "level": 5,
+    "mode": "comprehension",
+    "storyContext": "En las Ruinas del Saber, el Búho Luz guardaba cada libro debajo de una estrella dorada.",
+    "promptText": "¿Dónde guardaba los libros el Búho Luz?",
+    "tokens": ["DEBAJO DE UNA ESTRELLA"],
+    "decoys": ["EN EL MAR", "DENTRO DEL GLOBO", "SOBRE LA MESA"],
+    "speechText": "Los guardaba debajo de una estrella."
+  },
+  {
+    "id": "sent-ch6-1",
+    "chapterId": "ch6",
+    "level": 5,
+    "mode": "sentence",
+    "promptText": "Arma el mensaje final contra Don Silencio",
+    "tokens": ["¡CADA", "VOZ", "DESPIERTA", "LA", "GALAXIA!"],
+    "decoys": ["MUDA", "SOMBRA"],
+    "speechText": "¡Cada voz despierta la galaxia!",
+    "shieldedTokens": ["DESPIERTA", "GALAXIA!"]
+  },
+  {
+    "id": "comp-ch6-1",
+    "chapterId": "ch6",
+    "level": 5,
+    "mode": "comprehension",
+    "storyContext": "Cuando Solín y Mumu cantaron juntos, la Niebla Muda se encogió. ¡Todas las islas recuperaron sus historias!",
+    "promptText": "¿Qué pasó cuando Solín y Mumu cantaron juntos?",
+    "tokens": ["LA NIEBLA SE ENCOGIÓ"],
+    "decoys": ["SE APAGÓ EL SOL", "CERRARON EL LIBRO", "LLOVIÓ ARENA"],
+    "speechText": "Cuando cantaron juntos, la niebla se encogió."
+  },
+  {
+    "id": "comp-ch6-2",
+    "chapterId": "ch6",
+    "level": 5,
+    "mode": "comprehension",
+    "storyContext": "¿Sabías que leer con calma ayuda a imaginar mundos nuevos? El Explorador leyó el Gran Libro y abrió las puertas estelares.",
+    "promptText": "¿Qué abrió el Explorador al leer el Gran Libro?",
+    "tokens": ["LAS PUERTAS ESTELARES"],
+    "decoys": ["UNA CAJA VACÍA", "EL CAÑÓN ROJO", "UN MAPA VIEJO"],
+    "speechText": "El Explorador abrió las puertas estelares."
+  }
+]
