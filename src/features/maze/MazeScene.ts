@@ -12,6 +12,13 @@ import type {
 import { universalInput } from '../input/InputController';
 import { loadSaveState } from '../persistence/saveStorage';
 import {
+  createBossState,
+  getBossById,
+  stepBoss,
+  type BossEvent,
+  type BossRuntimeState,
+} from './bossBehavior';
+import {
   createEnemyGridContext,
   createEnemyStates,
   resolveEnemyContacts,
@@ -42,6 +49,7 @@ export interface MazeSceneInitData {
   wordIds?: string[];
   sentenceIds?: string[];
   mode?: DomeChallengeMode;
+  bossId?: string;
 }
 
 export class MazeScene extends Phaser.Scene {
@@ -49,6 +57,7 @@ export class MazeScene extends Phaser.Scene {
   private mazeRenderer!: MazeRenderer;
   private mazePlayer!: MazePlayer;
   private enemies: EnemyRuntimeState[] = [];
+  private boss: BossRuntimeState | null = null;
   private survival: MazeSurvivalState = createSurvivalState();
   private accessibility: AccessibilitySettings = { ...DEFAULT_ACCESSIBILITY_SETTINGS };
   private unsubscribers: Array<() => void> = [];
@@ -60,6 +69,7 @@ export class MazeScene extends Phaser.Scene {
   private wordIds: string[] = ['sol'];
   private sentenceIds: string[] = [];
   private mode: DomeChallengeMode = 'word';
+  private bossId: string | undefined = undefined;
 
   private paused = false;
   private portalTriggered = false;
@@ -76,6 +86,7 @@ export class MazeScene extends Phaser.Scene {
     this.wordIds = data?.wordIds?.length ? [...data.wordIds] : ['sol'];
     this.sentenceIds = data?.sentenceIds ? [...data.sentenceIds] : [];
     this.mode = data?.mode ?? 'word';
+    this.bossId = data?.bossId;
   }
 
   create(): void {
@@ -86,7 +97,13 @@ export class MazeScene extends Phaser.Scene {
     this.portalTriggered = false;
     this.lastHudKey = '';
 
-    const mapConfig = getMazeMapById(this.mapId) ?? CHAPTER_1_MAPS[0];
+    const stageOrderMatch = /-(\d+|boss)$/.exec(this.stageId);
+    const templateIdx =
+      stageOrderMatch?.[1] === 'boss'
+        ? 4
+        : Math.max(0, Math.min(3, Number(stageOrderMatch?.[1] ?? 1) - 1));
+    const mapConfig =
+      getMazeMapById(this.mapId) ?? CHAPTER_1_MAPS[templateIdx] ?? CHAPTER_1_MAPS[0];
     if (!mapConfig) {
       throw new Error(`No existe mapa de laberinto configurado (${this.mapId})`);
     }
@@ -96,10 +113,22 @@ export class MazeScene extends Phaser.Scene {
     this.enemies = createEnemyStates(mapConfig.enemies);
     this.survival = createSurvivalState();
 
+    const bossConfig = this.bossId ? getBossById(this.bossId) : undefined;
+    if (bossConfig) {
+      const bossSpawn = mapConfig.bossSpawn ?? {
+        col: Math.floor(mapConfig.cols / 2),
+        row: Math.floor(mapConfig.rows / 2),
+      };
+      this.boss = createBossState(bossConfig, bossSpawn);
+    } else {
+      this.boss = null;
+    }
+
     const initialSnapshot = this.engine.getState();
     this.mazeRenderer = new MazeRenderer(this, initialSnapshot, this.accessibility.highContrast);
     this.mazePlayer = new MazePlayer(this, initialSnapshot.player, MAZE_TILE_SIZE);
     this.mazeRenderer.syncEnemies(this.enemies, this.time.now, this.accessibility.reducedMotion);
+    this.mazeRenderer.syncBoss(this.boss, this.time.now, this.accessibility.reducedMotion);
 
     this.configureCamera(initialSnapshot.cols, initialSnapshot.rows);
     this.registerInputAndBus();
@@ -120,6 +149,7 @@ export class MazeScene extends Phaser.Scene {
     if (this.paused || this.portalTriggered) {
       this.mazeRenderer.sync(this.engine.getState(), time, this.accessibility.reducedMotion);
       this.mazeRenderer.syncEnemies(this.enemies, time, this.accessibility.reducedMotion);
+      this.mazeRenderer.syncBoss(this.boss, time, this.accessibility.reducedMotion);
       return;
     }
 
@@ -141,9 +171,15 @@ export class MazeScene extends Phaser.Scene {
     const contactEvents = resolveEnemyContacts(this.enemies, enemyCtx);
     this.handleEnemyEvents([...enemyEvents, ...contactEvents]);
 
+    if (this.boss) {
+      const bossEvents = stepBoss(this.boss, enemyCtx, dtSec);
+      this.handleBossEvents(bossEvents);
+    }
+
     const latestSnapshot = this.engine.getState();
     this.mazeRenderer.sync(latestSnapshot, time, this.accessibility.reducedMotion);
     this.mazeRenderer.syncEnemies(this.enemies, time, this.accessibility.reducedMotion);
+    this.mazeRenderer.syncBoss(this.boss, time, this.accessibility.reducedMotion);
     this.mazePlayer.sync(latestSnapshot.player, delta, this.accessibility.reducedMotion, {
       hasSolarShield: this.survival.hasSolarShield,
       invulnerable: this.survival.invulnerableRemainingMs > 0,
@@ -269,6 +305,20 @@ export class MazeScene extends Phaser.Scene {
     }
   }
 
+  private applySurvivalHazardHit(): void {
+    const hit = applyPlayerEnemyHit(this.survival);
+    this.survival = hit.state;
+    if (hit.ignoredByInvulnerability) return;
+
+    playSoftBounce();
+    if (hit.absorbedByShield) {
+      speakText('¡Escudo solar!', { rate: 0.95 });
+    } else if (hit.checkpointTriggered) {
+      this.engine.respawnPlayerAtCheckpoint();
+      speakText('¡De vuelta al inicio!', { rate: 0.95 });
+    }
+  }
+
   private handleEnemyEvents(events: EnemyAIEvent[]): void {
     for (const ev of events) {
       switch (ev.type) {
@@ -281,22 +331,39 @@ export class MazeScene extends Phaser.Scene {
           playCorrectChime(2);
           speakText('¡Atrapado!', { rate: 1.0 });
           break;
-        case 'player_touched_enemy': {
-          const hit = applyPlayerEnemyHit(this.survival);
-          this.survival = hit.state;
-          if (hit.ignoredByInvulnerability) break;
-
-          playSoftBounce();
-          if (hit.absorbedByShield) {
-            speakText('¡Escudo solar!', { rate: 0.95 });
-          } else if (hit.checkpointTriggered) {
-            this.engine.respawnPlayerAtCheckpoint();
-            speakText('¡De vuelta al inicio!', { rate: 0.95 });
-          }
+        case 'player_touched_enemy':
+          this.applySurvivalHazardHit();
           break;
-        }
         case 'enemy_recovered':
         case 'enemy_frightened_started':
+          break;
+      }
+    }
+  }
+
+  private handleBossEvents(events: BossEvent[]): void {
+    for (const ev of events) {
+      switch (ev.type) {
+        case 'boss_hit':
+          this.engine.addBonusScore(ev.scoreGained);
+          playCorrectChime(2);
+          break;
+        case 'boss_defeated':
+          this.engine.addBonusScore(ev.scoreGained);
+          this.engine.unlockPortalByBoss();
+          playCaptureFanfare();
+          speakText(`¡${ev.name} calmado! ¡Portal abierto!`, { rate: 0.95 });
+          break;
+        case 'boss_ability_used':
+          for (const pt of ev.candidateBlocks) {
+            if (this.engine.placeMuteBlock(pt.col, pt.row)) {
+              this.mazeRenderer.spawnMuteBlock(pt);
+            }
+          }
+          playSoftBounce();
+          break;
+        case 'player_touched_boss':
+          this.applySurvivalHazardHit();
           break;
       }
     }

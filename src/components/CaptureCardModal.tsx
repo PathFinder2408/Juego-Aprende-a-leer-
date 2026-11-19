@@ -3,11 +3,17 @@ import type { CapturePayload, CardEntry } from '../types/game';
 
 interface CaptureCardModalProps {
   capture: CapturePayload;
+  primaryActionLabel?: string;
   onGoIsland: () => void;
   onGoCards: () => void;
 }
 
-export function CaptureCardModal({ capture, onGoIsland, onGoCards }: CaptureCardModalProps) {
+export function CaptureCardModal({
+  capture,
+  primaryActionLabel = 'Seguir en Isla Sol',
+  onGoIsland,
+  onGoCards,
+}: CaptureCardModalProps) {
   const card = (cardsData as CardEntry[]).find((c) => c.wordId === capture.wordId);
 
   return (
@@ -42,7 +48,7 @@ export function CaptureCardModal({ capture, onGoIsland, onGoCards }: CaptureCard
 
         <div className="banner-actions">
           <button type="button" className="btn btn-cta" onClick={onGoIsland}>
-            Seguir en Isla Sol
+            {primaryActionLabel}
           </button>
           <button type="button" className="btn btn-primary" onClick={onGoCards}>
             Ver mis Cartas

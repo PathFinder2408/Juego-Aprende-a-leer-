@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { BiomeId, EnemyKind, GridPoint, MazeTileKind, PowerUpKind } from '../../types/campaign';
+import type { BossRuntimeState } from './bossBehavior';
 import type { EnemyRuntimeState } from './enemyAI';
 import type {
   ActiveBubble,
@@ -149,6 +150,12 @@ export class MazeRenderer {
       statusTag: Phaser.GameObjects.Text;
     }
   >();
+  private bossNode: {
+    container: Phaser.GameObjects.Container;
+    body: Phaser.GameObjects.Arc;
+    hpTag: Phaser.GameObjects.Text;
+    statusTag: Phaser.GameObjects.Text;
+  } | null = null;
   private portalVisual: {
     ring: Phaser.GameObjects.Arc;
     core: Phaser.GameObjects.Arc;
@@ -358,6 +365,15 @@ export class MazeRenderer {
 
     const img = this.scene.add.image(cx, cy - 6, key).setDepth(cy);
     this.blockSprites.set(tileKey(col, row), img);
+  }
+
+  /**
+   * Crea dinámicamente un bloque blando temporal (obstáculo mudo de jefe).
+   */
+  spawnMuteBlock(point: GridPoint): void {
+    const key = tileKey(point.col, point.row);
+    if (this.blockSprites.has(key)) return;
+    this.createTileBlockSprite(point.col, point.row, 'soft_block', false);
   }
 
   /**
@@ -613,6 +629,87 @@ export class MazeRenderer {
         entry.container.setAlpha(1);
         entry.statusTag.setText('');
       }
+    }
+  }
+
+  /**
+   * Sincroniza la representación visual 2.5D y barra de corazones del jefe de capítulo.
+   */
+  syncBoss(
+    boss: BossRuntimeState | null,
+    timeMs: number,
+    reducedMotion: boolean
+  ): void {
+    if (!boss || boss.state === 'defeated') {
+      if (this.bossNode) {
+        this.bossNode.container.destroy();
+        this.bossNode = null;
+      }
+      return;
+    }
+
+    const cx = (boss.x + 0.5) * MAZE_TILE_SIZE;
+    const cy = (boss.y + 0.5) * MAZE_TILE_SIZE;
+
+    if (!this.bossNode) {
+      const shadow = this.scene.add.ellipse(0, 20, 44, 16, 0x0f172a, 0.42);
+      const body = this.scene.add
+        .circle(0, -4, 24, 0xdc2626, 0.96)
+        .setStrokeStyle(3.5, 0xfacc15);
+      const crown = this.scene.add
+        .text(0, -6, '👑', {
+          fontFamily: 'Lexend, system-ui, sans-serif',
+          fontSize: '20px',
+        })
+        .setOrigin(0.5);
+      const hpTag = this.scene.add
+        .text(0, -34, '', {
+          fontFamily: 'Lexend, system-ui, sans-serif',
+          fontSize: '13px',
+          fontStyle: 'bold',
+          color: '#fef08a',
+          stroke: '#0f172a',
+          strokeThickness: 3,
+        })
+        .setOrigin(0.5);
+      const statusTag = this.scene.add
+        .text(0, 22, boss.name, {
+          fontFamily: 'Lexend, system-ui, sans-serif',
+          fontSize: '11px',
+          fontStyle: 'bold',
+          color: '#ffffff',
+          backgroundColor: '#0f172acc',
+          padding: { x: 5, y: 2 },
+        })
+        .setOrigin(0.5);
+
+      const container = this.scene.add.container(cx, cy, [
+        shadow,
+        body,
+        crown,
+        hpTag,
+        statusTag,
+      ]);
+      this.bossNode = { container, body, hpTag, statusTag };
+    }
+
+    const bob =
+      reducedMotion || boss.state === 'stunned' ? 0 : Math.sin(timeMs * 0.009) * 3;
+    this.bossNode.container.setPosition(cx, cy + bob);
+    this.bossNode.container.setDepth(cy + 8);
+    this.bossNode.hpTag.setText(
+      `${'♥'.repeat(boss.hp)}${'♡'.repeat(Math.max(0, boss.maxHp - boss.hp))}`
+    );
+
+    if (boss.state === 'stunned') {
+      this.bossNode.body.setFillStyle(0x94a3b8, 0.85);
+      this.bossNode.statusTag.setText('💫 ¡Aturdido!');
+    } else if (boss.state === 'dashing') {
+      this.bossNode.body.setFillStyle(0xf97316, 0.98);
+      this.bossNode.statusTag.setText(`⚡ ${boss.name}`);
+    } else {
+      this.bossNode.body.setFillStyle(0xdc2626, 0.96);
+      this.bossNode.statusTag.setText(boss.name);
     }
   }
 }

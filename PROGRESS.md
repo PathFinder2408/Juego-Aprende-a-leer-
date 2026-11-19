@@ -1,7 +1,7 @@
 # PROGRESS.md
 
 - **Proyecto:** Videojuego web educativo de lectura (Phaser 3 + Matter.js + React + TypeScript + Vite)
-- **Fase actual:** Fase 9 completada (fusionada a `main` — Enemigos, Power-Ups, Corazones y HUD Arcade)
+- **Fase actual:** Fase 10 completada (fusionada a `main` — Campaña Completa, Historia y 6 Jefes)
 - **Última actualización:** 2026-11-19
 
 ---
@@ -101,10 +101,10 @@
 ### Fase 10: Campaña Completa (Inicio a Fin), Historia y 6 Jefes
 | ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
 |---|---|---|---|---|---|---|
-| F10-01 | Guion e historia en JSON (`src/data/story.json`: prólogo, diálogos de 6 capítulos, epílogo final) + `StoryModal.tsx` con lectura `es-CL` | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Narrativa completa inicio → desarrollo → fin, accesible y saltable | Texto `Lexend` + voz |
-| F10-02 | Mapa de Campaña (`CampaignMapView.tsx` + `campaignLogic.ts` + `App.tsx`): 6 islas, 30 etapas, estrellas, desbloqueo y modo rejugar | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Navegación fluida entre capítulos/etapas y persistencia `v2` automática | Sustituye/amplía acceso lineal |
-| F10-03 | Jefes de Capítulo (`bossBehavior.ts` + JSON de 6 jefes en `MazeScene`): patrullas especiales, obstáculos mudos, aturdimiento x3 y paso a Cúpula de Jefe | P | _(rec. Gemini 4 Hydrogen XHigh)_ | pendiente | Los 6 jefes funcionan por configuración JSON sin lógica hardcodeada | Incluye jefe final *Don Silencio* |
-| F10-04 | Contenido completo de las 30 etapas (Capítulos 1–6) en `src/data/maps/` + test integral `campaignContent.test.ts` + prueba E2E de flujo historia/jefe/final | M | _(rec. Gemini 4 Hydrogen Medium)_ | pendiente | Todos los mapas/palabras/frases de los 6 capítulos pasan validación y build | Cierre de Fase 10 en `main` |
+| F10-01 | Guion e historia en JSON (`src/data/story.json`: prólogo, diálogos de 6 capítulos, epílogo final) + `StoryModal.tsx` con lectura `es-CL` | P | Gemini 4 Hydrogen (High) | hecha | Narrativa completa inicio → desarrollo → fin, accesible y saltable | `story.json`, `StoryModal.tsx`, `LobbyView.tsx`, `App.tsx`, `curriculum.test.ts`; typecheck, 40/40 tests y build OK |
+| F10-02 | Mapa de Campaña (`CampaignMapView.tsx` + `campaignLogic.ts` + `App.tsx`): 6 islas, 30 etapas, estrellas, desbloqueo y modo rejugar | P | Gemini 4 Hydrogen (XHigh) | hecha | Navegación fluida entre capítulos/etapas y persistencia `v2` automática | `stages.json`, `campaignLogic.ts`, `campaignLogic.test.ts`, `CampaignMapView.tsx`, `CaptureCardModal.tsx`, `LobbyView.tsx`, `MazeScene.ts`, `App.tsx`; 43/43 tests y build OK |
+| F10-03 | Jefes de Capítulo (`bossBehavior.ts` + JSON de 6 jefes en `MazeScene`): patrullas especiales, obstáculos mudos, aturdimiento x3 y paso a Cúpula de Jefe | P | Gemini 4 Hydrogen (XHigh) | hecha | Los 6 jefes funcionan por configuración JSON sin lógica hardcodeada | `bosses.json`, `bossBehavior.ts`, `bossBehavior.test.ts`, `MazeScene.ts`, `MazeRenderer.ts`, `mazeEngine.ts`, `PhaserCanvas.tsx`, `App.tsx`; 45/45 tests y build OK |
+| F10-04 | Contenido completo de las 30 etapas (Capítulos 1–6) en `src/data/maps/` + test integral `campaignContent.test.ts` + prueba E2E de flujo historia/jefe/final | M | Gemini 4 Hydrogen (Medium) | hecha | Todos los mapas/palabras/frases de los 6 capítulos pasan validación y build | `ch2.json`..`ch6.json`, `maps/index.ts`, `campaignContent.test.ts`; 47/47 tests, build y E2E en 0 errores; cerrada en `main` |
 
 ### Fase 11: Cúpula Antigravedad 2.0 (Lectura Fluida) y Cartas con Poderes
 | ID | Tarea | Esfuerzo (L/M/P) | Modelo usado | Estado | Criterio de aceptación | Notas |
@@ -125,7 +125,7 @@
 ---
 
 ## Siguiente paso
-Confirmar para crear rama `feat/fase-10-campana-jefes` e iniciar **F10-01** (`src/data/story.json` + `StoryModal.tsx` con lectura `es-CL`, esfuerzo **P**, modelo recomendado **Gemini 4 Hydrogen (XHigh)**). Se recomienda abrir una sesión nueva para Fase 10.
+Confirmar para crear rama `feat/fase-11-cupula-cartas` e iniciar **F11-01** (`puzzleLogic.ts` y `AntigravityScene.ts`: modo `sentence`, modo `comprehension` y burbujas con escudo, esfuerzo **P**, modelo recomendado **Gemini 4 Hydrogen (XHigh)**). Se recomienda abrir una sesión nueva para Fase 11.
 
 ## Bloqueos y riesgos
 - Sin bloqueos técnicos. Repositorio remoto configurado en `origin` (`PathFinder2408/Juego-Aprende-a-leer-`).
@@ -144,3 +144,7 @@ Confirmar para crear rama `feat/fase-10-campana-jefes` e iniciar **F10-01** (`sr
 - **2026-11-19 (Fase 9):** Completada `F9-02` (`powerups.ts` con corazones, escudo solar, invulnerabilidad breve, checkpoint y voz `es-CL`, más renderizado e integración de enemigos en `MazeScene`/`MazeRenderer`/`MazePlayer`; typecheck, 39/39 tests y build OK).
 - **2026-11-19 (Fase 9):** Completada `F9-03` (`ArcadeHud.tsx` en React con corazones, escudo, Orbe Dorado, burbujas, sellos, puntaje y overlay de pausa conectado por `gameBus`; typecheck, 39/39 tests y build OK).
 - **2026-11-19 (Fase 9):** Completada `F9-04` (verificación E2E de `ArcadeHud`, movimiento, burbujas, puntaje y pausa con 0 errores de consola; 39/39 tests, `build` OK) y cerrada Fase 9 en `main`.
+- **2026-11-19 (Fase 10):** Creada rama `feat/fase-10-campana-jefes` y completada `F10-01` (`story.json` con prólogo, 6 capítulos y epílogo, más `StoryModal.tsx` accesible/saltable con voz `es-CL`; 40/40 tests y `build` OK).
+- **2026-11-19 (Fase 10):** Completada `F10-02` (`stages.json` con 30 etapas, `campaignLogic.ts`, `CampaignMapView.tsx` de 6 islas y persistencia `v2` al completar etapas; 43/43 tests y `build` OK).
+- **2026-11-19 (Fase 10):** Completada `F10-03` (`bosses.json` con los 6 jefes incluido *Don Silencio*, `bossBehavior.ts` dirigido por datos con bloques mudos, ráfagas y aturdimiento x3 que abre el portal en `MazeScene`; 45/45 tests y `build` OK).
+- **2026-11-19 (Fase 10):** Completada `F10-04` (30 mapas JSON en `src/data/maps/`, `campaignContent.test.ts`, E2E de campaña/historia/laberinto con 0 errores; 47/47 tests y `build` OK) y cerrada Fase 10 en `main`.

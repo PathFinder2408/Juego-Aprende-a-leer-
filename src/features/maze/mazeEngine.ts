@@ -572,6 +572,32 @@ export class MazeEngine {
   }
 
   /**
+   * Abre el portal de salida al derrotar al jefe de capítulo.
+   */
+  unlockPortalByBoss(): boolean {
+    if (this.portalOpen) return false;
+    this.portalOpen = true;
+    return true;
+  }
+
+  /**
+   * Coloca un bloque blando temporal ("obstáculo mudo") si la celda está libre.
+   */
+  placeMuteBlock(col: number, row: number): boolean {
+    if (!this.isInBounds(col, row)) return false;
+    const tile = this.tiles[row]?.[col];
+    if (!tile || tile.kind !== 'floor') return false;
+    if (this.player.tile.col === col && this.player.tile.row === row) return false;
+    if (this.collectibles.some((item) => item.col === col && item.row === row)) return false;
+    if (this.activeBubbles.some((b) => b.col === col && b.row === row)) return false;
+
+    tile.kind = 'soft_block';
+    tile.hp = 1;
+    tile.maxHp = 1;
+    return true;
+  }
+
+  /**
    * Aplica efecto inmediato de un power-up sobre las estadísticas del laberinto.
    */
   applyPowerUp(kind: PowerUpKind): void {

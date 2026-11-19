@@ -1,0 +1,68 @@
+[
+  {
+    "id": "boss-cangrejo",
+    "name": "Cangrejo Eco",
+    "chapterId": "ch1",
+    "biome": "beach",
+    "hp": 3,
+    "speedTilesPerSec": 2.3,
+    "ability": "silence_blocks",
+    "domeChallengeIds": ["mapa"],
+    "defeatRewardCardId": "card-solin"
+  },
+  {
+    "id": "boss-camaleon",
+    "name": "Camaleón Mudo",
+    "chapterId": "ch2",
+    "biome": "jungle",
+    "hp": 3,
+    "speedTilesPerSec": 2.5,
+    "ability": "mist_dash",
+    "domeChallengeIds": ["ventana"],
+    "defeatRewardCardId": "card-mumu"
+  },
+  {
+    "id": "boss-eco",
+    "name": "Eco Tartamudo",
+    "chapterId": "ch3",
+    "biome": "canyon",
+    "hp": 3,
+    "speedTilesPerSec": 2.6,
+    "ability": "word_scramble",
+    "domeChallengeIds": ["escuela"],
+    "defeatRewardCardId": "card-sapin"
+  },
+  {
+    "id": "boss-golem",
+    "name": "Gólem de Ceniza",
+    "chapterId": "ch4",
+    "biome": "volcano",
+    "hp": 3,
+    "speedTilesPerSec": 2.4,
+    "ability": "silence_blocks",
+    "domeChallengeIds": ["dragon"],
+    "defeatRewardCardId": "card-solin"
+  },
+  {
+    "id": "boss-esfinge",
+    "name": "Esfinge de Tinta",
+    "chapterId": "ch5",
+    "biome": "ruins",
+    "hp": 3,
+    "speedTilesPerSec": 2.6,
+    "ability": "ink_trap",
+    "domeChallengeIds": ["sabio"],
+    "defeatRewardCardId": "card-mumu"
+  },
+  {
+    "id": "boss-silencio",
+    "name": "Don Silencio",
+    "chapterId": "ch6",
+    "biome": "star_dome",
+    "hp": 3,
+    "speedTilesPerSec": 2.8,
+    "ability": "ink_trap",
+    "domeChallengeIds": ["victoria"],
+    "defeatRewardCardId": "card-sapin"
+  }
+]

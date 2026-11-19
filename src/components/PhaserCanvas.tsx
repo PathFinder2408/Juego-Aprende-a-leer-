@@ -17,6 +17,7 @@ interface PhaserCanvasProps {
   activeStageId?: string;
   activeStageTitle?: string;
   activeStageWordIds?: string[];
+  activeBossId?: string;
 }
 
 class BootScene extends Phaser.Scene {
@@ -54,6 +55,7 @@ class BootScene extends Phaser.Scene {
         stageId: this.game.registry.get('targetStageId') as string | undefined,
         stageTitle: this.game.registry.get('targetStageTitle') as string | undefined,
         wordIds: this.game.registry.get('targetStageWordIds') as string[] | undefined,
+        bossId: this.game.registry.get('targetBossId') as string | undefined,
       });
     } else {
       this.scene.start('AntigravityScene', { wordId: targetWordId });
@@ -68,6 +70,7 @@ export function PhaserCanvas({
   activeStageId = 'ch1-1',
   activeStageTitle = 'Playa Amanecer 1',
   activeStageWordIds = DEFAULT_STAGE_WORD_IDS,
+  activeBossId,
 }: PhaserCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -107,6 +110,7 @@ export function PhaserCanvas({
     game.registry.set('targetStageId', activeStageId);
     game.registry.set('targetStageTitle', activeStageTitle);
     game.registry.set('targetStageWordIds', activeStageWordIds);
+    game.registry.set('targetBossId', activeBossId);
     gameRef.current = game;
 
     return () => {
@@ -125,6 +129,7 @@ export function PhaserCanvas({
     game.registry.set('targetStageId', activeStageId);
     game.registry.set('targetStageTitle', activeStageTitle);
     game.registry.set('targetStageWordIds', activeStageWordIds);
+    game.registry.set('targetBossId', activeBossId);
 
     if (game.registry.get('bootDone') !== true || !game.scene) return;
 
@@ -144,7 +149,7 @@ export function PhaserCanvas({
       }
     } else if (screen === 'maze') {
       stopOthers('MazeScene');
-      const mazeKey = `${activeMapId}|${activeStageId}`;
+      const mazeKey = `${activeMapId}|${activeStageId}|${activeBossId ?? ''}`;
       if (!game.scene.isActive('MazeScene') || activeMazeKeyRef.current !== mazeKey) {
         activeMazeKeyRef.current = mazeKey;
         game.scene.start('MazeScene', {
@@ -152,6 +157,7 @@ export function PhaserCanvas({
           stageId: activeStageId,
           stageTitle: activeStageTitle,
           wordIds: activeStageWordIds,
+          bossId: activeBossId,
         });
       }
     } else {
@@ -159,7 +165,7 @@ export function PhaserCanvas({
       stopOthers('AntigravityScene');
       game.scene.start('AntigravityScene', { wordId: activeWordId });
     }
-  }, [screen, activeWordId, activeMapId, activeStageId, activeStageTitle, activeStageWordIds]);
+  }, [screen, activeWordId, activeMapId, activeStageId, activeStageTitle, activeStageWordIds, activeBossId]);
 
   return <div ref={containerRef} className="phaser-mount" />;
 }

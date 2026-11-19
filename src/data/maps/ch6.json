@@ -1,0 +1,193 @@
+[
+  {
+    "id": "map-ch6-1",
+    "cols": 17,
+    "rows": 11,
+    "biome": "star_dome",
+    "layout": [
+      "#################",
+      "#P..H..S..B..?. #",
+      "# # # ##### # # #",
+      "#1.B.... ....H.2#",
+      "# ### # # # ### #",
+      "#..K.. ...S.....#",
+      "# ### # # # ### #",
+      "#..B.... ....B..#",
+      "# # # ##### # # #",
+      "#.....H....B...X#",
+      "#################"
+    ],
+    "syllableTokens": ["GA", "LA", "XIA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch6-1-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 12, "row": 3 },
+        "speedTilesPerSec": 2.8
+      }
+    ]
+  },
+  {
+    "id": "map-ch6-2",
+    "cols": 19,
+    "rows": 13,
+    "biome": "star_dome",
+    "layout": [
+      "###################",
+      "#P..H..S...B..?. .#",
+      "# # # ####### # # #",
+      "#..B...  .  ...H..#",
+      "# ### # # # # ### #",
+      "#1..B... S ...B..2#",
+      "# ### # # # # ### #",
+      "#..H...  K  ...B..#",
+      "# ### # # # # ### #",
+      "#.....B.....H.....#",
+      "# # # ####### # # #",
+      "#..B...........X..#",
+      "###################"
+    ],
+    "syllableTokens": ["ME", "LO", "DÍA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch6-2-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "chase_los",
+        "spawn": { "col": 15, "row": 9 },
+        "speedTilesPerSec": 2.8
+      },
+      {
+        "id": "ch6-2-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "patrol",
+        "spawn": { "col": 11, "row": 5 },
+        "speedTilesPerSec": 2.7
+      }
+    ]
+  },
+  {
+    "id": "map-ch6-3",
+    "cols": 21,
+    "rows": 13,
+    "biome": "star_dome",
+    "layout": [
+      "#####################",
+      "#P..H...S...B...?...#",
+      "# # # ######### # # #",
+      "#..B....  .  ....H..#",
+      "# ### # # # # # ### #",
+      "#1..B...  S  ...B..2#",
+      "# ### # # # # # ### #",
+      "#..H....  K  ....B..#",
+      "# ### # # # # # ### #",
+      "#.....B... ...H.....#",
+      "# # # ######### # # #",
+      "#..B.............X..#",
+      "#####################"
+    ],
+    "syllableTokens": ["ES", "TRE", "LLA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch6-3-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 16, "row": 3 },
+        "speedTilesPerSec": 2.9
+      },
+      {
+        "id": "ch6-3-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "chase_los",
+        "spawn": { "col": 13, "row": 11 },
+        "speedTilesPerSec": 2.8
+      }
+    ]
+  },
+  {
+    "id": "map-ch6-4",
+    "cols": 21,
+    "rows": 15,
+    "biome": "star_dome",
+    "layout": [
+      "#####################",
+      "#P..H...S...B...?...#",
+      "# # # ######### # # #",
+      "#..B....  .  ....H..#",
+      "# ### # # # # # ### #",
+      "#1..B...  S  ...B..2#",
+      "# ### #       # ### #",
+      "#..H...       ...B..#",
+      "# ### #       # ### #",
+      "#..B....  K  ....H..#",
+      "# ### # # # # # ### #",
+      "#.....B... ...B.....#",
+      "# # # ######### # # #",
+      "#..B.............X..#",
+      "#####################"
+    ],
+    "syllableTokens": ["CA", "MI", "NO"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch6-4-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 16, "row": 3 },
+        "speedTilesPerSec": 2.9
+      },
+      {
+        "id": "ch6-4-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "chase_los",
+        "spawn": { "col": 10, "row": 7 },
+        "speedTilesPerSec": 2.8
+      }
+    ]
+  },
+  {
+    "id": "map-ch6-boss",
+    "cols": 23,
+    "rows": 15,
+    "biome": "star_dome",
+    "layout": [
+      "#######################",
+      "#P..H....S....B....?..#",
+      "# # # ########### # # #",
+      "#..B.....  .  .....H..#",
+      "# ### # # # # # # ### #",
+      "#1..B...   S   ...B..2#",
+      "# ### #         # ### #",
+      "#..H...         ...H..#",
+      "# ### #         # ### #",
+      "#..B...   H.H   ...B..#",
+      "# ### # # # # # # ### #",
+      "#.....B....K....B.....#",
+      "# # # ########### # # #",
+      "#..B.......?.......X..#",
+      "#######################"
+    ],
+    "syllableTokens": ["VIC", "TO", "RIA"],
+    "powerUpPool": ["extra_bubble", "long_wave", "turbo_boots", "solar_shield", "golden_orb"],
+    "enemies": [
+      {
+        "id": "ch6-boss-centinela-1",
+        "kind": "ink_sentry",
+        "behavior": "ambush",
+        "spawn": { "col": 17, "row": 3 },
+        "speedTilesPerSec": 2.9
+      },
+      {
+        "id": "ch6-boss-chispa-1",
+        "kind": "ash_spark",
+        "behavior": "chase_los",
+        "spawn": { "col": 5, "row": 11 },
+        "speedTilesPerSec": 2.8
+      }
+    ],
+    "bossSpawn": { "col": 11, "row": 7 }
+  }
+]

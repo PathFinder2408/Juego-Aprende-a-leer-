@@ -5,16 +5,20 @@ interface LobbyViewProps {
   capturedCount: number;
   totalCount: number;
   onExploreIsland: () => void;
+  onOpenCampaign: () => void;
   onQuickDome: () => void;
   onOpenCards: () => void;
+  onOpenStory: () => void;
 }
 
 export function LobbyView({
   capturedCount,
   totalCount,
   onExploreIsland,
+  onOpenCampaign,
   onQuickDome,
   onOpenCards,
+  onOpenStory,
 }: LobbyViewProps) {
   const world = worldData as WorldConfig;
 
@@ -48,15 +52,23 @@ export function LobbyView({
           <span className="quick-badge">{capturedCount}</span>
           <span>Mis Cartas</span>
         </button>
+        <button type="button" className="quick-tile" onClick={onExploreIsland}>
+          <span className="quick-badge">🏝️</span>
+          <span>Isla Sol</span>
+        </button>
+        <button type="button" className="quick-tile" onClick={onOpenStory}>
+          <span className="quick-badge">📖</span>
+          <span>Historia</span>
+        </button>
       </div>
 
       <div className="mission-card">
         <div>
-          <span className="mission-tag">MISIÓN 1-1 · {world.name.toUpperCase()}</span>
+          <span className="mission-tag">AVENTURA · {world.name.toUpperCase()}</span>
           <p className="mission-desc">{world.subtitle}</p>
         </div>
-        <button type="button" className="btn btn-cta" onClick={onExploreIsland}>
-          EXPLORAR ISLA
+        <button type="button" className="btn btn-cta" onClick={onOpenCampaign}>
+          MAPA DE CAMPAÑA
         </button>
       </div>
     </section>

@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import chaptersData from '../../data/chapters.json';
 import sentencesData from '../../data/sentences.json';
+import storyData from '../../data/story.json';
 import wordsData from '../../data/words.json';
-import type { ChapterConfig, SentenceEntry, WordEntry } from '../../types/game';
+import type { ChapterConfig, SentenceEntry, StorySequence, WordEntry } from '../../types/game';
 
 const chapters = chaptersData as ChapterConfig[];
 const words = wordsData as WordEntry[];
 const sentences = sentencesData as SentenceEntry[];
+const stories = storyData as StorySequence[];
 
 describe('Currículo pedagógico v2.0 (JSON)', () => {
   it('define los 6 capítulos ordenados de 1 a 6 sin IDs duplicados', () => {
@@ -61,5 +63,27 @@ describe('Currículo pedagógico v2.0 (JSON)', () => {
     const ch5And6 = sentences.filter((s) => s.chapterId === 'ch5' || s.chapterId === 'ch6');
     expect(ch5And6.some((s) => s.mode === 'sentence')).toBe(true);
     expect(ch5And6.some((s) => s.mode === 'comprehension')).toBe(true);
+  });
+
+  it('cubre prólogo, intros/outros de los 6 capítulos y epílogo en story.json', () => {
+    const storyMap = new Map<string, StorySequence>();
+    for (const seq of stories) {
+      expect(storyMap.has(seq.id)).toBe(false);
+      storyMap.set(seq.id, seq);
+      expect(seq.title.trim().length).toBeGreaterThan(0);
+      expect(seq.lines.length).toBeGreaterThan(0);
+      for (const line of seq.lines) {
+        expect(line.speaker.trim().length).toBeGreaterThan(0);
+        expect(line.text.trim().length).toBeGreaterThan(0);
+      }
+    }
+
+    expect(stories.some((s) => s.trigger === 'prologue')).toBe(true);
+    expect(stories.some((s) => s.trigger === 'epilogue')).toBe(true);
+
+    for (const chapter of chapters) {
+      expect(storyMap.has(chapter.introStoryId)).toBe(true);
+      expect(storyMap.has(chapter.outroStoryId)).toBe(true);
+    }
   });
 });
