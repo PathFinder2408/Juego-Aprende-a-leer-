@@ -22,6 +22,7 @@ import {
   getStageById,
   recordStageCompletion,
 } from './features/campaign/campaignLogic';
+import { recordChallengeCompletion } from './features/campaign/fluencyEngine';
 import {
   CURRENT_SAVE_VERSION,
   loadSaveState,
@@ -128,6 +129,14 @@ export function App() {
     const unsubCapture = gameBus.on('capture', (payload) => {
       setCaptured(payload);
       setCapturedWordIds((prev) => (prev.includes(payload.wordId) ? prev : [...prev, payload.wordId]));
+      setFluency((prev) =>
+        recordChallengeCompletion(prev, {
+          mode: payload.mode ?? 'word',
+          accuracyPercent: payload.accuracyPercent ?? 100,
+          durationMs: payload.durationMs ?? 8000,
+          tokenCount: payload.tokenCount ?? 2,
+        }).metrics
+      );
 
       const activeRun = activeCampaignRunRef.current;
       if (activeRun) {

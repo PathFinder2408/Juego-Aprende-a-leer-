@@ -46,6 +46,7 @@ export class AntigravityScene extends Phaser.Scene {
   private statusText!: Phaser.GameObjects.Text;
   private unsubscribers: Array<() => void> = [];
   private collisionGraceUntil = 0;
+  private startedAtMs = 0;
   private requestedWordId: string | null = null;
   private requestedSentenceId: string | null = null;
   private requestedMode: DomeChallengeMode | null = null;
@@ -86,6 +87,7 @@ export class AntigravityScene extends Phaser.Scene {
     this.slotPositions = [];
     this.slotBoxes = [];
     this.collisionGraceUntil = this.time.now + 500;
+    this.startedAtMs = this.time.now;
 
     this.matter.world.setGravity(0, 0);
     this.createBackgroundAndDome();
@@ -124,7 +126,11 @@ export class AntigravityScene extends Phaser.Scene {
 
   update(_time: number, delta: number): void {
     const slowMult = this.accessibility.slowFloating ? SLOW_FLOATING_MULTIPLIER : 1;
-    const speedMult = adaptiveEngine.getCurrentConfig().speedMultiplier * slowMult;
+    const modeTuning = adaptiveEngine.getModeTuning(
+      this.activeChallenge.mode,
+      this.tracker.getStats().accuracyPercent
+    );
+    const speedMult = modeTuning.speedMultiplier * slowMult;
     const effectiveParams: PhysicsParams = {
       ...this.physicsParams,
       maxSpeed: this.physicsParams.maxSpeed * speedMult,
@@ -365,10 +371,11 @@ export class AntigravityScene extends Phaser.Scene {
 
   private createLetters(): void {
     const targetTokens = this.activeChallenge.tokens;
-    const decoys =
-      this.activeChallenge.decoys.length > 0
-        ? this.activeChallenge.decoys
-        : adaptiveEngine.selectDecoys(targetTokens);
+    const decoys = adaptiveEngine.selectChallengeDecoys(
+      this.activeChallenge.mode,
+      targetTokens,
+      this.activeChallenge.decoys
+    );
     const allTokens = [...targetTokens, ...decoys];
     const spawnRadiusX = 142;
     const spawnRadiusY = 95;
@@ -564,10 +571,15 @@ export class AntigravityScene extends Phaser.Scene {
       `¡Completaste "${this.activeChallenge.speechText}" con ${this.activeChallenge.creatureName}!`
     );
 
+    const stats = this.tracker.getStats();
     gameBus.emit('capture', {
       wordId: this.activeEntry.id,
       word: this.activeChallenge.displayTitle,
       creatureName: this.activeChallenge.creatureName,
+      mode: this.activeChallenge.mode,
+      accuracyPercent: stats.accuracyPercent,
+      durationMs: Math.max(1000, Math.round(this.time.now - this.startedAtMs)),
+      tokenCount: this.activeChallenge.tokens.length,
     });
 
     this.time.delayedCall(420, () => {
